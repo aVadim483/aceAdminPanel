@@ -217,7 +217,9 @@ class PluginAceadminpanel extends Plugin
 }
 
 if (!function_exists('admClearSmartyCache')) {
-    include_once 'include/adm_function.php';
+    //include_once 'include/adm_function.php';
+	include_once 'include/ACE.functions.php';
+    include_once 'include/adm_function_old.php';
 }
 
 // EOF
