@@ -1,0 +1,210 @@
+.-box:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+* html.-box {
+    height: 1%;
+}
+*:first-child+html.-box {
+    min-height: 1px;
+}
+
+body {
+    padding-top: 60px;
+}
+h1 { font-size: 30px; line-height: 40px; }
+h2 { font-size: 24px; line-height: 30px; }
+h3 { font-size: 20px; line-height: 30px; }
+h4 { font-size: 16px; line-height: 20px; }
+h5 { font-size: 14px; line-height: 20px; }
+h6 { font-size: 12px; line-height: 20px; }
+
+h1 small { font-size: 20px; }
+h2 small { font-size: 16px; }
+h3 small { font-size: 14px; }
+h4 small { font-size: 12px; }
+
+h3 {
+    margin-bottom: 8px;
+}
+
+h1 .badge, h2 .badge, h3 .badge, h4 .badge {
+    vertical-align: super;
+}
+
+input, textarea, select {
+    width: 95%;
+}
+.navbar.navbar-fixed-top {
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+.well {
+    margin-bottom: 18px;
+}
+.well-white {
+
+}
+.well .form-actions {
+    margin-bottom: 0;
+}
+
+/* popover */
+.popover-content {
+    background-color: #f5f5f5;
+}
+.popover.right .arrow {
+    border-right-color: #f5f5f5;
+}
+.popover.top .arrow {
+    border-top-color: #f5f5f5;
+}
+
+.popover-title {
+    min-height: 18px;
+}
+.popover-title button {
+    margin-left: 4px;
+}
+
+/* .btn */
+.btn-block {
+    padding-right: 14px;
+    padding-left: 14px;
+}
+.btn-gray,
+.btn-gray:hover {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+.btn-gray.active {
+    color: rgba(255, 255, 255, 0.75);
+}
+.btn-gray {
+    background-color: #999999;
+    *background-color: #555555;
+    background-image: -ms-linear-gradient(top, #a0a0a0, #555555);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#a0a0a0), to(#555555));
+    background-image: -webkit-linear-gradient(top, #a0a0a0, #555555);
+    background-image: -o-linear-gradient(top, #a0a0a0, #555555);
+    background-image: -moz-linear-gradient(top, #a0a0a0, #555555);
+    background-image: linear-gradient(top, #a0a0a0, #555555);
+    background-repeat: repeat-x;
+    border-color: #555555 #555555 #000000;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    filter: progid:dximagetransform.microsoft.gradient(startColorstr='#a0a0a0', endColorstr='#555555', GradientType=0);
+    filter: progid:dximagetransform.microsoft.gradient(enabled=false);
+}
+
+.btn-gray:hover,
+.btn-gray:active,
+.btn-gray.active,
+.btn-gray.disabled,
+.btn-gray[disabled] {
+    background-color: #444444;
+    *background-color: #222222;
+}
+
+.btn-gray:active,
+.btn-gray.active {
+    background-color: #808080 \9;
+}
+.btn-group.open .btn-inverse.dropdown-toggle {
+    background-color: #222222;
+}
+.btn-inverse .caret {
+    border-top-color: #ffffff;
+    border-bottom-color: #ffffff;
+    opacity: 0.75;
+    filter: alpha(opacity=75);
+}
+
+
+.btn-switch-on {
+}
+.btn-switch-off {
+}
+.btn-inset {
+    color: #333333;
+    text-decoration: none;
+    background-color: #e6e6e6;
+    *background-color: #d9d9d9;
+    /* Buttons in IE7 don't get borders, so darken on hover */
+
+    background-position: 0 -15px;
+    border-style: inset;
+    box-shadow: inset 0 0 3px rgba(0,0,0,0.7);
+    min-width: 32px;
+}
+.btn-outset {
+    font-weight: bold;
+}
+.btn-switch-on .btn-inset {
+    background: #cc3333;
+}
+.btn-switch-on .btn-outset {
+    color: #006600;
+}
+.btn-switch-off .btn-inset {
+    background: #339933;
+}
+.btn-switch-off .btn-outset {
+    color: #cc0000;
+}
+
+/* icon */
+.icon-gray {
+    background-image: url("../bootstrap/img/glyphicons-halflings-gray.png");
+}
+.icon-red {
+    background-image: url("../bootstrap/img/glyphicons-halflings-red.png");
+}
+.icon-green {
+    background-image: url("../bootstrap/img/glyphicons-halflings-green.png");
+}
+.icon-blue {
+    background-image: url("../bootstrap/img/glyphicons-halflings-blue.png");
+}
+.icon-disabled {
+    background-image: url("../bootstrap/img/glyphicons-halflings-gray.png");
+    opacity: 0.5;
+}
+
+/* tables */
+.table th {
+    background: #CCC;
+    text-align: center;
+}
+td.number {
+    text-align: right;
+    padding-right: 4px;
+}
+td.center {
+    text-align: center;
+}
+
+.sticky, .sticky-bottom {
+    position: fixed;
+}
+.nav-list .nav-header {
+    margin-left: -22px;
+}
+.navbar.sticky {
+    top: 40px;
+    width: 100%;
+}
+.navbar.sticky-bottom {
+    bottom: 0;
+    width: 100%;
+    margin-bottom: 0;
+}
+.pagination {
+    height: 30px;
+}
+.pagination a, .pagination span {
+    padding: 0 12px;
+    line-height: 28px;
+}
+

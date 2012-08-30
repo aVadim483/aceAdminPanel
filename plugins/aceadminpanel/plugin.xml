@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+    <name>
+        <lang name="default">aceAdminPanel</lang>
+    </name>
+    <author>
+        <lang name="default">Vadim Shemarov (aka aVadim)</lang>
+    </author>
+    <homepage></homepage>
+    <version>1.7.300</version>
+    <requires>
+        <livestreet>0.5.1</livestreet>
+        <plugins>
+        </plugins>
+        <system>
+            <php>5.2.1</php>
+        </system>
+    </requires>
+    <description>
+        <lang name="default">Advanced Administrator's Panel for LiveStreet/ACE</lang>
+        <lang name="russian">Расширенная панель администратора для LiveStreet/ACE</lang>
+    </description>
+    <delegate>
+        <module></module>
+        <action></action>
+        <template></template>
+        <entity></entity>
+    </delegate>
+    <priority>1000</priority>
+</plugin>

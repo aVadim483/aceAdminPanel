@@ -1,0 +1,232 @@
+.nav.logo img {
+    margin-top: 5px;
+}
+.sidebar .row {
+    margin-left: 0px;
+    margin-bottom: 10px;
+}
+.sidebar button.left {
+    text-align: left;
+    margin-left: 0;
+}
+.sidebar .well label {
+    font-weight: bold;
+}
+.sidebar .well .input-prepend .add-on {
+    font-weight: bold;
+}
+.sidebar .well .input-prepend input.wide {
+    width: 85%;
+}
+.sidebar .well .help-block {
+    margin-bottom: 10px;
+}
+.sidebar .well input.ip-part {
+    width:30px;
+    text-align:center;
+
+}
+.sidebar .well.widget-info {
+    height: 49px;
+}
+.sidebar .form-actions {
+    padding: 10px 0 0;
+}
+.sidebar .form-actions button {
+    float: right;
+}
+.plugins-list {
+
+}
+.plugins-list th.action {
+    width: 70px;
+}
+.plugins-list td.action .btn-group {
+    width: 68px;
+    margin: auto;
+}
+.plugins-list td.action .btn {
+    width: 32px;
+    padding: 4px 0;
+}
+
+#user_login_seek {
+
+}
+form.adm-report .well p {
+    margin: 0 0 2px 12px;
+}
+.adm_info_value {
+    font-weight: bold;
+}
+.form_note {
+    color: #777;
+    font-size: 0.9em;
+}
+#plugin_list .title {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #003;
+}
+.well.v-menu {
+    padding: 8px 0;
+}
+
+form.well, .sidebar form {
+    margin-top: 10px;
+}
+form.well label.radio, .sidebar form label.radio {
+    font-weight: normal;
+    height: 28px;
+    vertical-align: middle;
+}
+form.well label.radio input[type=radio] {
+    margin-top: 2px;
+}
+form.well label.radio input[type=text] {
+    margin-bottom: 0;
+    margin-top: -6px;
+}
+
+td.adm_var {
+    width: 150px;
+}
+td.adm_field .adm_field_value {
+    padding:4px;
+}
+#user_profile_about_edit {
+    overflow: auto;padding:4px;
+}
+
+.sidebar .user-profile {}
+.sidebar .user-profile img.avatar {
+    float: left;
+    margin-right: 5px;
+}
+.sidebar .user-profile .nickname {
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.user-profile .strength, .user-profile .voting {
+    font-size: 11px;
+    text-align: center;
+}
+.user-profile .strength .total, .user-profile .voting .total, .user-profile .voting .count {
+    font-weight: bold;
+    font-size: 11px;
+    text-align: center;
+    padding: 0 10px;
+    line-height: 23px;
+    border-radius: 15px;
+    -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .1) inset;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, .1) inset;
+    height: 22px;
+    width: 40px;
+    margin: 0 auto 10px auto;
+}
+.user-profile .strength .total {
+    color: #628FA5;
+    background: #EDF8FD;
+}
+
+.user-profile .voting .total.positive {
+    background: #ccffcc;
+    color: #33aa33;
+}
+.user-profile .voting .total.negative {
+    background: #ffcccc;
+    color: #da4242;
+}
+.user-profile .voting .count {
+    background: #fffccc;
+}
+.user-profile .adm_vote_plus, .user-profile .adm_vote_minus {
+    cursor: pointer;
+}
+.user-profile .adm_vote_plus:hover, .user-profile .adm_vote_minus:hover {
+    -webkit-box-shadow: 0 0px 3px rgba(0, 0, 0, .5);
+    box-shadow: 0 0px 3px rgba(0, 0, 0, .5);
+}
+.user-profile table.vote-stat {
+
+}
+.user-profile table.vote-stat td.lable {
+    width: 50%;
+}
+.user-profile table.vote-stat td.plus {
+    color:#390;
+    text-align: center;
+}
+.user-profile table.vote-stat td.minus {
+    color:#f00;
+    text-align: center;
+}
+
+input.adm_vote_value {
+    width: 20px;
+}
+i.adm_vote_sign {
+    vertical-align: baseline;
+}
+.popover-content button {
+    margin-left: 4px;
+    margin-top: 3px;
+    height: 22px;
+}
+.popover.adm_vote {
+    width: 150px;
+}
+
+i.adm-progress {
+    display: inline-block;
+    width: 16px;
+    height: 11px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-repeat: no-repeat;
+    background-image: url(../img/adm_progress.gif);
+    background-position: center;
+    background-repeat: no-repeat;
+}
+/*
+.popover.adm_vote .popover-title {
+    display: none;
+}
+*/
+.opacity50 {
+    opacity: 0.5;
+}
+.plus {
+    color:#390;
+}
+.minus {
+    color:#e00;
+}
+.num1 {
+    width: 20px;
+}
+h1 .badge, h2 .badge, h3 .badge, h4 .badge {
+    vertical-align: super;
+}
+.nav.nav-tabs li a .badge {
+    vertical-align: super;
+    line-height: 10px;
+}
+
+.stat-performance {
+    border-top: 1px solid #CCC;
+    background: #EEE;
+}
+.stat-performance h4 {
+    font-size: 14px;
+    line-height: 16px;
+    border-bottom: 1px solid #CCC;
+}
+.stat-performance table {
+    margin: auto;
+}
+.stat-performance table td {
+    vertical-align: top;
+    padding: 0 14px;
+}
