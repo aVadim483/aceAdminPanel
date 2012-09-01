@@ -150,13 +150,13 @@ class PluginAceadminpanel extends Plugin
 
     protected function ClearCache()
     {
-        if (!admClearDir(Config::Get('path.smarty.compiled'))) {
+        if (!ACE::ClearDir(Config::Get('path.smarty.compiled'))) {
             $this->Message_AddErrorSingle(
                 'Unable to remove content of dir <b>' . admFilePath(Config::Get('path.smarty.compiled'))
                     . '</b>. It is recommended to do it manually',
                 $this->Lang_Get('attention'), true);
         }
-        if (!admClearDir(Config::Get('path.smarty.cache'))) {
+        if (!ACE::ClearDir(Config::Get('path.smarty.cache'))) {
             $this->Message_AddErrorSingle(
                 'Unable to remove content of dir <b>' . admFilePath(Config::Get('path.smarty.cache'))
                     . '</b>. It is recommended to do it manually',
@@ -216,10 +216,8 @@ class PluginAceadminpanel extends Plugin
     }
 }
 
-if (!function_exists('admClearSmartyCache')) {
-    //include_once 'include/adm_function.php';
-    include_once 'include/adm_function_old.php';
-	include_once 'include/ACE.Functions.php';
+if (!class_exists('ACE')) {
+    include_once 'include/ACE.php';
 }
 
 // EOF

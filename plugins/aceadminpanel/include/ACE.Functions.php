@@ -173,7 +173,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return $result;
     }
 
-    static function MakeDir($sNewDir)
+    static function MakeDir($sNewDir, $nMode=0755)
     {
         $sBasePath = ACE::FilePath(Config::Get('path.root.server'));
         if (substr($sNewDir, 0, 2) == '//') {
@@ -186,13 +186,13 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         foreach ($aNewDir as $sDir) {
             if ($sDir != '.' AND $sDir != '') {
                 if (!is_dir($sTempPath . $sDir . '/')) {
-                    if (@mkdir($sTempPath . $sDir . '/')) {
+                    if (@mkdir($sTempPath . $sDir . '/', $nMode, true)) {
                         //;
                     } else {
-                        //Exception('Cannot make dir "'.$sTempPath.$sDir.'/'.'"');
+                        //die('Cannot make dir "'.$sTempPath.$sDir.'/'.'"');
                         return false;
                     }
-                    @chmod($sTempPath . $sDir . '/', 0755);
+                    @chmod($sTempPath . $sDir . '/', $nMode);
                 }
                 $sTempPath = $sTempPath . $sDir . '/';
             }

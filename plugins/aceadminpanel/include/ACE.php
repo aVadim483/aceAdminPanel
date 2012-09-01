@@ -13,8 +13,14 @@
  *----------------------------------------------------------------------------
  */
 
+include_once 'ACE.Functions.php';
+
 class ACE extends ACE_Func
 {
+}
+
+if (!function_exists('admHeaderLocation')) {
+    include_once 'adm_function_old.php';
 }
 
 // EOF

@@ -22,7 +22,7 @@ $config['head']['default']['js'][] = '___path.static.skin___/assets/js/waypoints
 $config['head']['default']['js'][] = '___path.static.skin___/assets/js/ace-admin.js';
 
 $config['compress']['css']['merge'] = false;       // указывает на необходимость слияния файлов по указанным блокам.
-$config['compress']['css']['use']   = false;       // указывает на необходимость компрессии файлов. Компрессия используется только в активированном 
+$config['compress']['css']['use']   = false;       // указывает на необходимость компрессии файлов. Компрессия используется только в активированном
 
 return $config;
 

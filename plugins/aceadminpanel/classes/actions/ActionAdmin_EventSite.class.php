@@ -550,8 +550,8 @@ class PluginAceadminpanel_ActionAdmin_EventSite extends PluginAceadminpanel_Inhe
     {
         $this->Security_ValidateSendForm();
         if (isPost('adm_cache_clear_data')) $this->Cache_Clean();
-        if (isPost('adm_cache_clear_headfiles')) admClearHeadfilesCache();
-        if (isPost('adm_cache_clear_smarty')) admClearSmartyCache();
+        if (isPost('adm_cache_clear_headfiles')) ACE::ClearHeadfilesCache();
+        if (isPost('adm_cache_clear_smarty')) ACE::ClearSmartyCache();
         if (isPost('adm_reset_config_data')) $this->_ResetCustomConfig();
         $this->Message('notice', $this->Lang_Get('adm_action_ok'), null, true);
         ACE::HeaderLocation(Router::GetPath('admin') . 'site/reset/');
