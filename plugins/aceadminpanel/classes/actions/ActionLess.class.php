@@ -41,17 +41,12 @@ class PluginAceadminpanel_ActionLess extends ActionPlugin
 
     public function EventExec()
     {
-        //phpinfo(); exit;
-        //$sCssFile = str_replace('[skin]', Plugin::GetTemplatePath($this->sPlugin), implode('/', $this->GetParams()));
-        //var_dump(Config::Get('view.skin'), HelperPlugin::GetTemplatePath('', 'aceadminpanel'), Config::Get('plugin.aceadminpanel.skin'));
-        //exit;
-
         $sFile = '';
         $sSourceFile = implode('/', $this->GetParams());
         $sSourceFile = str_replace('[skin]', HelperPlugin::GetTemplatePath(), $sSourceFile);
-        $sSourceFile = str_replace('[admin_skin]', HelperPlugin::GetPluginPath('aceadminpanel') . '/templates/skin/admin_' . Config::Get('plugin.aceadminpanel.skin'), $sSourceFile);
+        $sSourceFile = str_replace('[admin_skin]', HelperPlugin::GetPluginPath('aceadminpanel') . '/templates/skin/' . $this->Admin_GetAdminSkin(), $sSourceFile);
         if (isset($_SERVER['QUERY_STRING']) AND $_SERVER['QUERY_STRING']) $sSourceFile .= '?' . $_SERVER['QUERY_STRING'];
-        $sCachePath = Config::Get('path.smarty.cache');
+        $sCachePath = Config::Get('path.smarty.cache') . '/' . $this->Admin_GetAdminSkin();
         $aFileParts = pathinfo($sSourceFile);
         if (strtolower($aFileParts['extension']) !== 'less') {
             $sCachePath .= '/' . basename($aFileParts['dirname']) . '/';
@@ -62,7 +57,6 @@ class PluginAceadminpanel_ActionLess extends ActionPlugin
         } else {
             $sCachePath .= '/css/';
             if (!is_dir($sCachePath)) ACE::MakeDir($sCachePath);
-
             $aLessParams = array(
                 'file' => $sSourceFile,
                 'config' => array(

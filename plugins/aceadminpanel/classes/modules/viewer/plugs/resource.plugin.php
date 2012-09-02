@@ -9,7 +9,7 @@ class Smarty_Resource_Plugin extends Smarty_Internal_Resource_File
             $_filepath = substr($_filepath, strlen($_prefix));
         }
         if (strpos($_filepath, '//') === 0) {
-            $_filepath = admFilePath(Config::Get('path.root.server') . $_filepath, '/');
+            $_filepath = ACE::FilePath(Config::Get('path.root.server') . $_filepath, '/');
         }
         return $_filepath;
     }
@@ -25,7 +25,7 @@ class Smarty_Resource_Plugin extends Smarty_Internal_Resource_File
             if (is_object($_template->smarty->security_policy)) {
                 $_template->smarty->security_policy->isTrustedResourceDir($_filepath);
             }
-            $sPathRoot = admFilePath(Config::Get('path.root.server'), '/');
+            $sPathRoot = ACE::FilePath(Config::Get('path.root.server'), '/');
             if (strpos($_filepath, $sPathRoot)===0) {
                 $_filepath = 'plugin:/' . substr($_filepath, strlen($sPathRoot));
             }

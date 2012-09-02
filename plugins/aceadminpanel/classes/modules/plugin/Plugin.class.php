@@ -47,7 +47,7 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
 
         $sPluginName = ucfirst($sPlugin);
 
-        $sFile = admFilePath("{$this->sPluginsDir}{$sPlugin}/Plugin{$sPluginName}.class.php");
+        $sFile = ACE::FilePath("{$this->sPluginsDir}{$sPlugin}/Plugin{$sPluginName}.class.php");
         if (is_file($sFile)) {
             require_once($sFile);
 
@@ -412,7 +412,7 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
 
     public function GetPluginDir($sPlugin = null)
     {
-        $sResult = admFilePath(Config::Get('path.root.server') . '/plugins', '/');
+        $sResult = ACE::FilePath(Config::Get('path.root.server') . '/plugins', '/');
         if ($sPlugin) $sResult .= '/' . strtolower($sPlugin);
         return $sResult;
     }

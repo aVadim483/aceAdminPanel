@@ -246,7 +246,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
 
         if (!$oUser) {
             if (Router::GetAction() == 'registration') {
-                $aIp = admGetAllUserIp();
+                $aIp = ACE::GetAllUserIp();
                 foreach ($aIp as $sIp) {
                     if ($this->PluginAceadminpanel_Admin_IsBanIp($sIp)) {
                         $this->Message_AddErrorSingle($this->Lang_Get('adm_banned2_text'), $this->Lang_Get('adm_denied_title'));
@@ -269,8 +269,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
     public function MemoryStats()
     {
         $aMemoryStats['memory_limit'] = ini_get('memory_limit');
-        $aMemoryStats['usage'] = admSize(memory_get_usage());
-        $aMemoryStats['peak_usage'] = admSize(memory_get_peak_usage(true));
+        $aMemoryStats['usage'] = ACE::MemSizeFormat(memory_get_usage());
+        $aMemoryStats['peak_usage'] = ACE::MemSizeFormat(memory_get_peak_usage(true));
         $this->Viewer_Assign('aMemoryStats', $aMemoryStats);
     }
 }

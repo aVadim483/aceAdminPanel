@@ -93,8 +93,8 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
     protected function _getRealTeplate($sTemplate)
     {
         $sRealTemplate = '';
-        $sTemplate = admFilePath($sTemplate, '/');
-        $sPathRoot = admFilePath(Config::Get('path.root.server'), '/');
+        $sTemplate = ACE::FilePath($sTemplate, '/');
+        $sPathRoot = ACE::FilePath(Config::Get('path.root.server'), '/');
 
         // На формирование шаблонов через "Plugin::GetTemplatePath(__CLASS__)" мы повлиять не можем
         // Поэтому ищем пуговицу
@@ -105,12 +105,12 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
             }
             elseif (preg_match('|^' . $sPathRoot . '/plugins/(\w+)/templates/skin/default/(.*)$|', $sTemplate, $aMatches)) {
                 // если дефолтный шаблон плагина, то проверим, нет ли шаблона в подмененном скине
-                $sRealTemplate = admFilePath(
+                $sRealTemplate = ACE::FilePath(
                     Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
                         . Config::Get($this->sPlugin . '.saved.view.skin') . '/' . $aMatches[2]);
                 // если нет, то смотрим с учетом js-lib
                 if (!is_file($sRealTemplate)) {
-                    $sRealTemplate = admFilePath(
+                    $sRealTemplate = ACE::FilePath(
                         Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
                             . 'default-' . Config::Get('js.lib') . '/' . $aMatches[2]);
                 }
@@ -123,7 +123,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
             }
             elseif (preg_match('|^' . $sPathRoot . '/plugins/(\w+)/templates/skin/default/(.*)$|', $sTemplate, $aMatches)) {
                 // если дефолтный шаблон плагина, то проверим, нет ли дефолтного шаблона с учетом js-lib
-                $sRealTemplate = admFilePath(
+                $sRealTemplate = ACE::FilePath(
                     Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
                         . 'default-' . Config::Get('js.lib') . '/' . $aMatches[2]);
             }
@@ -324,7 +324,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         // ajax-запросы нас не интересуют ?
         if (!$this->sResponseAjax) {
             if ($sTemplate) {
-                $sTemplate = admFilePath($this->Plugin_GetDelegate('template', $sTemplate), '/');
+                $sTemplate = ACE::FilePath($this->Plugin_GetDelegate('template', $sTemplate), '/');
                 if (!$this->TemplateExists($sTemplate)) {
                     if (dirname($sTemplate) == '.') {
                         if (strpos($sClass = Router::GetActionClass(), 'Plugin') === 0) {
@@ -333,7 +333,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
                     }
                     $sTemplate = $this->_getRealTeplate($sTemplate);
                 }
-                $sPathRoot = admFilePath(Config::Get('path.root.server'), '/');
+                $sPathRoot = ACE::FilePath(Config::Get('path.root.server'), '/');
                 if ($this->bAddPluginDirs AND (strpos($sTemplate, $sPathRoot) === 0) AND is_file($sTemplate)) {
                     // добавляем пути к шаблонам
                     $sPath = dirname($sTemplate);

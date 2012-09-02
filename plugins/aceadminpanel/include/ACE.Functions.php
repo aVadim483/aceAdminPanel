@@ -80,7 +80,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     }
 
     /**
-     * Преобразование пути на сервере в урл
+     * Преобразование пути на сервере в URL
      *
      * @param  string $sPath
      *
@@ -96,7 +96,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     }
 
     /**
-     * Преобразование урл в путь на сервере
+     * Преобразование URL в путь на сервере
      *
      * @param   string          $sUrl
      * @param   string|null     $sSeparator
@@ -173,7 +173,18 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return $result;
     }
 
-    static function MakeDir($sNewDir, $nMode=0755)
+    /**
+     * Рекурсивное создание папки (если ее нет)
+     *
+     * @static
+     *
+     * @param $sNewDir
+     * @param int $nMode
+     * @param bool $bQuiet
+     *
+     * @return bool|string
+     */
+    static function MakeDir($sNewDir, $nMode = 0755, $bQuiet = false)
     {
         $sBasePath = ACE::FilePath(Config::Get('path.root.server'));
         if (substr($sNewDir, 0, 2) == '//') {
@@ -185,21 +196,34 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         $aNewDir = explode('/', $sNewDir);
         foreach ($aNewDir as $sDir) {
             if ($sDir != '.' AND $sDir != '') {
-                if (!is_dir($sTempPath . $sDir . '/')) {
-                    if (@mkdir($sTempPath . $sDir . '/', $nMode, true)) {
+                $sCheckPath = $sTempPath . $sDir . '/';
+                if (!is_dir($sCheckPath)) {
+                    if ($bQuiet) {
+                        $bResult = @mkdir($sCheckPath, $nMode, true);
+                    } else {
+                        $bResult = mkdir($sCheckPath, $nMode, true);
+                    }
+                    if ($bResult) {
                         //;
                     } else {
-                        //die('Cannot make dir "'.$sTempPath.$sDir.'/'.'"');
+                        //die('Cannot make dir "' . $sCheckPath . '"');
                         return false;
                     }
-                    @chmod($sTempPath . $sDir . '/', $nMode);
+                    @chmod($sCheckPath, $nMode);
                 }
-                $sTempPath = $sTempPath . $sDir . '/';
+                $sTempPath = $sCheckPath;
             }
         }
         return $sTempPath;
     }
 
+    /**
+     * Рекурсивное удаление папки
+     *
+     * @static
+     * @param $sDir
+     * @return bool
+     */
     static function RemoveDir($sDir)
     {
         if (!is_dir($sDir)) return true;
@@ -299,7 +323,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
                         $sVisitorId = '';
                     } else {
                         $sUserAgent = @$_SERVER['HTTP_USER_AGENT'];
-                        $sVisitorId = md5($sUserAgent . '::' . serialize(admGetAllUserIp()));
+                        $sVisitorId = md5($sUserAgent . '::' . serialize(ACE::GetAllUserIp()));
                     }
                 } else {
                     $sVisitorId = md5(uniqid(time()));
@@ -315,7 +339,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return ADM_VISITOR_ID;
     }
 
-    static function Size($n)
+    static function MemSizeFormat($n)
     {
         $unim = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
         $c = 0;

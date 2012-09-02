@@ -126,7 +126,7 @@ abstract class AceAdminPlugin extends ActionPlugin
         if (!$this->sPluginAddon) $this->sPluginAddon = HelperPlugin::GetPluginName($this, true);
         if (!$sPlugin) $sPlugin = $this->sPluginAddon;
 
-        $sFile = admFilePath(Config::Get('sys.cache.dir') . 'adm.' . $sPlugin . '.cfg');
+        $sFile = ACE::FilePath(Config::Get('sys.cache.dir') . 'adm.' . $sPlugin . '.cfg');
         if (@file_put_contents($sFile, serialize(Config::Get('plugin.' . $sPlugin)))) {
             $this->Message('notice', $this->Lang_Get('adm_saved_ok'));
         } else {

@@ -588,6 +588,14 @@ class PluginAceadminpanel_ModuleAdmin extends Module
             return false;
         }
     }
+
+    /**
+     * Возвращает полное имя скина админпанели
+     */
+    public function GetAdminSkin()
+    {
+        return 'admin_' . Config::Get('plugin.aceadminpanel.skin');
+    }
 }
 
 // EOF

@@ -137,7 +137,7 @@ class PluginAceadminpanel extends Plugin
     {
         $aPlugins = $this->Plugin_GetActivePlugins();
         foreach ($aPlugins as $sPlugin) {
-            $sFile = admFilePath(Config::Get('sys.cache.dir') . 'adm.' . $sPlugin . '.cfg');
+            $sFile = ACE::FilePath(Config::Get('sys.cache.dir') . 'adm.' . $sPlugin . '.cfg');
             if (is_file($sFile)) {
                 $sData = file_get_contents($sFile);
                 if ($sData) {
@@ -162,7 +162,7 @@ class PluginAceadminpanel extends Plugin
                     . '</b>. It is recommended to do it manually',
                 $this->Lang_Get('attention'), true);
         }
-        $result = admClearAllCache();
+        $result = ACE::ClearAllCache();
         return $result;
     }
 

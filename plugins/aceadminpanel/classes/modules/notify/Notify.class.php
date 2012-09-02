@@ -22,7 +22,7 @@ class PluginAceadminpanel_ModuleNotify extends PluginAceadminpanel_Inherit_Modul
         if (!$sPluginName) {
             $sLangDir = 'notify/' . $this->Lang_GetLang();
             if (Config::Get($this->sPlugin . '.saved.path.static.skin')) {
-                $sDir = admUrl2Path(rtrim(Config::Get($this->sPlugin . '.saved.path.static.skin'), '/') . '/' . $sLangDir);
+                $sDir = ACE::Url2Path(rtrim(Config::Get($this->sPlugin . '.saved.path.static.skin'), '/') . '/' . $sLangDir);
                 if (is_dir($sDir)) {
                     return $sDir . '/' . $sName;
                 }

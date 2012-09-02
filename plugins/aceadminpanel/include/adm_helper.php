@@ -136,6 +136,7 @@ class HelperPlugin extends LsObject
      *
      * @param   array   $aClassElements
      * @param   string  $sClassType
+     *
      * @return  string
      */
     static public function ClassNameImplode($aClassElements, $sClassType)
@@ -153,6 +154,7 @@ class HelperPlugin extends LsObject
      * Получить имя плагина по классу плагина
      *
      * @param   string  $sClassName
+     *
      * @return  string
      */
     static public function ExtractPluginName($sClassName)
@@ -171,12 +173,13 @@ class HelperPlugin extends LsObject
      *
      * @param   mixed   $sClassName
      * @param   bool    $bLowCase
+     *
      * @return  string
      */
     static public function GetPluginName($sClassName = null, $bLowCase = false)
     {
         if (!$sClassName) {
-            $sClassName = admBacktrace(-1, 'class', 'Plugin');
+            $sClassName = ACE::Backtrace(-1, 'class', 'Plugin');
         } elseif (is_object($sClassName)) {
             $sClassName = get_class($sClassName);
         }
@@ -189,12 +192,13 @@ class HelperPlugin extends LsObject
      * Получить имя плагина (lower case) либо по классу плагина, либо из стека вызовов
      *
      * @param   mixed   $sClassName
+     *
      * @return  string
      */
     static public function GetPluginStr($sClassName = null)
     {
         if (!$sClassName) {
-            $sClassName = admBacktrace(-1, 'class', 'Plugin');
+            $sClassName = ACE::Backtrace(-1, 'class', 'Plugin');
         } elseif (is_object($sClassName)) {
             $sClassName = get_class($sClassName);
         }
@@ -202,33 +206,10 @@ class HelperPlugin extends LsObject
     }
 
     /**
-     * Получить маппер (объект), если имя маппера не задано, то определяется автоматически
-     *
-     * @param   string  $sMapperName
-     * @return  object  sFullClassName
-     */
-    /*
-    static public function GetMapper($sMapperName = null)
-    {
-        $sCallerClass = admBacktrace(1, 'class');
-        if ($sCallerClass) {
-            if (!$sMapperName) {
-                $n = strrpos($sCallerClass, '_');
-                if ($n) $sMapperName = substr($sCallerClass, $n + 1);
-                if (strpos($sMapperName, 'Module') === 0) $sMapperName = substr($sMapperName, 6);
-            }
-            $aClassElements = HelperPlugin::ClassNameExplode($sCallerClass, array('Mapper' => $sMapperName));
-            $sFullClassName = HelperPlugin::ClassNameImplode($aClassElements, 'Mapper');
-            return new $sFullClassName(Engine::getInstance()->Database_GetConnect());
-        }
-        return null;
-    }
-    */
-
-    /**
      * Возвращает конфигурацию плагина
      *
      * @param   string  $key
+     *
      * @return  mixed
      */
     static public function GetConfig($key = '')
@@ -242,6 +223,7 @@ class HelperPlugin extends LsObject
      * Возвращает полный путь к папке плагина
      *
      * @param   string  $sPluginName
+     *
      * @return  string
      */
     static public function GetPluginPath($sPluginName = null)
@@ -254,6 +236,7 @@ class HelperPlugin extends LsObject
      * Возвращает URL к папке плагина
      *
      * @param   string  $sPluginName
+     *
      * @return  string
      */
     static public function GetPluginUrl($sPluginName = null)
@@ -266,6 +249,7 @@ class HelperPlugin extends LsObject
      * Возвращает пути к папкам конфигурации плагина
      *
      * @param   string  $sPluginName
+     *
      * @return  string
      */
     static public function GetPluginConfigPaths($sPluginName = null)
@@ -288,6 +272,7 @@ class HelperPlugin extends LsObject
      *
      * @static
      * @param null $sPluginName
+     *
      * @return string
      */
     static public function GetPluginSkin($sPluginName = null)
@@ -330,13 +315,14 @@ class HelperPlugin extends LsObject
      * Возвращает путь к скину плагина
      *
      * @param   string  $sPluginName
+     *
      * @return  string
      */
     static public function GetPluginSkinPath($sPluginName = null)
     {
         $sPluginName = self::GetPluginStr($sPluginName);
         if (!isset(self::$_aPluginSkin[$sPluginName]['path'])) {
-            self::$_aPluginSkin[$sPluginName]['path'] = admUrl2Path(self::GetPluginSkinUrl($sPluginName), '/');
+            self::$_aPluginSkin[$sPluginName]['path'] = ACE::Url2Path(self::GetPluginSkinUrl($sPluginName), '/');
         }
         return self::$_aPluginSkin[$sPluginName]['path'];
     }
@@ -345,6 +331,7 @@ class HelperPlugin extends LsObject
      * Возвращает URL к скину плагина
      *
      * @param   string  $sPluginName
+     *
      * @return  string
      */
     static public function GetPluginSkinUrl($sPluginName = null)
@@ -381,6 +368,8 @@ class HelperPlugin extends LsObject
      * Возвращает путь к шаблону экшена скина плагина
      *
      * @param   string  $sFile
+     * @param   string  $sPlugin
+     *
      * @return  string
      */
     static public function GetTemplateActionPath($sFile = '', $sPlugin = '')

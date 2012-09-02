@@ -114,7 +114,7 @@ function admGetVisitorId()
 
 function admSize($n)
 {
-    return ACE::Size($n);
+    return ACE::MemSizeFormat($n);
 }
 
 function admArrayAssoc($aArray)

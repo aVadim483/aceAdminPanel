@@ -404,7 +404,7 @@ class PluginAceadminpanel_ActionAdmin extends PluginAceadminpanel_Inherit_Action
     public function _cssUrls()
     {
         $sContent = '';
-        $sWebPluginSkin = admPath2Url(Plugin::GetTemplatePath($this->sPlugin));
+        $sWebPluginSkin = ACE::Path2Url(Plugin::GetTemplatePath($this->sPlugin));
         $sFile = Plugin::GetTemplatePath($this->sPlugin) . 'css/admin-url.css';
         if (file_exists($sFile)) {
             $sContent = file_get_contents($sFile);
