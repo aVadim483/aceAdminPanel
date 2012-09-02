@@ -47,14 +47,18 @@ class PluginAceadminpanel_ActionLess extends ActionPlugin
         $sSourceFile = str_replace('[admin_skin]', HelperPlugin::GetPluginPath('aceadminpanel') . '/templates/skin/' . $this->Admin_GetAdminSkin(), $sSourceFile);
         if (isset($_SERVER['QUERY_STRING']) AND $_SERVER['QUERY_STRING']) $sSourceFile .= '?' . $_SERVER['QUERY_STRING'];
         $sCachePath = Config::Get('path.smarty.cache') . '/' . $this->Admin_GetAdminSkin();
-        $aFileParts = pathinfo($sSourceFile);
-        if (strtolower($aFileParts['extension']) !== 'less') {
-            $sCachePath .= '/' . basename($aFileParts['dirname']) . '/';
-            if (!is_dir($sCachePath)) ACE::MakeDir($sCachePath);
-            $sFile = $sCachePath . $aFileParts['basename'];
-            copy($sSourceFile, $sFile);
-            $sContentType = 'image/' . strtolower($aFileParts['extension']);
+
+        $aFileParts = ACE::PathInfo($sSourceFile);
+
+        if (strtolower($aFileParts['extension']) == 'css' AND getRequest('from', '', 'get') == 'less') {
+            $sSourceFile = $aFileParts['dirname'] . '/' . $aFileParts['filename'] . '.less';
+            $sFileType = 'less';
+        } elseif (strtolower($aFileParts['extension']) == 'less') {
+            $sFileType = 'less';
         } else {
+            $sFileType = 'other';
+        }
+        if ($sFileType == 'less') {
             $sCachePath .= '/css/';
             if (!is_dir($sCachePath)) ACE::MakeDir($sCachePath);
             $aLessParams = array(
@@ -70,9 +74,10 @@ class PluginAceadminpanel_ActionLess extends ActionPlugin
                     'baseLineHeight' => '18px',
                 ),
             );
-
+            // определяем целевой CSS-файл
             $sFile = ACE::FilePath($sCachePath . '/' . md5(serialize($aLessParams)) . '.css');
-            /* */
+
+            // если целевого файла нет - компилируем его из исходного LESS-файла
             if (!is_file($sFile)) {
                 $oLess = $this->PluginAceadminpanel_Aceless_GetLessCompiler();
                 $oLess->setVariables($aLessParams['variables'], true);
@@ -84,14 +89,20 @@ class PluginAceadminpanel_ActionLess extends ActionPlugin
                 );
             }
             $sContentType = 'text/css';
+        } else {
+            $sCachePath .= '/' . basename($aFileParts['dirname']) . '/';
+            if (!is_dir($sCachePath)) ACE::MakeDir($sCachePath);
+            $sFile = $sCachePath . $aFileParts['basename'];
+            copy($sSourceFile, $sFile);
+            $sContentType = 'image/' . strtolower($aFileParts['extension']);
         }
+
         if ($sFile AND is_file($sFile)) {
             $sCssContent = file_get_contents($sFile);
             header('Content-type: ' . $sContentType);
             echo $sCssContent;
         }
         /* */
-        //var_dump($sSourceFile, $sCssFile);
         exit;
     }
 

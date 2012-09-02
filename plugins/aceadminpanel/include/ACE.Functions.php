@@ -158,6 +158,28 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return ACE::LocalPath($sPath, Config::Get('path.root.web'));
     }
 
+    static function PathInfo($sPath)
+    {
+        $aResult = array_merge(
+            array(
+                'dirname' => '',
+                'basename' => '',
+                'extension' => '',
+                'filename' => '',
+                'params' => '',
+            ),
+            pathinfo($sPath)
+        );
+        $n = strpos($aResult['extension'], '?');
+        if ($n !== false) {
+            $aResult['params'] = substr($aResult['extension'], $n+1);
+            $aResult['extension'] = substr($aResult['extension'], 0, $n);
+            $n = strpos($aResult['basename'], '?');
+            $aResult['basename'] = substr($aResult['basename'], 0, $n);
+        }
+        return $aResult;
+    }
+
     /**
      * Преобразует строку в массив
      *
