@@ -279,7 +279,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
 
         $this->Viewer_Assign('aModConfig', $this->aConfig);
         $this->Viewer_Assign('DIR_PLUGIN_SKIN', Plugin::GetTemplatePath($this->sPlugin));
-        //$sWebPluginSkin=admPath2Url(Plugin::GetTemplatePath($this->sPlugin));
+        //$sWebPluginSkin=ACE::Path2Url(Plugin::GetTemplatePath($this->sPlugin));
         $sWebPluginSkin = Config::Get('path.admin.skin') . '/';
         $this->Viewer_Assign('sWebPluginPath', Config::Get('path.root.web') . '/plugins/' . $this->sPlugin);
         $this->Viewer_Assign('sWebPluginSkin', $sWebPluginSkin);

@@ -545,7 +545,7 @@ class PluginAceadminpanel_ModuleAdmin extends Module
 
     public function GetCustomConfigFile()
     {
-        return admFilePath(Config::Get('sys.cache.dir') . CUSTOM_CFG);
+        return ACE::FilePath(Config::Get('sys.cache.dir') . CUSTOM_CFG);
     }
 
     public function isTableExists($sTableName)

@@ -70,11 +70,6 @@
         ls.registry.set('comment_max_tree', '{cfg name="module.comment.max_tree"}');
     </script>
 
-    <style type="text/css">
-        .adm-icons {
-            background-image: url({$sWebPluginSkin}/assets/img/adm_icons.png)
-        }
-    </style>
 {hook run='html_head_end'}
 </head>
 
@@ -93,7 +88,7 @@
 <header id="header">
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
-            <div class="container-fluid">
+            <div class="container">
                 <div class="nav-collapse nav logo">
                     <a href="{router page=admin}">
                         <img src="{$sWebPluginSkin}images/logo32x32.png" alt="{$sAdminTitle}"/>
@@ -126,11 +121,11 @@
     </nav>
 </header>
 
-<div id="container" class="container-fluid {hook run='container_class'}">
+<div id="container" class="container {hook run='container_class'}">
 
     <div id="wrapper" class="row">
-        <div class="span2 well v-menu">
-            <ul class="nav nav-list">
+        <div class="span2">
+            <ul class="nav nav-list well well-small">
                 <li class="nav-header">{$oLang->_adm_menu_panel}</li>
                 <li {if $sEvent=='' OR $sEvent=='info'}class="active"{/if}>
                     <a href="{router page='admin'}info/">{$oLang->_adm_menu_info}</a>
@@ -167,7 +162,7 @@
             </ul>
         </div>
 
-        <div id="content" role="main" class="span9 offset">
+        <div id="content" role="main" class="span11">
         {include file='system_message.tpl'}
         {hook run='content_begin'}
         {block name="content"}

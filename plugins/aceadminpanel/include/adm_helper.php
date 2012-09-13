@@ -257,7 +257,7 @@ class HelperPlugin extends LsObject
         if (!$sPluginName) $sPluginName = self::GetPluginStr();
         $sPluginName = strtolower($sPluginName);
         $aResult = array(
-            admFilePath(self::GetPluginPath($sPluginName) . '/config/')
+            ACE::FilePath(self::GetPluginPath($sPluginName) . '/config/')
         );
         if (Config::Get('plugin.aceadminpanel.custom_config.enable')) {
             if (is_dir($sPath = Config::Get('plugin.aceadminpanel.custom_config.path') . '/' . $sPluginName)) {
@@ -361,7 +361,7 @@ class HelperPlugin extends LsObject
                 $sPath .= '/';
             }
         }
-        return admFilePath($sPath, '/');
+        return ACE::FilePath($sPath, '/');
     }
 
     /**

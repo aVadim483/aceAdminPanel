@@ -67,9 +67,9 @@ class PluginAceadminpanel_ActionLess extends ActionPlugin
                     'formatter' => 'compressed',
                 ),
                 'variables' => array(
-                    'gridColumns' => 14,
-                    'gridColumnWidth' => '75px',
-                    'gridGutterWidth' => '15px',
+                    'gridColumns' => 16,
+                    'gridColumnWidth' => '65px',
+                    'gridGutterWidth' => '12px',
                     'baseFontSize' => '12px',
                     'baseLineHeight' => '18px',
                 ),

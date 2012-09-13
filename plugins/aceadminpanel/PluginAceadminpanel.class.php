@@ -152,13 +152,13 @@ class PluginAceadminpanel extends Plugin
     {
         if (!ACE::ClearDir(Config::Get('path.smarty.compiled'))) {
             $this->Message_AddErrorSingle(
-                'Unable to remove content of dir <b>' . admFilePath(Config::Get('path.smarty.compiled'))
+                'Unable to remove content of dir <b>' . ACE::FilePath(Config::Get('path.smarty.compiled'))
                     . '</b>. It is recommended to do it manually',
                 $this->Lang_Get('attention'), true);
         }
         if (!ACE::ClearDir(Config::Get('path.smarty.cache'))) {
             $this->Message_AddErrorSingle(
-                'Unable to remove content of dir <b>' . admFilePath(Config::Get('path.smarty.cache'))
+                'Unable to remove content of dir <b>' . ACE::FilePath(Config::Get('path.smarty.cache'))
                     . '</b>. It is recommended to do it manually',
                 $this->Lang_Get('attention'), true);
         }

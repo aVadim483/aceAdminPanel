@@ -226,8 +226,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
         $oLang = $this->Lang_Dictionary();
 
         $this->Viewer_Assign('oLang', $oLang);
-        $this->Viewer_Assign('MSIE6', admMSIE6());
-        $this->Viewer_Assign('WEB_ADMIN_SKIN', admMSIE6());
+        $this->Viewer_Assign('MSIE6', ACE::MSIE6());
+        $this->Viewer_Assign('WEB_ADMIN_SKIN', ACE::MSIE6());
 
         $oUser = $this->_getUser();
         $this->_checkPluginAction();

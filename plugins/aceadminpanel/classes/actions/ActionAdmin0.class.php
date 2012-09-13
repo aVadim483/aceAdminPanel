@@ -191,9 +191,9 @@ class PluginAceadminpanel_ActionAdmin extends PluginAceadminpanel_Inherit_Action
     protected function GoToBackPage()
     {
         if ($this->sPageRef)
-            admHeaderLocation($this->sPageRef);
+            ACE::HeaderLocation($this->sPageRef);
         else
-            admHeaderLocation(Router::GetPath('admin'));
+            ACE::HeaderLocation(Router::GetPath('admin'));
     }
 
     /* ==================================================================================== *
@@ -465,7 +465,7 @@ class PluginAceadminpanel_ActionAdmin extends PluginAceadminpanel_Inherit_Action
         if ($this->bAddonsAutoCheck) {
             $sFile = HelperPlugin::GetPluginPath() . '/classes/actions/ActionAdmin' . $sAddon . '.class.php';
             if (file_exists($sFile)) {
-                $sTemplate = HelperPlugin::GetTemplatePath('admin_' . admStrUnderScore($sAddon) . '.tpl');
+                $sTemplate = HelperPlugin::GetTemplatePath('admin_' . ACE::StrUnderScore($sAddon) . '.tpl');
                 $this->aAddons[$sAddonId] = array(
                     'file' => $sFile,
                     'class' => 'PluginAceadminpanel_Admin' . $sAddon,

@@ -19,7 +19,7 @@ class PluginAceadminpanel_ActionError extends PluginAceadminpanel_Inherit_Action
     protected function EventError() {
         if (Router::GetAction() == 'admin') {
             //func_header_location(Config::Get('path.root.web') . '/admin/');
-            admHeaderLocation(Config::Get('path.root.web') . '/admin/');
+            ACE::HeaderLocation(Config::Get('path.root.web') . '/admin/');
             exit;
         } else {
             return parent::EventError();

@@ -108,6 +108,15 @@ function AdminSelectAll(checked) {
             <a href="#" onclick="AdminSortToggle('reg_ip'); return false;"> {$oLang->adm_users_ip_reg} </a>
             {/if}
         </th>
+        <th>
+            {if $sUserListSort=='email'}
+                <a href="#" onclick="AdminSortToggle('email', '{$sUserListOrder}'); return false;"><b> E-mail </b></a>
+                {if $sUserListOrder==1}<div class="adm_sort_asc"></div>{else}<div class="adm_sort_desc"></div>{/if}
+                {else}
+                <div class="adm_sort_none"></div>
+                <a href="#" onclick="AdminSortToggle('email'); return false;"> E-mail </a>
+            {/if}
+        </th>
 	{if $oConfig->GetValue('general.reg.activation')}
         <th>
             {if $sUserListSort=='activated'}
@@ -171,6 +180,7 @@ function AdminSelectAll(checked) {
             <a href="{router page='admin'}users/profile/{$oUser->getLogin()}/" class="link">{$oUser->getLogin()}</a> </td>
         <td class="center">{$oUser->getDateRegister()}</td>
         <td class="center">{$oUser->getIpRegister()}</td>
+        <td>{$oUser->getUserMail()}</td>
 	{if $oConfig->GetValue('general.reg.activation')}
         <td>&nbsp;
             {if $oUser->getDateActivate()}{$oUser->getDateActivate()}
@@ -179,7 +189,7 @@ function AdminSelectAll(checked) {
         {/if}
         <td class="center">
             {assign var="oSession" value=$oUser->getSession()}
-            {if $oSession}{date_format date=$oSession->getDateLast()}{/if}
+            {if $oSession}{$oSession->getDateLast()}{/if}
         </td>
         <td class="center">
             {if $oSession}{$oSession->getIpLast()}{/if}

@@ -5,7 +5,7 @@
 <form action="" method="post" target="_blank" class="adm-report">
     <div class="row-fluid">
         {foreach $aCommonInfo as $sSectionKey=>$aSection}
-            <div class="span7 well" {if $aSection@iteration is odd}style="margin-left:0;clear:left;"{/if}>
+            <div class="span8 well" {if $aSection@iteration is odd}style="margin-left:0;clear:left;"{/if}>
                 <h3>{$aSection.label}</h3>
                 {foreach $aSection.data as $sKey=>$aItem}
                     <p>

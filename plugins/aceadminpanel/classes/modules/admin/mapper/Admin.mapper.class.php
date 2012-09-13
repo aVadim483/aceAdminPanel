@@ -162,7 +162,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $aReturn = array();
 
         $sFieldList =
-            "u.user_id, user_login, user_date_register, user_skill,
+            "u.user_id, user_login, user_date_register, user_skill, user_mail,
             user_rating, user_activate, user_date_activate, user_date_comment_last,
             user_ip_register, user_profile_avatar, 
             IF(ua.user_id IS NULL,0,1) as user_is_administrator,
