@@ -58,6 +58,7 @@ class PluginAceadminpanel extends Plugin
             //'ModuleNotify' => '_ModuleNotify',
         ),
         'mapper' => array(
+            'ModuleUser_MapperUser' => '_ModuleUser_MapperUser',
             'ModuleTopic_MapperTopic' => '_ModuleTopic_MapperTopic',
         ),
     );
@@ -191,29 +192,15 @@ class PluginAceadminpanel extends Plugin
 
     protected function _ActionAdminInerits()
     {
-        //var_dump($this->Plugin_GetDelegationChain('action','ActionAdmin'));
-
         $sFrom = 'ActionAdmin';
-        //$sTo = 'PluginAceadminpanel_ActionAdmin';
-        //Engine::getInstance()->Plugin_Inherit($sFrom, $sTo, get_class($this));
-
-        //$sTo = 'PluginAceadminpanel_ActionAdmin_Root';
-        //Engine::getInstance()->Plugin_Inherit($sFrom, $sTo, get_class($this));
-
-        //$sMask = Plugin::GetPath($this->sPlugin) . '/classes/actions/ActionAdmin_Events/*.class.php';
         $sMask = Plugin::GetPath($this->sPlugin) . '/classes/actions/ActionAdmin_Event*.class.php';
         $aFiles = glob($sMask);
+        asort($aFiles);
         foreach ($aFiles as $sFile) {
-            //include_once($sFile);
             $sTo = 'PluginAceadminpanel_' . basename($sFile, '.class.php');
             Engine::getInstance()->Plugin_Inherit($sFrom, $sTo, get_class($this));
             include_once($sFile);
-            //var_dump($sTo,$this->Plugin_GetDelegationChain('action',$sFrom),HelperPlugin::GetAllParents($sTo));
-            //echo '-------------------------------';
         }
-        //include_once($sFile);
-        //var_dump($sTo,$this->Plugin_GetDelegationChain('action',$sFrom),HelperPlugin::GetAllParents($sTo));
-        //exit;
     }
 }
 
