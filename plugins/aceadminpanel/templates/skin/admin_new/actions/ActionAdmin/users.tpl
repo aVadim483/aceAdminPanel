@@ -36,140 +36,319 @@
     }
 
 
+    aceAdmin.userDeleteConfirm = function (confirm) {
+        if (!$('form .users_list').val()) {
+            ls.msg.error('Error', '{$oLang->_adm_users_not_selected}');
+        } else {
+            $('#adm_users_del_confirm').modal();
+        }
+        return false;
+    }
+
+    aceAdmin.userDelete = function (confirm) {
+        $('#adm_users_del_confirm').modal('hide');
+        if (confirm === true) {
+            var form = $('#admin_user_del form');
+            form.find('input[name=adm_del_login]').val($('form .users_list').val());
+            form.submit();
+        }
+        return false;
+    }
+
+    aceAdmin.selectUsers = function (list) {
+        console.log(list);
+        if (aceAdmin.isEmpty(list)) list = [];
+        else if (typeof list == 'string') list = [list];
+
+        $('tr.selectable td.checkbox input[type=checkbox]:checked').each(function () {
+            var id = $(this).prop('id');
+            if (id.indexOf('login_') === 0) {
+                list.push(id.substr(6, 255));
+            }
+        });
+
+        var view = '';
+        $.each(list, function (index, item) {
+            if (view) view += ', ';
+            view += '<span class="popup-user">' + item + '</span>';
+        });
+        $('form .users_list').val(list.join(', '));
+        $('form .users_list_view').html(view);
+    }
+
 </script>
 
-<div class="row users-form" id="admin_form_seek">
-    <button class="btn-block btn left users-form" onclick="aceAdmin.formToggle('admin_form_seek', true);return false;">
-        {if $aFilter}<i class="icon-filter icon-green pull-right"></i>{/if}
-        <i class="icon-search"></i>
-        {$oLang->adm_seek_users}
+<div class="switch-form-group">
+    {if $oUserProfile}
+        {if $oUserProfile->IsBannedByLogin()}
+        <div class="row switch-form" id="admin_user_unban">
+            <button class="btn-block btn left switch-form-button">
+                <i class="icon-thumbs-up"></i>
+                {$oLang->_adm_users_unban}
+            </button>
+
+            <form method="post" action="{$sPageRef}" class="well well-small switch-form-content">
+                <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
+
+                {if $oUserProfile->getBanLine()}
+                    {$oLang->adm_ban_upto} {$oUserProfile->getBanLine()} <br/>
+                    {else}
+                    {$oLang->adm_ban_unlim} <br/>
+                {/if}
+                {$oLang->_adm_ban_comment}: {$oUserProfile->getBanComment()}<br/>
+                <br/>
+                <input type="hidden" name="ban_login" value="{$oUserProfile->getLogin()}"/>
+                <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
+                <input type="hidden" name="adm_user_action" value="adm_unban_user"/>
+
+                <div class="form-actions">
+                    <button type="submit" name="adm_action_submit" class="btn btn-primary">
+                        {$oLang->adm_users_unban}
+                    </button>
+                </div>
+            </form>
+        </div>
+            {else}
+        <div class="row switch-form" id="admin_user_ban">
+            <button class="btn-block btn left switch-form-button">
+                <i class="icon-ban-circle"></i>
+                {$oLang->_adm_users_ban}
+            </button>
+
+            <form method="post" action="{$sPageRef}" class="well well-small switch-form-content">
+                <br/>
+                <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
+
+                <input type="hidden" name="ban_login" value="{$oUserProfile->getLogin()}"/>
+
+                <label class="radio">
+                    <input type="radio" name="ban_period" value="days" checked/>
+                    {$oLang->adm_ban_for}
+                    <input type="text" name="ban_days" id="ban_days" class="num1"/> {$oLang->adm_ban_days}
+                </label>
+
+                <label class="radio">
+                    <input type="radio" name="ban_period" value="unlim"/>
+                    {$oLang->adm_ban_unlim}
+                </label>
+
+                <label for="ban_comment">{$oLang->adm_ban_comment}</label>
+                <input type="text" name="ban_comment" id="ban_comment" maxlength="255"/>
+
+
+                <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
+                <input type="hidden" name="adm_user_action" value="adm_ban_user"/>
+                <button type="submit" name="adm_action_submit" class="btn btn-primary">{$oLang->_adm_users_ban}</button>
+            </form>
+        </div>
+        {/if}
+    {/if}
+
+    {if !$oUserProfile}
+    <div class="row switch-form switch-form-save" id="admin_form_seek">
+        <button class="btn-block btn left switch-form-button">
+            {if $aFilter}<i class="icon-filter icon-green pull-right"></i>{/if}
+            <i class="icon-search"></i>
+            {$oLang->adm_seek_users}
+        </button>
+
+        <form method="post" action="{router page='admin'}users/" class="well well-small switch-form-content">
+            <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
+
+            <div class="row control-group {if $sUserFilterLogin}success{/if}">
+                <label for="user_filter_login">{$oLang->_adm_user_login}</label>
+
+                <div class="input-prepend">
+                    <span class="add-on"><i class="icon-user"></i></span><input type="text" name="user_filter_login"
+                                                                                id="user_filter_login"
+                                                                                value="{$sUserFilterLogin}"
+                                                                                class="wide"/>
+                </div>
+            </div>
+
+            <div class="row control-group {if $aFilter.email}success{/if}">
+                <label for="user_filter_email">{$oLang->_adm_user_email}</label>
+
+                <div class="input-prepend">
+                    <span class="add-on">@</span><input type="text" name="user_filter_email" id="user_filter_email"
+                                                        value="{$aFilter.email}" maxlength="10"
+                                                        class="wide"/>
+                </div>
+                <span class="help-block">{$oLang->_adm_user_filter_email_notice}</span>
+            </div>
+
+            <div class="row control-group {if $aFilter.regdate}success{/if}">
+                <label for="user_filter_regdate">{$oLang->_adm_users_date_reg}</label>
+
+                <div class="input-prepend">
+                    <span class="add-on"><i class="icon-calendar"></i></span><input type="text"
+                                                                                    name="user_filter_regdate"
+                                                                                    id="user_filter_regdate"
+                                                                                    value="{$aFilter.regdate}"
+                                                                                    class="wide"/>
+                </div>
+                <span class="help-block">{$oLang->_adm_user_filter_regdate_notice}</span>
+            </div>
+
+            <div class="row control-group {if $sUserFilterIp}success{/if}">
+                <label for="user_filter_ip1">{$oLang->_adm_user_ip}</label>
+                <input type="text" name="user_filter_ip1" id="user_filter_ip1" value="{$aUserFilterIp.0}" maxlength="3"
+                       class="ip-part" placeholder="*"/> .
+                <input type="text" name="user_filter_ip2" id="user_filter_ip2" value="{$aUserFilterIp.1}" maxlength="3"
+                       class="ip-part" placeholder="*"/> .
+                <input type="text" name="user_filter_ip3" id="user_filter_ip3" value="{$aUserFilterIp.2}" maxlength="3"
+                       class="ip-part" placeholder="*"/> .
+                <input type="text" name="user_filter_ip4" id="user_filter_ip4" value="{$aUserFilterIp.3}" maxlength="3"
+                       class="ip-part" placeholder="*"/>
+                <span class="help-block">{$oLang->_adm_user_filter_ip_notice}</span>
+            </div>
+
+            <input type="hidden" name="user_list_sort" id="user_list_sort" value="{$sUserListSort}"/>
+            <input type="hidden" name="user_list_order" id="user_list_order" value="{$sUserListOrder}"/>
+            <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
+            <input type="hidden" name="adm_user_action" value="adm_user_seek"/>
+            <button type="submit" name="adm_action_submit" class="btn btn-primary">{$oLang->_adm_seek}</button>
+            <button type="reset" name="adm_action_reset" class="btn"
+                    onclick="aceAdmin.filterReset(this);return false;">{$oLang->_adm_reset}</button>
+        </form>
+    </div>
+
+    <div class="row switch-form" id="admin_form_send">
+        <button class="btn-block btn left switch-form-button">
+            <i class="icon-envelope"></i>
+            {$oLang->user_write_prvmsg}
+        </button>
+
+        <form method="post" action="" class="well well-small switch-form-content">
+            <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
+
+            <div class="row">
+                <label for="users_list">{$oLang->talk_create_users}:</label>
+                <span class="users_list_view"></span>
+                <input type="hidden" name="users_list" id="users_list" class="users_list"/>
+            </div>
+
+            <div class="row">
+                <label>
+                    <input type="radio" name="send_common_message" id="send_common_message_yes" value="yes"
+                           onclick="AdminMessageSeparate(this.checked)"/>
+                    {$oLang->_adm_send_common_message}
+                </label>
+
+                <label>
+                    <input type="radio" name="send_common_message" id="send_common_message_no" value="no" checked
+                           onclick="AdminMessageSeparate(!this.checked)"/>
+                    {$oLang->_adm_send_separate_messages}
+                </label>
+            <span id="send_common_notice" class="help-block"
+                  style="display:none;">{$oLang->_adm_send_common_notice}</span>
+                <span id="send_separate_notice" class="help-block">{$oLang->_adm_send_separate_notice}</span>
+            </div>
+
+            <div class="row">
+                <label for="talk_inbox_list">{$oLang->talk_menu_inbox_list}</label>
+                <select name="talk_inbox_list" id="talk_inbox_list" onchange="AdminMessageSelect();">
+                    <option value="0">-- {$oLang->talk_menu_inbox_create} --</option>
+                    {if $aTalks}
+                        {foreach from=$aTalks item=oTalk}
+                            <option value="{$oTalk->getId()}">{$oTalk->getTitle()|escape:'html'}</option>
+                        {/foreach}
+                    {/if}
+                </select>
+            </div>
+
+            <div class="row">
+                <label for="talk_title">{$oLang->talk_create_title}:</label>
+                <input type="text" name="talk_title" id="talk_title" maxlength="30" class="wide"/>
+            </div>
+
+            <div class="row">
+                <label for="talk_text">{$oLang->talk_create_text}:</label>
+                <textarea name="talk_text" id="talk_text" cols="80" rows="12" class="wide"></textarea>
+            </div>
+
+
+            <div class="row">
+                <label for="send_copy_self" class="checkbox">
+                    <input type="checkbox" name="send_copy_self" id="send_copy_self" checked/>
+                    {$oLang->_adm_send_copy_self}
+                </label>
+            </div>
+
+            <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
+            <input type="hidden" name="adm_user_action" value="adm_user_message"/>
+
+            <button type="submit" name="adm_action_submit" class="btn btn-primary"
+                    onclick="return aceAdmin.messageSubmit(['{$oLang->talk_create_users_error}', '{$oLang->talk_create_title_error}', '{$oLang->talk_create_text_error}'])">
+                {$oLang->_talk_create_submit}
+            </button>
+
+        </form>
+    </div>
+    {/if}
+
+<div class="row switch-form" id="adm_user_setadmin">
+    <button class="btn-block btn left switch-form-button">
+        <i class="icon-user"></i>
+        {$oLang->_adm_include_admin}
     </button>
 
-    <form method="post" action="{router page='admin'}users/" class="well" style="display:none;">
+    <form method="post" action="{router page='admin'}users/" class="switch-form-content">
+
         <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
 
-        <div class="row control-group {if $sUserFilterLogin}success{/if}">
-            <label for="user_filter_login">{$oLang->adm_user_login}</label>
+        <div class="well well-small">
+            <div class="row control-group">
+                <label for="user_login_admin">{$oLang->_adm_user_login}</label>
 
-            <div class="input-prepend">
-                <span class="add-on"><i class="icon-user"></i></span><input type="text" name="user_filter_login"
-                                                                            id="user_filter_login"
-                                                                            value="{$sUserFilterLogin}" class="wide"/>
+                <div class="input-prepend">
+                    <span class="add-on"><i class="icon-user"></i></span><input type="text" name="user_login_admin"
+                                                                                id="user_login_admin"
+                                                                                class="wide users_list autocomplete-users-sep"/>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
+                <input type="hidden" name="adm_user_action" value="adm_user_setadmin"/>
+                <button type="submit" name="adm_action_submit" class="btn btn-primary">
+                    {$oLang->_adm_include}
+                </button>
             </div>
         </div>
-
-        <div class="row control-group {if $sUserFilterIp}success{/if}">
-            <label for="user_filter_ip1">{$oLang->_adm_user_ip}</label>
-            <input type="text" name="user_filter_ip1" id="user_filter_ip1" value="{$aUserFilterIp.0}" maxlength="3"
-                   class="ip-part" placeholder="*"/> .
-            <input type="text" name="user_filter_ip2" id="user_filter_ip2" value="{$aUserFilterIp.1}" maxlength="3"
-                   class="ip-part" placeholder="*"/> .
-            <input type="text" name="user_filter_ip3" id="user_filter_ip3" value="{$aUserFilterIp.2}" maxlength="3"
-                   class="ip-part" placeholder="*"/> .
-            <input type="text" name="user_filter_ip4" id="user_filter_ip4" value="{$aUserFilterIp.3}" maxlength="3"
-                   class="ip-part" placeholder="*"/>
-            <span class="help-block">{$oLang->_adm_user_filter_ip_notice}</span>
-        </div>
-
-        <div class="row control-group {if $aFilter.regdate}success{/if}">
-            <label for="user_filter_regdate">{$oLang->_adm_users_date_reg}</label>
-
-            <div class="input-prepend">
-                <span class="add-on"><i class="icon-calendar"></i></span><input type="text" name="user_filter_regdate"
-                                                                                id="user_filter_regdate"
-                                                                                value="{$aFilter.regdate}"
-                                                                                class="wide"/>
-            </div>
-            <span class="help-block">{$oLang->_adm_user_filter_regdate_notice}</span>
-        </div>
-
-        <div class="row control-group {if $aFilter.email}success{/if}"">
-            <label for="user_filter_email">{$oLang->_adm_user_email}</label>
-
-            <div class="input-prepend">
-                <span class="add-on">@</span><input type="text" name="user_filter_email" id="user_filter_email"
-                                                    value="{$aFilter.email}" maxlength="10"
-                                                    class="wide"/>
-            </div>
-            <span class="help-block">{$oLang->_adm_user_filter_email_notice}</span>
-        </div>
-
-        <input type="hidden" name="user_list_sort" id="user_list_sort" value="{$sUserListSort}"/>
-        <input type="hidden" name="user_list_order" id="user_list_order" value="{$sUserListOrder}"/>
-        <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
-        <input type="hidden" name="adm_user_action" value="adm_user_seek"/>
-        <button type="submit" name="adm_action_submit" class="btn btn-primary">{$oLang->_adm_seek}</button>
-        <button type="reset" name="adm_action_reset" class="btn"
-                onclick="aceAdmin.filterReset(this);return false;">{$oLang->_adm_reset}</button>
     </form>
 </div>
 
-<div class="row users-form" id="admin_form_send">
-    <button class="btn-block btn left users-form" onclick="aceAdmin.formToggle('admin_form_send', true);return false;">
-        <i class="icon-envelope"></i>
-        {$oLang->user_write_prvmsg}
+<div class="row switch-form" id="admin_user_del">
+    <button class="btn-block btn left switch-form-button">
+        <i class="icon-remove"></i>
+        {$oLang->_adm_users_del}
     </button>
 
-    <form method="post" action="" class="well" style="display:none;">
+    <form method="post" action="{router page='admin'}users/" class="switch-form-content">
+
         <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
 
-        <div class="row">
-            <label for="users_list">{$oLang->talk_create_users}:</label>
-            <span id="users_list_view"></span>
-            <input type="hidden" name="users_list" id="users_list"/>
+        <div class="alert alert-block">
+            {$oLang->_adm_users_del_warning}
         </div>
 
-        <div class="row">
-            <label>
-                <input type="radio" name="send_common_message" id="send_common_message_yes" value="yes"
-                       onclick="AdminMessageSeparate(this.checked)"/>
-                {$oLang->_adm_send_common_message}
-            </label>
+        <div class="well well-small">
+            <input type="hidden" name="adm_del_login" value=""/>
+            {$oLang->_adm_users_del_confirm}
 
-            <label>
-                <input type="radio" name="send_common_message" id="send_common_message_no" value="no" checked
-                       onclick="AdminMessageSeparate(!this.checked)"/>
-                {$oLang->_adm_send_separate_messages}
-            </label>
-            <span id="send_common_notice" class="help-block"
-                  style="display:none;">{$oLang->_adm_send_common_notice}</span>
-            <span id="send_separate_notice" class="help-block">{$oLang->_adm_send_separate_notice}</span>
+            <div class="form-actions">
+                <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
+                <input type="hidden" name="adm_user_action" value="adm_del_user"/>
+                <input type="hidden" name="adm_user_del_confirm" value="1"/>
+                <button type="submit" name="adm_action_submit" class="btn btn-primary"
+                        onclick="return aceAdmin.userDeleteConfirm();">
+                    {$oLang->_adm_users_del}
+                </button>
+            </div>
         </div>
-
-        <div class="row">
-            <label for="talk_inbox_list">{$oLang->talk_menu_inbox_list}</label>
-            <select name="talk_inbox_list" id="talk_inbox_list" onchange="AdminMessageSelect();">
-                <option value="0">-- {$oLang->talk_menu_inbox_create} --</option>
-                {if $aTalks}
-                    {foreach from=$aTalks item=oTalk}
-                        <option value="{$oTalk->getId()}">{$oTalk->getTitle()|escape:'html'}</option>
-                    {/foreach}
-                {/if}
-            </select>
-        </div>
-
-        <div class="row">
-            <label for="talk_title">{$oLang->talk_create_title}:</label>
-            <input type="text" name="talk_title" id="talk_title" maxlength="30" class="wide"/>
-        </div>
-
-        <div class="row">
-            <label for="talk_text">{$oLang->talk_create_text}:</label><br/>
-            <textarea name="talk_text" id="talk_text" cols="80" rows="12" class="wide"></textarea>
-        </div>
-
-
-        <div class="row">
-            <input type="checkbox" name="send_copy_self" id="send_copy_self" checked/>
-            <label for="send_copy_self">{$oLang->_adm_send_copy_self}</label>
-        </div>
-
-        <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
-        <input type="hidden" name="adm_user_action" value="adm_user_message"/>
-        <input type="submit" name="adm_action_submit" value="{$oLang->talk_create_submit}"
-               onclick="return aceAdmin.messageSubmit(['{$oLang->talk_create_users_error}', '{$oLang->talk_create_title_error}', '{$oLang->talk_create_text_error}'])"/>
-
     </form>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -177,14 +356,36 @@
         $('input.ip-part').focus(function () {
             $(this).select();
         });
-        var forms = $('.row.users-form');
-        forms.each(function () {
-            var id = $(this).attr('id');
-            if (id && id.indexOf('admin_form_') == 0) {
-                if ($.cookie(id)) aceAdmin.formToggle(id);
-            }
-        });
+        {if $oUserProfile}
+            aceAdmin.selectUsers('{$oUserProfile->getLogin()}');
+        {/if}
     });
 </script>
 
+<div id="adm_users_del_confirm" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3>{$oLang->_adm_users_del_confirm}</h3>
+    </div>
+    <div class="modal-body alert-danger">
+        <p>
+            {$oLang->_adm_users_del_warning}
+        </p>
+    </div>
+    <div class="modal-body">
+        <p>
+
+        <form>
+            {$oLang->_adm_selected_users}: <span class="users_list_view"></span>
+            <input type="hidden" name="users_list" class="users_list"/>
+        </form>
+        </p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" onclick="return aceAdmin.userDelete(false);">{$oLang->_adm_no}</a>
+        <a href="#" class="btn btn-danger" onclick="return aceAdmin.userDelete(true);">{$oLang->_adm_users_del}</a>
+    </div>
+</div>
+
 {/block}
+

@@ -47,6 +47,7 @@ class PluginAceadminpanel extends Plugin
             'ActionAjax',
         ),
         'module' => array(
+            'ModuleUser' => '_ModuleUser',
             'ModuleUrl' => '_ModuleUrl',
             'ModulePlugin' => '_ModulePlugin',
             'ModuleViewer' => '_ModuleViewer',

@@ -45,14 +45,6 @@
         return false;
     }
 
-    aceAdmin.useDelete = function (confirm) {
-        $('#adm_users_del_confirm').modal('hide');
-        if (confirm === true) {
-            $('#admin_user_del form').submit();
-        }
-        return false;
-    }
-
 </script>
 
 {assign var="oSession" value=$oUserProfile->getSession()}
@@ -164,122 +156,14 @@
 <div class="alert alert-block">
     {$oLang->adm_ban_upto}
     : {if $oUserProfile->getBanLine()}{$oUserProfile->getBanLine()}{else}{$oLang->adm_ban_unlim}{/if}
+    <br/>
+    <strong>{$oUserProfile->getBanComment()}</strong>
 </div>
 {/if}
 <hr/>
 
 
-{if $oUserProfile->IsBannedByLogin()}
-<div class="row users-form" id="admin_user_unban">
-    <button class="btn-block btn left users-form" onclick="aceAdmin.formToggle('admin_user_unban', true);return false;">
-        <i class="icon-thumbs-up"></i>
-        {$oLang->_adm_users_unban}
-    </button>
+<div class="switch-form-group">
 
-    <form method="post" action="{$sPageRef}" class="well well-small hide">
-        <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
-
-        {if $oUserProfile->getBanLine()}
-            {$oLang->adm_ban_upto} {$oUserProfile->getBanLine()} <br/>
-            {else}
-            {$oLang->adm_ban_unlim} <br/>
-        {/if}
-        {$oLang->adm_ban_comment}: {$oUserProfile->getBanComment()}<br/>
-        <br/>
-        <input type="hidden" name="ban_login" value="{$oUserProfile->getLogin()}"/>
-        <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
-        <input type="hidden" name="adm_user_action" value="adm_unban_user"/>
-
-        <div class="form-actions">
-            <button type="submit" name="adm_action_submit" class="btn btn-primary">
-                {$oLang->adm_users_unban}
-            </button>
-        </div>
-    </form>
-</div>
-    {else}
-<div class="row users-form" id="admin_user_ban">
-    <button class="btn-block btn left users-form" onclick="aceAdmin.formToggle('admin_user_ban', true);return false;">
-        <i class="icon-ban-circle"></i>
-        {$oLang->_adm_users_ban}
-    </button>
-
-    <form method="post" action="{$sPageRef}" class="well well-small" style="display: none;">
-        <br/>
-        <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
-
-        <input type="hidden" name="ban_login" value="{$oUserProfile->getLogin()}"/>
-
-        <label class="radio">
-            <input type="radio" name="ban_period" value="days" checked/>
-            {$oLang->adm_ban_for}
-            <input type="text" name="ban_days" id="ban_days" class="num1"/> {$oLang->adm_ban_days}
-        </label>
-
-        <label class="radio">
-            <input type="radio" name="ban_period" value="unlim"/>
-            {$oLang->adm_ban_unlim}
-        </label>
-
-        <label for="ban_comment">{$oLang->adm_ban_comment}</label>
-        <input type="text" name="ban_comment" id="ban_comment" maxlength="255"/>
-
-
-        <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
-        <input type="hidden" name="adm_user_action" value="adm_ban_user"/>
-        <button type="submit" name="adm_action_submit" class="btn btn-primary">{$oLang->_adm_users_ban}</button>
-    </form>
-</div>
-{/if}
-
-<div class="row users-form" id="admin_user_del">
-    <button class="btn-block btn left users-form" onclick="aceAdmin.formToggle('admin_user_del', true);return false;">
-        <i class="icon-remove"></i>
-    {$oLang->_adm_users_del}
-    </button>
-
-    <form method="post" action="{router page='admin'}users/" style="display: none;">
-
-        <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
-
-        <div class="alert alert-block">
-        {$oLang->_adm_users_del_warning}
-        </div>
-
-        <div class="well well-small">
-            <input type="hidden" name="adm_del_login" id="ban_login" value="{$oUserProfile->getLogin()}"/>
-        {$oLang->_adm_users_del_confirm}
-
-            <div class="form-actions">
-                <input type="hidden" name="adm_user_ref" value="{$sPageRef}"/>
-                <input type="hidden" name="adm_user_action" value="adm_del_user"/>
-                <!--button xtype="submit" name="adm_action_submit" class="btn btn-primary"
-                    onclick="return aceAdmin.userDelConfirm('{$oLang->_adm_users_del_warning}', '{$oLang->_adm_users_del_confirm}');" -->
-                <button type="submit" name="adm_action_submit" class="btn btn-primary"
-                        onclick="$('#adm_users_del_confirm').modal(); return false;">
-                {$oLang->_adm_users_del}
-                </button>
-            </div>
-        </div>
-    </form>
-    <!--button name="adm_action_submit" class="btn btn-primary"
-            onclick="$('#adm_users_del_confirm').modal(); return false;">
-    {$oLang->_adm_users_del}
-    </button-->
 </div>
 
-<div id="adm_users_del_confirm" class="modal hide fade">
-    <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3>{$oLang->_adm_users_del_confirm}</h3>
-    </div>
-    <div class="modal-body alert-danger">
-        <p>
-        {$oLang->_adm_users_del_warning}
-        </p>
-    </div>
-    <div class="modal-footer">
-        <a href="#" class="btn" onclick="return aceAdmin.useDelete(false);">{$oLang->_adm_no}</a>
-        <a href="#" class="btn btn-danger" onclick="return aceAdmin.useDelete(true);">{$oLang->_adm_users_del}</a>
-    </div>
-</div>

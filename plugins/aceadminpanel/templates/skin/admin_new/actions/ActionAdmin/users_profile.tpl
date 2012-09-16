@@ -2,7 +2,7 @@
 
 {block name="content"}
 
-<h3>{$oLang->_adm_menu_users_profile}</h3>
+<h3>{$oLang->_adm_menu_users_profile}: {$oUserProfile->getLogin()} (ID {$oUserProfile->getId()})</h3>
 
 <div class="user-profile">
     <ul class="nav nav-tabs">
@@ -29,6 +29,6 @@
 
 {/block}
 
-{block name="sidebar"}
+{block name="sidebar" prepend}
 {include file="$sTemplatePath/blocks/block.admin_user.tpl"}
 {/block}

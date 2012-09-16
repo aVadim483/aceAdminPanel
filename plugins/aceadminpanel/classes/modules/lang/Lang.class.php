@@ -95,6 +95,21 @@ class PluginAceadminpanel_ModuleLang extends PluginAceadminpanel_Inherit_ModuleL
         }
     }
 
+    protected function _subst($sText, $aReplace = array(), $bDelete = true)
+    {
+        if (is_array($aReplace) AND count($aReplace) AND is_string($sText)) {
+            foreach ($aReplace as $sFrom => $sTo) {
+                $aReplacePairs["%%{$sFrom}%%"] = $sTo;
+            }
+            $sText = strtr($sText, $aReplacePairs);
+        }
+
+        if (Config::Get('module.lang.delete_undefined') AND $bDelete AND is_string($sText)) {
+            $sText = preg_replace("/\%\%[\S]+\%\%/U", '', $sText);
+        }
+        return $sText;
+    }
+
     /**
      * Получает текстовку по её имени
      *
@@ -112,14 +127,14 @@ class PluginAceadminpanel_ModuleLang extends PluginAceadminpanel_Inherit_ModuleL
             } elseif (isset($this->aLangMsg['plugin']) AND is_array($this->aLangMsg['plugin'])) {
                 foreach ($this->aLangMsg['plugin'] as $sPluginName => $aPluginMessages) {
                     if (isset($aPluginMessages[$sName])) {
-                        return $aPluginMessages[$sName];
+                        return $this->_subst($aPluginMessages[$sName], $aReplace, $bDelete);
                     }
                 }
             }
             if (strpos($sName, '_')) {
                 list($sPlugin, $sKey) = explode('_', $sName, 2);
                 if (isset($this->aLangMsg['plugin'][$sPlugin][$sKey]))
-                    return $this->aLangMsg['plugin'][$sPlugin][$sKey];
+                    return $this->_subst($this->aLangMsg['plugin'][$sPlugin][$sKey], $aReplace, $bDelete);
             }
             $sResult = strtoupper($sName);
         }

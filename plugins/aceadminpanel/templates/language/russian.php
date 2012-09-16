@@ -125,6 +125,9 @@ return array(
     'adm_user_deleted' => 'Пользователь %%user%% удален',
     'adm_msg_sent_ok' => 'Сообщение успешно отправлено',
 
+    'adm_selected_users' => 'Выбраны пользователи',
+    'adm_users_not_selected' => 'Пользователи не выбраны',
+
     'adm_user_voted' => 'Голосовал',
     'adm_user_voted_title' => 'Пользователь голосовал',
     'adm_user_voted_users' => 'За других пользователей',
@@ -217,10 +220,15 @@ return array(
     'adm_current_language' => 'Текущий язык',
     'adm_selected_language' => 'Выбран язык',
 
+    'adm_include_admin' => 'Добавить администратора',
+    'adm_exclude_admin' => 'Исключить администратора',
+
+    'adm_select_file' => 'Выбрать файл',
+
     'adm_send_copy_self' => 'Отослать копию себе',
     'adm_send_err_to_user' => 'Ошибка отправки сообщения пользователю %%user%%',
-    'adm_send_common_message' => 'Отправить общее сообщение',
-    'adm_send_separate_messages' => 'Отправить отдельные сообщения',
+    'adm_send_common_message' => 'Общее сообщение',
+    'adm_send_separate_messages' => 'Отдельные сообщения',
     'adm_send_common_notice' => 'Пользователи получат общее сообщение и любой ответ на него будут видеть все остальные получатели',
     'adm_send_separate_notice' => 'Каждый пользователь получит отдельное персональное сообщение',
 

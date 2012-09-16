@@ -188,11 +188,17 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      *
      * @return  array
      */
-    static function Str2Array($sStr, $sChr = ',')
+    static function Str2Array($sStr, $sChr = ',', $bSkipEmpty=false)
     {
-        if (is_array($sStr)) $result = $sStr;
-        else $result = explode($sChr, str_replace(' ', '', $sStr));
-        return $result;
+        if (is_array($sStr)) $arr = $sStr;
+        else $arr = explode($sChr, $sStr);
+
+        $aResult = array();
+        foreach($arr as $str) {
+            if ($str OR !$bSkipEmpty)
+                $aResult[] = trim($str);
+        }
+        return $aResult;
     }
 
     /**
@@ -208,7 +214,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      */
     static function MakeDir($sNewDir, $nMode = 0755, $bQuiet = false)
     {
-        $sBasePath = ACE::FilePath(Config::Get('path.root.server'));
+        $sBasePath = ACE::FilePath(Config::Get('path.root.server') . '/');
         if (substr($sNewDir, 0, 2) == '//') {
             $sNewDir = substr($sNewDir, 2);
         } else {

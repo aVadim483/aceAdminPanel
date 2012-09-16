@@ -85,6 +85,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         if ($aFilter) {
             if (isset($aFilter['login'])) $sWhere .= "AND (user_login='" . $aFilter['login'] . "') ";
             if (isset($aFilter['like'])) $sWhere .= "AND (user_login LIKE '" . $aFilter['like'] . "%') ";
+            if (isset($aFilter['email'])) $sWhere .= "AND (user_mail LIKE '" . $aFilter['email'] . "%') ";
             if (isset($aFilter['admin'])) $sWhere .= "AND (ua.user_id>0) ";
             if (isset($aFilter['ip'])) {
                 $ip1 = $ip2 = $aFilter['ip'];
@@ -215,9 +216,9 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $sql =
             "SELECT
                 u.*,
-  		IF(ua.user_id IS NULL,0,1) as user_is_administrator,
+                IF(ua.user_id IS NULL,0,1) as user_is_administrator,
                 ab.banline, ab.banunlim, ab.bancomment, ab.banactive,
-		INET_ATON('" . func_getIp() . "') as ipn
+                INET_ATON('" . func_getIp() . "') as ipn
             FROM
                 " . Config::Get('db.table.user') . " as u
             LEFT JOIN " . Config::Get('db.table.user_administrator') . " AS ua ON u.user_id=ua.user_id

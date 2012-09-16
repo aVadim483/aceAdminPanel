@@ -151,7 +151,7 @@ class PluginAceadminpanel_ModuleAdmin extends Module
                     }
                 }
             }
-            $this->Cache_Set($data, $sCacheKey, array("user_update", "user_new"), 60 * 15);
+            $this->Cache_Set($data, $sCacheKey, array('user_update', 'user_new'), 60 * 15);
         }
         return $data;
     }
@@ -171,11 +171,14 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         }
     }
 
-    public function GetUserById($sUserId)
+    public function GetUserById($oUserId)
     {
-        $sCacheKey = 'user_' . $sUserId;
+        if (is_object($oUserId)) $nUserId = $oUserId->getId();
+        else $nUserId = intval($oUserId);
+
+        $sCacheKey = 'user_' . $nUserId;
         if ((($data = $this->Cache_Get($sCacheKey)) === false) OR (strpos(get_class($data), 'PluginAceadminpanel_') === false)) {
-            $data = $this->oMapper->GetUserById($sUserId);
+            $data = $this->oMapper->GetUserById($nUserId);
             if ($data) {
                 $oSession = $this->User_GetSessionByUserId($data->GetId());
                 if ($oSession) {
@@ -184,13 +187,16 @@ class PluginAceadminpanel_ModuleAdmin extends Module
                     $data->setSession(null);
                 }
             }
-            $this->Cache_Set($data, $sCacheKey, array('user_update_' . $sUserId), 60 * 5);
+            $this->Cache_Set($data, $sCacheKey, array('user_update_' . $nUserId), 60 * 5);
         }
         return $data;
     }
 
-    public function GetUserByLogin($sUserLogin)
+    public function GetUserByLogin($oUserLogin)
     {
+        if (is_object($oUserLogin)) $sUserLogin = $oUserLogin->getId();
+        else $sUserLogin = (string)$oUserLogin;
+
         return $this->GetUserById($this->GetUserId($sUserLogin));
     }
 

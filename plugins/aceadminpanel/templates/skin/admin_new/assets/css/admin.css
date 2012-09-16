@@ -18,11 +18,14 @@
 .sidebar .well .input-prepend input.wide {
     width: 85%;
 }
+.sidebar .well.well-small .input-prepend input.wide {
+    width: 80%;
+}
 .sidebar .well .help-block {
     margin-bottom: 10px;
 }
 .sidebar .well input.ip-part {
-    width:30px;
+    width:28px;
     text-align:center;
 
 }
@@ -35,6 +38,13 @@
 .sidebar .form-actions button {
     float: right;
 }
+.sidebar form {
+    margin-bottom: 0;
+}
+.switch-form-content {
+    display: none;
+}
+
 .plugins-list {
 
 }
@@ -108,7 +118,7 @@ td.adm_field .adm_field_value {
     line-height: 24px;
 }
 
-.user-profile .strength, .user-profile .voting {
+.user-profile .strength, .user-profile .voting, .user-profile .rating {
     font-size: 11px;
     text-align: center;
 }
@@ -122,7 +132,7 @@ td.adm_field .adm_field_value {
     -webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .1) inset;
     box-shadow: 0 2px 3px rgba(0, 0, 0, .1) inset;
     height: 22px;
-    width: 40px;
+    width: 26px;
     margin: 0 auto 10px auto;
 }
 .user-profile .strength .total {
@@ -229,4 +239,25 @@ h1 .badge, h2 .badge, h3 .badge, h4 .badge {
 .stat-performance table td {
     vertical-align: top;
     padding: 0 14px;
+}
+
+.popup-user {
+    font-weight: bold;
+    border-bottom: 1px dotted #777;
+}
+
+.ip-split-3 {
+    cursor: pointer;
+    border-bottom: 1px dotted #777;
+}
+.ip-split span.hover {
+    text-decoration: underline;
+    font-weight: bold;
+    xcolor: #009;
+    background: #fff999;
+}
+
+span.input-text.file-name {
+    margin-left: 8px;
+    font-weight: bold;
 }

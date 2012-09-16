@@ -41,11 +41,11 @@ class PluginAceadminpanel_ActionAdmin_EventPages extends PluginAceadminpanel_Inh
 
         if ($this->GetParam(0) == 'new') { // создание новой страницы
             $this->sMenuSubItemSelect = 'new';
-            $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/pages_new.tpl');
+            $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/pages_edit.tpl');
         }
         elseif ($this->GetParam(0) == 'edit') { // вывод формы для редактирования
             $this->EventPagesEdit();
-            $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/pages_new.tpl');
+            $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/pages_edit.tpl');
         }
         elseif ($this->GetParam(0) == 'delete') { // отработка команды удаления
             $this->EventPagesDelSubmit();

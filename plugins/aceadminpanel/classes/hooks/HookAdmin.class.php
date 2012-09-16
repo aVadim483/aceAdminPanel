@@ -238,8 +238,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
             AND Config::Get('plugin.' . $this->sPlugin . '.' . 'icon_menu')
                 AND (Router::GetAction() != 'admin')
         ) {
-            $sScript = Config::Get('path.admin.skin') . '/js/' . 'icon_menu.js';
-            $this->Viewer_AppendScript($sScript);
+            //$sScript = Config::Get('path.admin.skin') . '/js/' . 'icon_menu.js';
+            //$this->Viewer_AppendScript($sScript);
         }
 
         if (Router::GetAction() == 'admin' OR Router::GetAction() == 'error') return;

@@ -208,3 +208,9 @@ td.center {
     line-height: 28px;
 }
 
+td.checkbox {
+    text-align: center;
+}
+td.checkbox input[type=checkbox] {
+    margin: 0;
+}

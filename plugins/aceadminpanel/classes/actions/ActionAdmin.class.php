@@ -25,6 +25,11 @@ class PluginAceadminpanel_ActionAdmin extends PluginAceadminpanel_Inherit_Action
         if (($result = parent::Init())) {
             return $result;
         }
+        $this->Lang_AddLangJs(
+            array(
+                $this->sPlugin . '_adm_select_file',
+            )
+        );
     }
 
 }

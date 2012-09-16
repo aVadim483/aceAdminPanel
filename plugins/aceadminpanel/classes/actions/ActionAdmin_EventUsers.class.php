@@ -26,13 +26,21 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         $this->sMenuSubItemSelect = 'list';
 
         if (($sAdminAction = $this->getRequestCheck('adm_user_action'))) {
-            if ($sAdminAction == 'adm_ban_user') $this->EventUsersBan();
-            elseif ($sAdminAction == 'adm_unban_user') $this->EventUsersUnBan();
-            elseif ($sAdminAction == 'adm_ban_ip') $this->EventUsersBanIp();
-            elseif ($sAdminAction == 'adm_unban_ip') $this->EventUsersUnBanIp(null);
-            elseif ($sAdminAction == 'adm_user_setadmin') $this->EventUsersAddAdministrator();
-            elseif ($sAdminAction == 'adm_del_user') $this->EventUsersDelete();
-            elseif ($sAdminAction == 'adm_user_message') $this->EventUsersMessage();
+            if ($sAdminAction == 'adm_ban_user') {
+                $this->EventUsersBan();
+            } elseif ($sAdminAction == 'adm_unban_user') {
+                $this->EventUsersUnBan();
+            } elseif ($sAdminAction == 'adm_ban_ip') {
+                $this->EventUsersBanIp();
+            } elseif ($sAdminAction == 'adm_unban_ip') {
+                $this->EventUsersUnBanIp(null);
+            } elseif ($sAdminAction == 'adm_user_setadmin') {
+                $this->EventUsersAddAdministrator();
+            } elseif ($sAdminAction == 'adm_del_user') {
+                $this->EventUsersDelete();
+            } elseif ($sAdminAction == 'adm_user_message') {
+                $this->EventUsersMessage();
+            }
         }
         if ($this->GetParam(0) == 'activate') { // активация юзера
             $this->EventUsersActivate();
@@ -123,20 +131,23 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
     protected function EventUsersAddAdministrator()
     {
-        $sUserLogin = $this->getRequestCheck('user_login_admin');
-        if (!$sUserLogin OR !($oUser = $this->PluginAceadminpanel_Admin_GetUserByLogin($sUserLogin))) {
-            $this->_messageError($this->Lang_Get('adm_user_not_found', $sUserLogin), 'admins:add');
-        } elseif ($oUser->IsBanned()) {
-            $this->_messageError($this->Lang_Get('adm_cannot_be_banned'), 'admins:add');
-        } elseif ($oUser->IsAdministrator()) {
-            $this->_messageError($this->Lang_Get('adm_already_added'), 'admins:add');
-        } else {
-            if ($this->PluginAceadminpanel_Admin_AddAdministrator($oUser->GetId())) {
-                $this->_messageNotice($this->Lang_Get('adm_saved_ok'), 'admins:add');
-            } else {
-                $this->_messageError($this->Lang_Get('adm_saved_err'), 'admins:add');
+        $aUserLogins = ACE::Str2Array($this->getRequestCheck('user_login_admin'), ',', true);
+        if ($aUserLogins)
+            foreach ($aUserLogins as $sUserLogin) {
+                if (!$sUserLogin OR !($oUser = $this->PluginAceadminpanel_Admin_GetUserByLogin($sUserLogin))) {
+                    $this->_messageError($this->Lang_Get('adm_user_not_found', $sUserLogin), 'admins:add');
+                } elseif ($oUser->IsBanned()) {
+                    $this->_messageError($this->Lang_Get('adm_cannot_be_banned'), 'admins:add');
+                } elseif ($oUser->IsAdministrator()) {
+                    $this->_messageError($this->Lang_Get('adm_already_added'), 'admins:add');
+                } else {
+                    if ($this->PluginAceadminpanel_Admin_AddAdministrator($oUser->GetId())) {
+                        $this->_messageNotice($this->Lang_Get('adm_saved_ok'), 'admins:add');
+                    } else {
+                        $this->_messageError($this->Lang_Get('adm_saved_err'), 'admins:add');
+                    }
+                }
             }
-        }
         if (getRequest('adm_user_ref')) ACE::HeaderLocation(getRequest('adm_user_ref'));
     }
 
@@ -532,6 +543,12 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
                 $aFilter['login'] = $aFilter['like'] = null;
             }
 
+            if (($sUserEmail = getRequest('user_filter_email'))) {
+                $aFilter['email'] = $sUserEmail;
+            } else {
+                $aFilter['email'] = null;
+            }
+
             if (!($aUserFilterIp[0] = intval(getRequest('user_filter_ip1')))) $aUserFilterIp[0] = '*';
             if (!($aUserFilterIp[1] = intval(getRequest('user_filter_ip2')))) $aUserFilterIp[1] = '*';
             if (!($aUserFilterIp[2] = intval(getRequest('user_filter_ip3')))) $aUserFilterIp[2] = '*';
@@ -617,8 +634,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         if (isset($aFilter['admin'])) unset($aFilter['admin']); // чтобы блок в админке не раскрывался
 
         if (isset($aFilter['login']) AND $aFilter['login']) $sUserFilterLogin = $aFilter['login'];
-        elseif (isset($aFilter['like']) AND $aFilter['like']) $sUserFilterLogin = $aFilter['like'];
-        else $sUserFilterLogin = '';
+        elseif (isset($aFilter['like']) AND $aFilter['like']) $sUserFilterLogin = $aFilter['like']; else $sUserFilterLogin = '';
 
         if (isset($aFilter['ip']) AND $aFilter['ip']) $sUserFilterIp = $aFilter['ip'];
         $aUserFilterIp = explode('.', str_replace('*', '', $sUserFilterIp));
@@ -786,8 +802,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         }
 
         if (isset($aFilter['login']) AND $aFilter['login']) $sUserFilterLogin = $aFilter['login'];
-        elseif (isset($aFilter['like']) AND $aFilter['like']) $sUserFilterLogin = $aFilter['like'];
-        else $sUserFilterLogin = '';
+        elseif (isset($aFilter['like']) AND $aFilter['like']) $sUserFilterLogin = $aFilter['like']; else $sUserFilterLogin = '';
 
         if (isset($aFilter['ip']) AND $aFilter['ip']) $sUserFilterIp = $aFilter['ip'];
         $aUserFilterIp = explode('.', $sUserFilterIp);
@@ -931,30 +946,31 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users_invites.tpl');
     }
 
-    protected function EventUsersDelete($sUserLogin = null)
+    protected function EventUsersDelete($aUsersLogin = null)
     {
         $this->Security_ValidateSendForm();
 
-        if (!$sUserLogin) $sUserLogin = getRequest('adm_del_login');
-        if ($sUserLogin == $this->oUserCurrent->GetLogin()) {
-            $this->_messageError($this->Lang_Get('adm_cannot_del_self'), 'users:delete');
-            return false;
-        }
-        if ($sUserLogin AND ($oUser = $this->PluginAceadminpanel_Admin_GetUserByLogin($sUserLogin))) {
-            if (mb_strtolower($sUserLogin) == 'admin') {
-                $this->_messageError($this->Lang_Get('adm_cannot_with_admin'), 'users:delete');
-            } elseif ($oUser->IsAdministrator()) {
-                $this->_messageError($this->Lang_Get('adm_cannot_del_admin'), 'users:delete');
-            } elseif (!getRequest('adm_user_del_confirm') AND !getRequest('adm_bulk_confirm')) {
-                $this->_messageError($this->Lang_Get('adm_cannot_del_confirm'), 'users:delete');
+        if (!$aUsersLogin) $aUsersLogin = ACE::Str2Array(getRequest('adm_del_login'), ',', true);
+        else $aUsersLogin = ACE::Str2Array($aUsersLogin, ',', true);
+
+        foreach ($aUsersLogin as $sUserLogin) {
+            if ($sUserLogin == $this->oUserCurrent->GetLogin()) {
+                $this->_messageError($this->Lang_Get('adm_cannot_del_self'), 'users:delete');
+            } elseif (($oUser = $this->PluginAceadminpanel_Admin_GetUserByLogin($sUserLogin))) {
+                if (mb_strtolower($sUserLogin, 'UTF-8') == 'admin') {
+                    $this->_messageError($this->Lang_Get('adm_cannot_with_admin'), 'users:delete');
+                } elseif ($oUser->IsAdministrator()) {
+                    $this->_messageError($this->Lang_Get('adm_cannot_del_admin'), 'users:delete');
+                } elseif (!getRequest('adm_user_del_confirm') AND !getRequest('adm_bulk_confirm')) {
+                    $this->_messageError($this->Lang_Get('adm_cannot_del_confirm'), 'users:delete');
+                } else {
+                    $this->PluginAceadminpanel_Admin_DelUser($oUser->GetId());
+                    $this->_messageNotice($this->Lang_Get('adm_user_deleted', Array('user' => $sUserLogin ? $sUserLogin
+                        : '')), 'users:delete');
+                }
             } else {
-                $this->PluginAceadminpanel_Admin_DelUser($oUser->GetId());
-                $this->_messageNotice($this->Lang_Get('adm_user_deleted', Array('user' => $sUserLogin ? $sUserLogin
-                    : '')), 'users:delete');
+                $this->_messageError($this->Lang_Get('adm_user_not_found', Array('user' => $sUserLogin ? $sUserLogin : '')), 'users:delete');
             }
-        } else {
-            $this->_messageError($this->Lang_Get('adm_user_not_found', Array('user' => $sUserLogin ? $sUserLogin
-                : '')), 'users:delete');
         }
         return true;
     }

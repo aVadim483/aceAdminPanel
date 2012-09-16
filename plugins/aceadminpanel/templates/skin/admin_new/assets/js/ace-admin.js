@@ -99,6 +99,10 @@ if (aceAdmin === undefined) {
             return popoverElement;
         }
 
+        $this.isEmpty = function (mixedVar) {
+            return ((typeof mixedVar == 'undefined') || (mixedVar === null));
+        }
+
         $this.init();
         if ($this.short) $ace = $this;
     })();
@@ -221,28 +225,115 @@ aceAdmin.vote = function (type, idTarget, value, viewElements, funcDone) {
 
 }
 
-aceAdmin.formToggle = function (id, save) {
-    var forms = $('.sidebar .users-form');
-    $('.sidebar .btn.users-form').removeClass('btn-gray');
-    forms.each(function (index, el) {
-        var form = $(el).find('form:first');
-        el = $(el);
-        if (el.attr('id') == id && form.is(':hidden')) {
-            form.slideDown(function () {
-                if ($(this).not(':hidden')) {
-                    $(this).find('input[type=text]:first').focus();
-                }
+aceAdmin.switchFormToggle = function (id, show, single) {
+    if (typeof id == 'string') {
+        var el = $('#' + id);
+    } else {
+        var el = $(id);
+        id = el.attr('id');
+    }
+    if (!single) {
+        var group = el.parents('.switch-form-group').first();
+        if (group.length) {
+            group.find('.switch-form').each(function(){
+                if (el.attr('id') != $(this).attr('id'))
+                    aceAdmin.switchFormToggle($(this), false, true);
             });
-            el.find('button.btn:first').addClass('btn-gray');
-            $.cookie(id, 1);
-        } else {
-            form.slideUp();
-            if (save) $.cookie(el.attr('id'), null);
         }
-    });
+    }
+    var btn = el.find('.btn.switch-form-button').removeClass('btn-gray');
+    var form = el.find('.switch-form-content');
+    if ((typeof show == 'undefined' ) || (show === null)) show = form.is(':hidden');
+    if (show) {
+        form.slideDown(function () {
+            form.find('input[type=text]:first').focus();
+        });
+        btn.addClass('btn-gray');
+        if (el.hasClass('switch-form-save')) $.cookie(id, 1);
+    } else {
+        form.slideUp();
+        $.cookie(id, null);
+    }
 };
 
+aceAdmin.switchFormShow = function (id) {
+    return aceAdmin.switchFormToggle(id, true);
+}
+
+aceAdmin.switchFormHide = function (id) {
+    return aceAdmin.switchFormToggle(id, false);
+}
+
+aceAdmin.inputFileStyle = function (id) {
+    if (aceAdmin.isEmpty(id)) id = $('input.input-file');
+    else id = $(id);
+
+    id.each(function(){
+        var inputFile = $(this);
+        var wrapper = inputFile.css('opacity', 0)
+            .wrap($('<div></div>').css({position: 'relative'}))
+            .parent();
+        var inner = $('<div></div>').css({position: 'absolute', left: 0, top: 0}).appendTo(wrapper);
+        inner.append(
+            $('<button></button>')
+                .addClass('btn')
+                .html(ls.lang.get('aceadminpanel_adm_select_file'))
+        ).append($('<span class="input-text file-name"></span>'));
+        inputFile.on('change', function(){
+            var fileName = inputFile.val().replace(/^.*[\/\\]/g, '')
+            wrapper.find('span.input-text.file-name').text(fileName);
+        });
+        wrapper.click(function(event){
+            if (!event.target.type || event.target.type != 'file') inputFile.click();
+        });
+    });
+}
+
+aceAdmin.nativeUiCompatible = function() {
+    /*
+    $('button.button').addClass('btn');
+    $('button.button-primary').addClass('btn-primary');
+
+    $('ul.nav-pills-tabs').addClass('nav-tabs').find('li').each(function(){
+        var link = $(this).data('type');
+        if (link) {
+            $(this).find('a').prop('href', '#' + link);
+        }
+    });
+    */
+
+    // Автокомплит
+    ls.autocomplete.add($(".autocomplete-tags-sep"), aRouter['ajax']+'autocompleter/tag/', true);
+    ls.autocomplete.add($(".autocomplete-tags"), aRouter['ajax']+'autocompleter/tag/', false);
+    ls.autocomplete.add($(".autocomplete-users-sep"), aRouter['ajax']+'autocompleter/user/', true);
+    ls.autocomplete.add($(".autocomplete-users"), aRouter['ajax']+'autocompleter/user/', false);
+
+    // Всплывающие окна
+    $('#window_upload_img').jqm();
+    /*
+    $('#window_login_form').jqm();
+    $('#blog_delete_form').jqm({trigger: '#blog_delete_show'});
+    $('#add_friend_form').jqm({trigger: '#add_friend_show'});
+    $('#userfield_form').jqm();
+    $('#favourite-form-tags').jqm();
+    $('#modal_write').jqm({trigger: '.js-write-window-show'});
+    $('#foto-resize').jqm({modal: true});
+    $('#avatar-resize').jqm({modal: true});
+    $('#userfield_form').jqm({toTop: true});
+    $('#photoset-upload-form').jqm({trigger: '#photoset-start-upload'});
+    */
+}
+
 $(function () {
+    $('.switch-form').each(function () {
+        var element = $(this);
+        var id = element.attr('id');
+        element.find('.switch-form-button').first().on('click', function () {
+            aceAdmin.switchFormToggle(id);
+        });
+        //if ($.cookie(id)) aceAdmin.switchFormShow(id);
+    });
+
     var nav_containers = $('.fix-on-container');
     nav_containers.each(function (index) {
         var container = $(this);
@@ -258,4 +349,18 @@ $(function () {
             navbar.addClass('sticky-bottom');
         }
     });
+
+    $('tr.selectable td.checkbox input[type=checkbox]').on('click', function (event) {
+        //console.log($(this).prop('checked'), $(this).parents('tr'));
+        if ($(this).prop('checked')) {
+            $(this).parents('tr').first().addClass('info');
+        } else {
+            $(this).parents('tr').first().removeClass('info');
+        }
+    });
+
+    aceAdmin.nativeUiCompatible();
+    aceAdmin.inputFileStyle();
 });
+
+// EOF
