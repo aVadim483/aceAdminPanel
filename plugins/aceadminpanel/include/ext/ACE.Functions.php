@@ -26,10 +26,10 @@ class ACE_Functions
             header('Location: ' . $sLocation, true);
             header('Content-type: text/html; charset=UTF-8');
         }
-        echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+        echo '<!DOCTYPE HTML">
 <html>
 <head>
-<script language="JavaScript1.1" type="text/javascript">
+<script type="text/javascript">
 <!--
 location.replace("' . $sLocation . '");
 //-->
@@ -101,13 +101,24 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      *
      * @return string
      */
-    static function Path2Url($sPath)
+    static function Dir2Url($sPath)
     {
         return str_replace(
             str_replace(DIRECTORY_SEPARATOR, '/', self::GetRootDir()),
             self::GetRootUrl(),
             str_replace(DIRECTORY_SEPARATOR, '/', $sPath)
         );
+    }
+
+    /**
+     * Алиас функции Dir2Url($sPath)
+     *
+     * @param $sPath
+     * @return string
+     */
+    static function Path2Url($sPath)
+    {
+        return self::Dir2Url($sPath);
     }
 
     /**
@@ -118,7 +129,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      *
      * @return  string
      */
-    static function Url2Path($sUrl, $sSeparator = null)
+    static function Url2Dir($sUrl, $sSeparator = null)
     {
         // * Delete www from path
         $sUrl = str_replace('//www.', '//', $sUrl);
@@ -129,8 +140,13 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
 
     }
 
+    static function Url2Path($sUrl, $sSeparator = null)
+    {
+        return self::Url2Dir($sUrl, $sSeparator);
+    }
+
     /**
-     * Нормализует путь к файлу на сервере
+     * Нормализует путь к файлу
      *
      * @param   string|array   $sPath
      * @param   string|null    $sSeparator
@@ -146,6 +162,12 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
             return $aResult;
         }
 
+        if (preg_match('|^([a-z]+://)(.*)|i', $sPath, $aMatches)) {
+            $sPrefix = $aMatches[1];
+            $sPath = $aMatches[2];
+        } else {
+            $sPrefix = '';
+        }
         if ($sSeparator == '/') {
             $sPath = str_replace('\\', $sSeparator, $sPath);
         } elseif ($sSeparator == '\\') {
@@ -154,8 +176,10 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
             $sPath = str_replace(array('/', '\\'), $sSeparator, $sPath);
         }
 
-        $sPath = str_replace($sSeparator . $sSeparator, $sSeparator, $sPath);
-        return $sPath;
+        while (strpos($sPath, $sSeparator . $sSeparator))
+            $sPath = str_replace($sSeparator . $sSeparator, $sSeparator, $sPath);
+
+        return $sPrefix . $sPath;
     }
 
     /**
@@ -222,6 +246,30 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     }
 
     /**
+     * Соответствует ли проверяемый путь одному из заданных путей
+     *
+     * @param   string          $sNeedle - проверяемый путь
+     * @param   string|array    $aPaths  - путь (или массив путей), на соответствие которым идет проверка
+     * @return  string|bool
+     */
+    static function InPath($sNeedle, $aPaths)
+    {
+        if (!is_array($aPaths)) $aPaths = array((string)$aPaths);
+        $sNeedle = self::FilePath($sNeedle);
+        $aCheckPaths = self::FilePath($aPaths);
+        foreach ($aCheckPaths as $n=>$sPath) {
+            if (substr($sPath, -2) == '/*') {
+                $sPath = substr($sPath, 0, strlen($sPath) - 2);
+                if (strpos($sNeedle, $sPath) === 0) return $aPaths[$n];
+            } else {
+                if (substr($sPath, -1) != '/') $sPath .= '/';
+                if ($sNeedle == $sPath) return $aPaths[$n];
+            }
+        }
+        return false;
+    }
+
+    /**
      * Разбирает полный путь файла
      * В отличии от стандартной функции выделяет GET-параметры и очищает от них имя и расширение файла
      *
@@ -242,7 +290,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         );
         $n = strpos($aResult['extension'], '?');
         if ($n !== false) {
-            $aResult['params'] = substr($aResult['extension'], $n+1);
+            $aResult['params'] = substr($aResult['extension'], $n + 1);
             $aResult['extension'] = substr($aResult['extension'], 0, $n);
             $n = strpos($aResult['basename'], '?');
             $aResult['basename'] = substr($aResult['basename'], 0, $n);
@@ -258,13 +306,13 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      *
      * @return  array
      */
-    static function Str2Array($sStr, $sChr = ',', $bSkipEmpty=false)
+    static function Str2Array($sStr, $sChr = ',', $bSkipEmpty = false)
     {
         if (is_array($sStr)) $arr = $sStr;
         else $arr = explode($sChr, $sStr);
 
         $aResult = array();
-        foreach($arr as $str) {
+        foreach ($arr as $str) {
             if ($str OR !$bSkipEmpty)
                 $aResult[] = trim($str);
         }
@@ -307,7 +355,10 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
                         //die('Cannot make dir "' . $sCheckPath . '"');
                         return false;
                     }
-                    @chmod($sCheckPath, $nMode);
+                    if ($bQuiet)
+                        @chmod($sCheckPath, $nMode);
+                    else
+                        chmod($sCheckPath, $nMode);
                 }
                 $sTempPath = $sCheckPath;
             }

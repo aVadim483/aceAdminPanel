@@ -13,10 +13,22 @@
  *----------------------------------------------------------------------------
  */
 
-include_once 'ACE.Functions.php';
+include_once 'ext/ACE.Functions.php';
+include_once 'ext/ACE.Config.php';
 
 class ACE extends ACE_Func
 {
+    static protected $bInit = false;
+
+    static function Init()
+    {
+        if (!self::$bInit) {
+            ACE_Config::Init();
+            self::$bInit = true;
+        }
+    }
 }
+
+ACE::Init();
 
 // EOF

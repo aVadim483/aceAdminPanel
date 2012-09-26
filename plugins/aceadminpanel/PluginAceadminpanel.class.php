@@ -55,6 +55,7 @@ class PluginAceadminpanel extends Plugin
             'ModuleTopic' => '_ModuleTopic',
             'ModuleLang' => '_ModuleLang',
             'ModuleVote' => '_ModuleVote',
+            'ModuleLogger' => '_ModuleLogger',
             //'ModuleNotify' => '_ModuleNotify',
         ),
         'mapper' => array(
@@ -120,7 +121,7 @@ class PluginAceadminpanel extends Plugin
             @file_put_contents($sDataFile, serialize($aConfigSet));
         }
 
-        $this->LoadPluginsConfig();
+        $this->_loadPluginsConfig();
         $this->_ActionAdminInerits();
     }
 
@@ -135,19 +136,12 @@ class PluginAceadminpanel extends Plugin
         return true;
     }
 
-    protected function LoadPluginsConfig()
+    /**
+     * Загрузка дополнительных конфигураций плагинов
+     */
+    protected function _loadPluginsConfig()
     {
-        $aPlugins = $this->Plugin_GetActivePlugins();
-        foreach ($aPlugins as $sPlugin) {
-            $sFile = ACE::FilePath(Config::Get('sys.cache.dir') . 'adm.' . $sPlugin . '.cfg');
-            if (is_file($sFile)) {
-                $sData = file_get_contents($sFile);
-                if ($sData) {
-                    $aConfig = unserialize($sData);
-                    Config::Set('plugin.' . $sPlugin, $aConfig);
-                }
-            }
-        }
+        ACE_Config::LoadCustomConfig();
     }
 
     protected function ClearCache()

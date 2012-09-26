@@ -150,75 +150,9 @@ class PluginAceadminpanel_HookAdmin extends Hook
         }
     }
 
-    /**
-     * Чтение конфигурационного файла
-     *
-     * @param   string      $sFile
-     *
-     * @return  array
-     */
-    protected function _readConfigFile($sFile)
-    {
-        // переменная $config нужна для того, чтоб ее можно было не определять внутри файла
-        $config = array();
-        $result = include($sFile);
-        return ($result AND is_array($result)) ? $result : $config;
-    }
-
-    /**
-     * Чтение пользовательских конфиг-файлов конкретного плагина
-     *
-     * @param   string      $sPlugin
-     */
-    protected function _loadCustomPluginConfig($sPlugin)
-    {
-        if (is_dir($sPath = $this->sCustomConfigPath . '/' . $sPlugin)) {
-            $sKey = 'plugin.' . $sPlugin;
-            $aPluginConfig = Config::Get($sKey);
-            if (is_file($sPath . '/config.php')) {
-                $aResult = $this->_readConfigFile($sPath . '/config.php');
-                if ($aResult) {
-                    $aPluginConfig = func_array_merge_assoc($aPluginConfig, $aResult);
-                }
-            }
-            if ($aFiles = glob($sPath . '/config.*.php')) {
-                foreach ($aFiles as $sFile) {
-                    if (is_file($sFile)) {
-                        $aResult = $this->_readConfigFile($sFile);
-                        if ($aResult) {
-                            $aPluginConfig = func_array_merge_assoc($aPluginConfig, $aResult);
-                        }
-                    }
-                }
-            }
-            Config::Set($sKey, $aPluginConfig);
-        }
-    }
-
     public function EngineInitComplete()
     {
-        if (Config::Get('plugin.' . $this->sPlugin . '.custom_config.enable')) {
-            $this->sCustomConfigPath = Config::Get('plugin.' . $this->sPlugin . '.custom_config.path');
-            if (!$this->sCustomConfigPath) $this->sCustomConfigPath = Config::Get('path.root.server') . '/config/plugins';
-            if (is_dir($this->sCustomConfigPath)) {
-                if (is_file($this->sCustomConfigPath . '/config.php')) {
-                    Config::LoadFromFile($this->sCustomConfigPath . '/config.php', false);
-                }
-                if ($aFiles = glob($this->sCustomConfigPath . '/config.*.php')) {
-                    foreach ($aFiles as $sFile) {
-                        if (is_file($sFile)) {
-                            Config::LoadFromFile($sFile, false);
-                        }
-                    }
-                }
-                if (Config::Get('plugin.' . $this->sPlugin . '.custom_config.plugins')) {
-                    $aPligins = $this->Plugin_GetActivePlugins();
-                    foreach ($aPligins as $sPlugin) {
-                        $this->_loadCustomPluginConfig($sPlugin);
-                    }
-                }
-            }
-        }
+        ACE_Config::LoadCustomConfig();
     }
 
     public function InitAction()
