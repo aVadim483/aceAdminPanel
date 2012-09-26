@@ -30,4 +30,7 @@
     <li {if $sEvent=='pages'}class="active"{/if}>
         <a href="{router page=admin}pages/">{$oLang->_adm_menu_pages}</a>
     </li>
+{hook run='admin_action_item'}
 </ul>
+
+{hook run='admin_action'}

@@ -17,7 +17,7 @@
     {include file="$include_tpl"}
 {else}
     {include file="$sTemplatePathAction/table_pages.tpl"}
-    {include file="$sTemplatePath/paging.tpl"}
+    {include file="$sTemplatePath/inc.paging.tpl"}
 {/if}
 
 

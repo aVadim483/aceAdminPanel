@@ -126,12 +126,12 @@
     <div id="wrapper" class="row">
         <div class="left-sidebar span2">
         {block name="left-sidebar"}
-        {include file="$sTemplatePath/blocks/block.menu-main.tpl"}
+        {include file="$sTemplatePath/inc.menu.main.tpl"}
         {/block}
         </div>
 
         <div id="content" role="main" class="span11">
-        {include file='system_message.tpl'}
+        {include file='inc.system_message.tpl'}
         {hook run='content_begin'}
         {block name="content"}
             <p>Action: {$sAction}</p>

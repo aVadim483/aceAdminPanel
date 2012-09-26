@@ -15,7 +15,7 @@
     </ul>
 
     {include file="$sTemplatePathAction/table_blogs.tpl"}
-    {include file="$sTemplatePath/paging.tpl"}
+    {include file="$sTemplatePath/inc.paging.tpl"}
 </div>
 
 {/block}

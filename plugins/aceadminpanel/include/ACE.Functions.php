@@ -80,6 +80,21 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     }
 
     /**
+     * Возвращает нормализованый путь к корневой папке
+     *
+     * @return string
+     */
+    static function GetRootDir()
+    {
+        return self::FilePath(Config::Get('path.root.server'));
+    }
+
+    static function GetRootUrl()
+    {
+        return self::FilePath(Config::Get('path.root.web'));
+    }
+
+    /**
      * Преобразование пути на сервере в URL
      *
      * @param  string $sPath
@@ -89,8 +104,8 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     static function Path2Url($sPath)
     {
         return str_replace(
-            str_replace(DIRECTORY_SEPARATOR, '/', Config::Get('path.root.server')),
-            Config::Get('path.root.web'),
+            str_replace(DIRECTORY_SEPARATOR, '/', self::GetRootDir()),
+            self::GetRootUrl(),
             str_replace(DIRECTORY_SEPARATOR, '/', $sPath)
         );
     }
@@ -107,9 +122,9 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     {
         // * Delete www from path
         $sUrl = str_replace('//www.', '//', $sUrl);
-        $sPathWeb = str_replace('//www.', '//', Config::Get('path.root.web'));
+        $sPathWeb = str_replace('//www.', '//', self::GetRootUrl());
         // * do replace
-        $sUrl = str_replace($sPathWeb, Config::Get('path.root.server'), $sUrl);
+        $sUrl = str_replace($sPathWeb, self::GetRootDir(), $sUrl);
         return ACE::FilePath($sUrl, $sSeparator);
 
     }
@@ -117,7 +132,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     /**
      * Нормализует путь к файлу на сервере
      *
-     * @param   string      $sPath
+     * @param   string|array   $sPath
      * @param   string|null    $sSeparator
      *
      * @return  string
@@ -125,6 +140,11 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     static function FilePath($sPath, $sSeparator = null)
     {
         if (!$sSeparator) $sSeparator = DIRECTORY_SEPARATOR;
+        if (is_array($sPath)) {
+            $aResult = array();
+            foreach ($sPath as $s) $aResult[] = self::FilePath($s, $sSeparator);
+            return $aResult;
+        }
 
         if ($sSeparator == '/') {
             $sPath = str_replace('\\', $sSeparator, $sPath);
@@ -138,26 +158,76 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return $sPath;
     }
 
+    /**
+     * Из абсолютного пути выделяет относительный (локальный) относительно рута
+     *
+     * @param $sPath
+     * @param $sRoot
+     * @return string
+     */
     static function LocalPath($sPath, $sRoot)
     {
-        $sPath = ACE::FilePath($sPath);
-        $sRoot = ACE::FilePath($sRoot);
-        if (strpos($sPath, $sRoot) === 0) {
-            $sPath = substr($sPath, strlen($sRoot));
+        if ($sPath AND $sRoot) {
+            $sPath = ACE::FilePath($sPath);
+            $sRoot = ACE::FilePath($sRoot);
+            if (strpos($sPath, $sRoot) === 0) {
+                return substr($sPath, strlen($sRoot));
+            }
         }
-        return $sPath;
+        return false;
     }
 
+    /**
+     * Из абсолютного пути выделяет локальный относительно корневой папки проекта
+     *
+     * @param $sPath
+     * @return string
+     */
     static function LocalDir($sPath)
     {
-        return ACE::LocalPath($sPath, Config::Get('path.root.server'));
+        return ACE::LocalPath($sPath, self::GetRootDir());
     }
 
+    /**
+     * Из абсолютного URL выделяет локальный относительно корневого URL проекта
+     *
+     * @param $sPath
+     * @return string
+     */
     static function LocalUrl($sPath)
     {
-        return ACE::LocalPath($sPath, Config::Get('path.root.web'));
+        return ACE::LocalPath($sPath, self::GetRootUrl());
     }
 
+    /**
+     * Является ли путь локальным
+     *
+     * @param $sPath
+     * @return bool
+     */
+    static function IsLocalDir($sPath)
+    {
+        return (bool)self::LocalDir($sPath);
+    }
+
+    /**
+     * Является ли URL локальным
+     *
+     * @param $sPath
+     * @return bool
+     */
+    static function IsLocalUrl($sPath)
+    {
+        return (bool)self::LocalUrl($sPath);
+    }
+
+    /**
+     * Разбирает полный путь файла
+     * В отличии от стандартной функции выделяет GET-параметры и очищает от них имя и расширение файла
+     *
+     * @param $sPath
+     * @return array
+     */
     static function PathInfo($sPath)
     {
         $aResult = array_merge(
@@ -214,7 +284,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      */
     static function MakeDir($sNewDir, $nMode = 0755, $bQuiet = false)
     {
-        $sBasePath = ACE::FilePath(Config::Get('path.root.server') . '/');
+        $sBasePath = ACE::FilePath(self::GetRootDir() . '/');
         if (substr($sNewDir, 0, 2) == '//') {
             $sNewDir = substr($sNewDir, 2);
         } else {

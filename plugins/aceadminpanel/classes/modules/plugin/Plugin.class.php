@@ -24,11 +24,7 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
     public function Init()
     {
         parent::Init();
-        if (version_compare(LS_VERSION, '0.5', '<')) {
-            $this->sPluginsDatFile = self::PLUGIN_ACTIVATION_FILE;
-        } else {
-            $this->sPluginsDatFile = Config::Get('sys.plugins.activation_file');
-        }
+        $this->sPluginsDatFile = Config::Get('sys.plugins.activation_file');
         if (!$this->sPluginsDatFile) $this->sPluginsDatFile = 'plugins.dat';
     }
 
@@ -107,8 +103,7 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
                             $this->Lang_Get('error'),
                             true
                         );
-                    }
-                    // * Проверка требуемой версии, если нужно
+                    } // * Проверка требуемой версии, если нужно
                     else {
                         if (isset($sReqPlugin['name'])) $sReqPluginName = (string)$sReqPlugin['name'];
                         else $sReqPluginName = ucfirst($sReqPlugin);
@@ -123,17 +118,14 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
                             $sClassName = "Plugin{$sReqPlugin}";
                             $oReqPlugin = new $sClassName;
 
-                            // * Версия может задавать константой
+                            // * Версия может задаваться константой
                             // * или возвращаться методом плагина GetVersion()
                             if (method_exists($oReqPlugin, 'GetVersion'))
                                 $sReqPluginVersion = $oReqPlugin->GetVersion();
                             elseif (Config::Get('plugin.' . strtolower($sReqPlugin) . '.version'))
-                                $sReqPluginVersion = Config::Get('plugin.' . strtolower($sReqPlugin) . '.version');
-                            elseif (defined(strtoupper('VERSION_' . $sReqPluginName)))
-                                $sReqPluginVersion = constant(strtoupper('VERSION_' . $sReqPluginName));
-                            elseif (defined(strtoupper($sReqPluginName . '_VERSION')))
-                                $sReqPluginVersion = constant(strtoupper($sReqPluginName . '_VERSION'));
-                            else
+                                $sReqPluginVersion = Config::Get('plugin.' . strtolower($sReqPlugin) . '.version'); elseif (defined(strtoupper('VERSION_' . $sReqPluginName)))
+                                $sReqPluginVersion = constant(strtoupper('VERSION_' . $sReqPluginName)); elseif (defined(strtoupper($sReqPluginName . '_VERSION')))
+                                $sReqPluginVersion = constant(strtoupper($sReqPluginName . '_VERSION')); else
                                 $sReqPluginVersion = false;
 
                             if (!$sReqPluginVersion) {
@@ -245,7 +237,7 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
     public function GetActivePlugins()
     {
         $aPlugins = parent::GetActivePlugins();
-        foreach ($aPlugins as $nKey=>$sPlugin) {
+        foreach ($aPlugins as $nKey => $sPlugin) {
             if (!preg_match('/^\w+$/', $sPlugin)) {
                 unset($aPlugins[$nKey]);
             }
@@ -259,11 +251,11 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
      *
      * @return  array
      */
-    public function GetList()
+    public function GetList($aFilter=array())
     {
         $aPlugins = array();
 
-        $aPluginList = parent::GetList();
+        $aPluginList = parent::GetList($aFilter);
         $aPluginsData = $this->GetPluginsData();
         $aActivePlugins = $this->GetActivePlugins();
 
@@ -359,8 +351,7 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
             if (($aPlugin1['code'] > $aPlugin2['code']))
                 return 1;
             elseif (($aPlugin1['code'] < $aPlugin2['code']))
-                return -1;
-            else
+                return -1; else
                 return 0;
         }
         return (($aPlugin1['priority'] > $aPlugin2['priority']) ? -1 : 1);

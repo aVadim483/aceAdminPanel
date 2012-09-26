@@ -32,9 +32,11 @@ class PluginAceadminpanel_ModuleUser extends PluginAceadminpanel_Inherit_ModuleU
      */
     public function GetStatUsers()
     {
-        if (false === ($aStat = $this->Cache_Get("user_stats"))) {
+        if (false === ($aStat = $this->Cache_Get('adm_user_stats'))) {
             $aStat = parent::GetStatUsers();
             $aStat['count_admins'] = $this->oMapper->GetCountAdministrators();
+
+            $this->Cache_Set($aStat, 'adm_user_stats', array('user_update', 'user_new'), 60 * 60 * 24 * 4);
         }
         return $aStat;
     }

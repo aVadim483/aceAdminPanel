@@ -366,16 +366,38 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         return $sSmartyVersion;
     }
 
-    public function AddBlock($sGroup, $sName, $aParams = array(), $iPriority = 5)
+    public function AddBlock($sGroup, $sName, $aParams = array(), $nPriority = 5)
     {
         /**
          * Если не указана директория шаблона, но указана приналежность к плагину,
          * то "вычисляем" правильную директорию
          */
-        if (!isset($aParams['dir']) and isset($aParams['plugin'])) {
-            $aParams['dir'] = HelperPlugin::GetTemplatePath('', $aParams['plugin']);
+        if (!isset($aParams['dir']) AND isset($aParams['plugin'])) {
+            //$aParams['dir'] = HelperPlugin::GetTemplatePath('', $aParams['plugin']);
+            //Plugin::GetTemplatePath();
         }
-        return parent::AddBlock($sGroup, $sName, $aParams, $iPriority);
+        return parent::AddBlock($sGroup, $sName, $aParams, $nPriority);
+    }
+
+    /**
+     * Определяет тип блока
+     *
+     * @param   string  $sName - Название блока
+     * @param   string|null $sDir - Путь до блока (определяется само для плагинов, если передать параметр 'plugin'=>'myplugin')
+     * @return  string  ('block','template','undefined')
+     * @throws  Exception
+     */
+    protected function DefineTypeBlock($sName, $sDir = null)
+    {
+        if ($sDir) {
+            // * Если найден шаблон вида block.name.tpl то считаем что тип 'block'
+            if (is_file(ACE::FilePath($sDir . '/blocks/block.' . $sName . '.tpl')))
+                return 'block';
+            // * Если найден шаблон по имени блока то считаем его простым шаблоном
+            if (is_file(ACE::FilePath($sDir . '/' . $sName )))
+                return 'template';
+        }
+        return parent::DefineTypeBlock($sName, $sDir);
     }
 
 }

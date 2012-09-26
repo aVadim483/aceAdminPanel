@@ -13,7 +13,7 @@
  *----------------------------------------------------------------------------
  */
 
-class PluginAceadminpanel_ActionAdmin_EventInfo extends PluginAceadminpanel_Inherit_ActionAdmin_EventInfo //PluginAceadminpanel_ActionAdmin_Root
+class PluginAceadminpanel_ActionAdmin_EventInfo extends PluginAceadminpanel_Inherit_ActionAdmin_EventInfo
 {
 
     public function Init()
