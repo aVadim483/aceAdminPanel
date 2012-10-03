@@ -50,7 +50,7 @@ class PluginAceadminpanel_ModuleAdmin_EntityUser extends ModuleUser_EntityUser
     }
 
     public function GetCountTopics() {
-        return ($this->GetProperty('tpoics_count'));
+        return ($this->GetProperty('topics_count'));
     }
 
 }

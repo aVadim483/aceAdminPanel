@@ -226,7 +226,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
             WHERE
                 u.user_id = ? ";
         if (($aRow = @$this->oDb->selectRow($sql, $nUserId))) {
-            $aRow['tpoics_count'] = $this->GetCountTopicsByUserId($nUserId);
+            $aRow['topics_count'] = $this->GetCountTopicsByUserId($nUserId);
             $aRow['comments_count'] = $this->GetCountCommentsByUserId($nUserId);
             $sql =
                 "SELECT id FROM " . Config::Get('db.table.adminips') . "

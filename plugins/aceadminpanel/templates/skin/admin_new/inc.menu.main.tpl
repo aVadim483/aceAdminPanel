@@ -36,6 +36,8 @@
         <a href="{router page=admin}pages/">{$oLang->_adm_menu_pages}</a>
     </li>
 
+    {hook run='admin_menu_item'}
+
     <li class="nav-header">{$oLang->_adm_menu_additional}</li>
     <li id="admin_action_submenu">
         <a href="#">
