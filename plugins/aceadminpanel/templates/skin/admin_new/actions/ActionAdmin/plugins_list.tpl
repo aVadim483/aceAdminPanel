@@ -36,6 +36,9 @@ function adminPluginSave() {
 
 <h3>{$oLang->adm_plugins_title}</h3>
     <ul class="nav nav-tabs">
+        <li class="nav-tabs-add">
+            <span><i class="icon-plus-sign icon-disabled"></i></span>
+        </li>
         <li {if $sMode=='all' || $sMode==''}class="active"{/if}><a href="{router page='admin'}plugins/list/all/">{$oLang->_adm_all_plugins}</a></li>
         <li {if $sMode=='active'}class="active"{/if}><a href="{router page='admin'}plugins/list/active/">{$oLang->_adm_active_plugins}</a></li>
         <li {if $sMode=='inactive'}class="active"{/if}><a href="{router page='admin'}plugins/list/inactive/">{$oLang->_adm_inactive_plugins}</a></li>
@@ -46,7 +49,9 @@ function adminPluginSave() {
         <table class="table table-striped table-bordered table-condensed plugins-list">
             <thead>
                 <tr>
-                    <th width="20px"><input type="checkbox" name="" onclick="checkAllPlugins(this);" /></th>
+                    <th>
+                        <input type="checkbox" name="" onclick="aceAdmin.selectAllRows(this);" />
+                    </th>
                     <th class="name">{$oLang->plugins_plugin_name}</th>
                     <th class="version">{$oLang->plugins_plugin_version}</th>
                     <th class="author">{$oLang->plugins_plugin_author}</th>
@@ -57,8 +62,10 @@ function adminPluginSave() {
 
             <tbody id="plugin_list">
             {foreach from=$aPluginList item=oPlugin}
-                <tr id="{$oPlugin->GetId()}_row" class="{if $oPlugin->IsActive()}active{else}inactive{/if}">
-                    <td><input type="checkbox" name="plugin_del[{$oPlugin->GetId()}]" class="form_plugins_checkbox" /></td>
+                <tr id="{$oPlugin->GetId()}_row" class="{if $oPlugin->IsActive()}active{else}inactive{/if} selectable">
+                    <td class="checkbox">
+                        <input type="checkbox" name="plugin_del[{$oPlugin->GetId()}]" class="form_plugins_checkbox" />
+                    </td>
                     <td class="name">
                         <div class="{if $oPlugin->IsActive()}active{else}inactive{/if}"></div>
                         <div class="title">{$oPlugin->GetName()|escape:'html'}</div>
@@ -76,21 +83,19 @@ function adminPluginSave() {
                     <td class="action {if $oPlugin->IsActive()}deactivate{else}activate{/if}">
                             {if $oPlugin->isActive()}
                                 <div class="btn-group btn-switch-on" rel="tooltip" title="{$oLang->adm_act_deactivate}" onclick="aceAdmin.plugin.switchOff('{$oPlugin->GetId()}'); return false;">
-                                    <button class="btn btn-outset">On</button>
-                                    <button class="btn btn-inset">&nbsp;</button>
+                                    <button class="btn btn-outset"></button>
+                                    <button class="btn btn-inset">ON</button>
                                 </div>
                             {else}
                                 <div class="btn-group btn-switch-off" rel="tooltip" title="{$oLang->adm_act_activate}" onclick="aceAdmin.plugin.switchOn('{$oPlugin->GetId()}'); return false;">
-                                    <a href="#" class="btn btn-inset">&nbsp;</a>
-                                    <a href="#" class="btn btn-outset">Off</a>
+                                    <button class="btn btn-inset">OFF</button>
+                                    <button class="btn btn-outset"></button>
                                 </div>
                             {/if}
                     </td>
                     <td class="center">
-                        {if $oPlugin->IsActive() AND $oPlugin->HasAdminpanel()}
-                        <!-- a href="{router page='admin'}plugins/config/{$oPlugin->GetId()}/">
-                            <img src="{$sWebPluginSkin}images/cog.png" alt="{$oLang->adm_menu_settings}" title="{$oLang->adm_menu_settings}" />
-                        </a -->
+                        {if $oPlugin->isActive() AND $oPlugin->GetProperty('settings') != ''}
+                                <a href="{$oPlugin->GetProperty('settings')}">{$aLang.plugins_plugin_settings}</a>
                         {/if}
                     </td>
                 </tr>

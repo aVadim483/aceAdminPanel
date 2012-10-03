@@ -24,11 +24,12 @@
             $('table.users-list tr.selectable td.checkbox input[type=checkbox]').prop('checked', false);
             $('table.users-list tr.selectable').removeClass('info');
         }
-        aceAdmin.selectUsers();
+        aceAdmin.user.select();
     }
 
     aceAdmin.selectIp = function (ip) {
-        aceAdmin.switchFormShow('admin_form_seek');
+        if (!$('#admin_form_seek').hasClass('in'))
+            $('#admin_form_seek').collapse('show');
         $('input.ip-part').val('');
         $.each(ip.toString().split('.'), function(index, item){
             $('#user_filter_ip' + (index+1)).val(parseInt(item)).parents('.control-group').first().addClass('success');
@@ -76,6 +77,9 @@
 <h3>{$oLang->adm_users_list}</h3>
 
 <ul class="nav nav-tabs">
+    <li class="nav-tabs-add">
+        <span><i class="icon-plus-sign icon-disabled"></i></span>
+    </li>
     <li {if $sMode=='all' || $sMode==''}class="active"{/if}>
         <a href="{router page='admin'}users/list/">All users <span class="badge">{$aStat.count_all}</span></a>
     </li>
@@ -89,7 +93,9 @@
     <table class="table table-striped table-bordered table-condensed users-list">
         <thead>
         <tr>
-            <th><input type="checkbox" id="id_0" onclick="aceAdmin.selectAllUsers(this);"/></th>
+            <th>
+                <input type="checkbox" id="id_0" onclick="aceAdmin.selectAllUsers(this);"/>
+            </th>
             <th>
                 {if $sUserListSort=='id'}
                     <a href="#" onclick="aceAdmin.sortToggle('id', '{$sUserListOrder}'); return false;"><b> id </b></a>
@@ -208,8 +214,8 @@
             <tr class="selectable">
                 <td class="checkbox">
                     {if $oUserCurrent->GetId()!=$oUser->getId()}
-                        <input type="checkbox" id="login_{$oUser->GetLogin()}" onclick="aceAdmin.selectUsers()"/>
-                        {else}
+                        <input type="checkbox" id="login_{$oUser->GetLogin()}" onclick="aceAdmin.user.select()"/>
+                    {else}
                         &nbsp;
                     {/if}
                 </td>

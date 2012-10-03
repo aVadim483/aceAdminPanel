@@ -89,6 +89,11 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return self::FilePath(Config::Get('path.root.server'));
     }
 
+    static function GetPluginsDir()
+    {
+        return self::FilePath(self::GetRootDir() . '/plugins/');
+    }
+
     static function GetRootUrl()
     {
         return self::FilePath(Config::Get('path.root.web'));
@@ -257,7 +262,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         if (!is_array($aPaths)) $aPaths = array((string)$aPaths);
         $sNeedle = self::FilePath($sNeedle);
         $aCheckPaths = self::FilePath($aPaths);
-        foreach ($aCheckPaths as $n=>$sPath) {
+        foreach ($aCheckPaths as $n => $sPath) {
             if (substr($sPath, -2) == '/*') {
                 $sPath = substr($sPath, 0, strlen($sPath) - 2);
                 if (strpos($sNeedle, $sPath) === 0) return $aPaths[$n];
@@ -298,11 +303,59 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return $aResult;
     }
 
+    static protected function _calledFilePath()
+    {
+        $aStack = debug_backtrace();
+        foreach ($aStack as $aCaller) {
+            if (isset($aCaller['file']) AND $aCaller['file'] != __FILE__) {
+                return dirname($aCaller['file']) . '/';
+            }
+        }
+        return '';
+    }
+
+    static function FullDir($sFile)
+    {
+        if (self::IsLocalDir($sFile)) {
+            return self::FilePath($sFile);
+        }
+        return self::FilePath(self::_calledFilePath() . $sFile);
+    }
+
+    static function FileExists($sFile)
+    {
+        return is_file($sFile);
+    }
+
+    static function FileInclude($sFile, $bOnce = true)
+    {
+        $config = array();
+        $sFile = self::FullDir($sFile);
+        if ($bOnce) {
+            $xResult = include_once($sFile);
+        } else {
+            $xResult = include($sFile);
+        }
+        if ($config AND is_array($config)) {
+            $xResult = $config;
+        }
+        return $xResult;
+    }
+
+    static function FileIncludeIfExists($sFile, $bOnce = true)
+    {
+        $xResult = null;
+        $sFile = self::FullDir($sFile);
+        if (ACE::FileExists($sFile)) $xResult = self::FileInclude($sFile, $bOnce);
+        return $xResult;
+    }
+
     /**
      * Преобразует строку в массив
      *
      * @param   string|array    $sStr
-     * @param   string          $sChr
+     * @param   string $sChr
+     * @param   bool $bSkipEmpty
      *
      * @return  array
      */

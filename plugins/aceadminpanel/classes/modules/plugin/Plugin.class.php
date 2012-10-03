@@ -4,11 +4,11 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 1.5.210
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version: 0.5
- * @File Name: Plugin.class.php
+ * @LiveStreet Version: 1.0.1
+ * @File Name: %%file_name%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -251,7 +251,7 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
      *
      * @return  array
      */
-    public function GetList($aFilter=array())
+    public function GetList($aFilter = array())
     {
         $aPlugins = array();
 
@@ -438,6 +438,14 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
             $oPlugin = $aPlugins[$sPlugin];
         }
         return $oPlugin;
+    }
+
+    public function GetDelegatesOnly($sType, $sFrom)
+    {
+        if (isset($this->aDelegates[$sType][$sFrom]['delegate'])) {
+            return array($this->aDelegates[$sType][$sFrom]['delegate']);
+        }
+        return null;
     }
 
 }

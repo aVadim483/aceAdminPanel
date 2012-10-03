@@ -7,7 +7,7 @@
  * @Version:
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version: 0.5
+ * @LiveStreet Version: 1.0.1
  * @File Name: Viewer.class.php
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
@@ -102,8 +102,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
             if (strpos($sTemplate, $sPathRoot) !== 0 AND !is_file($sTemplate) AND ($sPlugin = $this->_getCallerPlugin())) {
                 $sRealTemplate = $sPathRoot . '/plugins/' . $sPlugin . '/templates/skin/'
                     . Config::Get($this->sPlugin . '.saved.view.skin') . '/' . $sTemplate;
-            }
-            elseif (preg_match('|^' . $sPathRoot . '/plugins/(\w+)/templates/skin/default/(.*)$|', $sTemplate, $aMatches)) {
+            } elseif (preg_match('|^' . $sPathRoot . '/plugins/(\w+)/templates/skin/default/(.*)$|', $sTemplate, $aMatches)) {
                 // если дефолтный шаблон плагина, то проверим, нет ли шаблона в подмененном скине
                 $sRealTemplate = ACE::FilePath(
                     Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
@@ -115,13 +114,11 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
                             . 'default-' . Config::Get('js.lib') . '/' . $aMatches[2]);
                 }
             }
-        }
-        elseif (Config::Get('js.lib')) {
+        } elseif (Config::Get('js.lib')) {
             if (strpos($sTemplate, $sPathRoot) !== 0 AND !is_file($sTemplate) AND ($sPlugin = $this->_getCallerPlugin())) {
                 $sRealTemplate = $sPathRoot . '/plugins/' . $sPlugin . '/templates/skin/'
                     . 'default-' . Config::Get('js.lib') . '/' . $sTemplate;
-            }
-            elseif (preg_match('|^' . $sPathRoot . '/plugins/(\w+)/templates/skin/default/(.*)$|', $sTemplate, $aMatches)) {
+            } elseif (preg_match('|^' . $sPathRoot . '/plugins/(\w+)/templates/skin/default/(.*)$|', $sTemplate, $aMatches)) {
                 // если дефолтный шаблон плагина, то проверим, нет ли дефолтного шаблона с учетом js-lib
                 $sRealTemplate = ACE::FilePath(
                     Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
@@ -178,7 +175,8 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
      *
      * @return mixed
      */
-    protected function InitBlockParams() {
+    protected function InitBlockParams()
+    {
         // для ajax-запросов и локального вьюера блоки не нужны
         if (!$this->GetResponseAjax() AND !$this->bLocal) {
             return parent::InitBlockParams();
@@ -394,7 +392,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
             if (is_file(ACE::FilePath($sDir . '/blocks/block.' . $sName . '.tpl')))
                 return 'block';
             // * Если найден шаблон по имени блока то считаем его простым шаблоном
-            if (is_file(ACE::FilePath($sDir . '/' . $sName )))
+            if (is_file(ACE::FilePath($sDir . '/' . $sName)))
                 return 'template';
         }
         return parent::DefineTypeBlock($sName, $sDir);

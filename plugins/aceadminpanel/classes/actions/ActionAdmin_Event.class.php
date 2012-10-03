@@ -4,11 +4,11 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 1.5.210
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version: 0.5
- * @File Name: AceAdminPlugin.class.php
+ * @LiveStreet Version: 1.0.1
+ * @File Name: %%file_name%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -46,6 +46,8 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
 
     public function Init()
     {
+        $this->sCurrentEvent = Router::GetActionEvent();
+
         if (($result = parent::Init())) {
             return $result;
         }
@@ -143,17 +145,20 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
 
     protected function RegisterEvent()
     {
+        parent::RegisterEvent();
     }
 
     public function  __call($sName, $aArgs)
     {
         if (preg_match('/^Event([A-Z]\w+)/', $sName, $matches)) {
+            /*
             $sAddonId = $this->_CheckAdminAddon($matches[1]);
             if (isset($this->aAddons[$sAddonId])) {
                 return $this->_CallAdminAddon($sAddonId, $aArgs);
             } elseif ($this->bAddonsAutoCheck) {
 
             }
+            */
         } elseif (preg_match('/^Plugin_/', $sName)) {
             $sName = 'PluginAceadminpanel_' . $sName;
         }
@@ -213,8 +218,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
     {
         if (!$this->_checkRefererUrl()) {
             return null;
-        }
-        else {
+        } else {
             return parent::GetParam($nOffset, $xDefault);
         }
     }
@@ -259,7 +263,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
      * @param   string  $sType
      * @return  string
      */
-    protected function GetRequestCheck($sName, $default = null, $sType = null)
+    protected function _GetRequestCheck($sName, $default = null, $sType = null)
     {
         $result = getRequest($sName, $default, $sType);
 

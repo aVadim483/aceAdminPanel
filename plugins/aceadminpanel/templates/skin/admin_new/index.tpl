@@ -134,10 +134,11 @@
         {include file='inc.system_message.tpl'}
         {hook run='content_begin'}
         {block name="content"}
+        <!--
             <p>Action: {$sAction}</p>
 
             <p>Event: {$sEvent}</p>
-
+        -->
             {if $tpl_content}
                 {$tpl_content}
             {/if}

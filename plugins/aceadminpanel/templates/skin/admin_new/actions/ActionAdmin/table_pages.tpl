@@ -1,4 +1,14 @@
+<ul class="nav nav-tabs">
+    <li class="nav-tabs-add">
+        <a href="{router page='admin'}pages/new/" title="{$oLang->_page_admin_action_edit}">
+            <i class="icon-plus-sign"></i>
+        </a>
+    </li>
+    <li class="active nav-tab-empty"><a href="#">&nbsp;</a></li>
+</ul>
+
 <table class="table table-striped table-bordered table-condensed">
+    <thead>
     <tr>
         <th></th>
         <th>ID</th>
@@ -7,15 +17,14 @@
         <th>{$oLang->page_admin_main}</th>
         <th></th>
     </tr>
+    </thead>
 
-
+    <tbody>
 {foreach from=$aPages item=oPage name=el2}
     <tr>
         <td align="center">
-            <a href="{router page='admin'}pages/edit/{$oPage->getId()}/" title="{$oLang->page_admin_action_edit}">
-                <i class="icon-pencil"></i>
-            </a>
-            &nbsp;
+            <a href="{router page='admin'}pages/edit/{$oPage->getId()}/" title="{$oLang->_page_admin_action_edit}">
+                <i class="icon-pencil"></i></a>
             <a href="{router page='admin'}pages/delete/?page_id={$oPage->getId()}&security_ls_key={$LIVESTREET_SECURITY_KEY}"
                onclick="return confirm('«{$oPage->getTitle()}»: {$oLang->page_admin_action_delete_confirm}');"
                title="{$oLang->page_admin_action_delete}"><i class="icon-remove"></i>
@@ -70,5 +79,6 @@
         </td>
     </tr>
 {/foreach}
+    </tbody>
 
 </table>

@@ -4,11 +4,11 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version:
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version:
- * @File Name:
+ * @LiveStreet Version: 1.0.1
+ * @File Name: %%file_name%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -26,13 +26,11 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->sSkinName = Config::Get('plugin.' . $this->sPlugin . '.skin');
         Config::Set('path.admin.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/admin_' . $this->sSkinName);
 
-        $this->_checkJsLib();
-
         if (Router::GetAction() == 'admin') {
             $this->_preInit();
         }
         $this->AddHook('engine_init_complete', 'EngineInitComplete', __CLASS__, 1000);
-        $this->AddHook('init_action', 'InitAction', __CLASS__);
+        $this->AddHook('init_action', 'InitAction', __CLASS__, 1000);
         $this->AddHook('template_body_end', 'MemoryStats', __CLASS__);
     }
 
@@ -105,51 +103,6 @@ class PluginAceadminpanel_HookAdmin extends Hook
         }
     }
 
-    /**
-     * Определение подгружаемой js-библиотеки
-     *
-     * @return void
-     */
-    protected function _checkJsLib()
-    {
-        $sJsLib = '';
-        if (!Config::Get('js.lib')) {
-            // Сначала смотрим по файлу конфигурации скина
-            $sTemplatePath = Config::Get($this->sPlugin . '.saved.path.smarty.template');
-            if (!$sTemplatePath)
-                $sTemplatePath = Config::Get('path.smarty.template');
-            if (file_exists($sTemplatePath . '/settings/config/config.php')) {
-                $aConfig = include($sTemplatePath . '/settings/config/config.php');
-                if (isset($aConfig['head']['default']['js'])) {
-                    $sJsLib = $this->_checkJsLibFrom($aConfig['head']['default']['js']);
-                }
-            }
-            // Если там нет, то по уже подгруженной конфигурации
-            if (!$sJsLib) {
-                $sJsLib = $this->_checkJsLibFrom(Config::Get('head.default.js'));
-            }
-            if ($sJsLib) {
-                Config::Set('js.lib', $sJsLib);
-                Config::Set('js.' . $sJsLib, true);
-            }
-        }
-    }
-
-    protected function _checkJsLibFrom($aList)
-    {
-        if ($aList AND is_array($aList)) {
-            foreach ($aList as $sStr) {
-                if ($sStr AND is_string($sStr)) {
-                    if (strpos(strtolower($sStr), '/external/jquery')) {
-                        return 'jquery';
-                    } elseif (strpos(strtolower($sStr), '/external/mootools')) {
-                        return 'mootools';
-                    }
-                }
-            }
-        }
-    }
-
     public function EngineInitComplete()
     {
         ACE_Config::LoadCustomConfig();
@@ -166,15 +119,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
         $oUser = $this->_getUser();
         $this->_checkPluginAction();
 
-        //$sScript = Config::Get('path.admin.skin') . '/js/' . 'ace-wrapper.js';
-        //$this->Viewer_AppendScript($sScript);
-        if ($oUser AND $oUser->IsAdministrator()
-            AND Config::Get('plugin.' . $this->sPlugin . '.' . 'icon_menu')
-                AND (Router::GetAction() != 'admin')
-        ) {
-            //$sScript = Config::Get('path.admin.skin') . '/js/' . 'icon_menu.js';
-            //$this->Viewer_AppendScript($sScript);
-        }
+        $sScript = Config::Get('path.admin.skin') . '/assets/js/' . 'ace-admin.js';
+        $this->Viewer_AppendScript($sScript);
 
         if (Router::GetAction() == 'admin' OR Router::GetAction() == 'error') return;
 

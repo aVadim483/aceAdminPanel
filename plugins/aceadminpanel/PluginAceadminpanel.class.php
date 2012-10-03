@@ -4,11 +4,11 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 1.5.210
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version: 0.5
- * @File Name: PluginAceadminpanel.class.php
+ * @LiveStreet 1.0.1
+ * @File Name: %%file_name%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -25,6 +25,9 @@ class PluginAceadminpanel extends Plugin
      * @var array
      */
     public $aDelegates = array(
+        'action' => array(
+            'ActionAdminPlugin' => 'PluginAceblogextender_ActionAdminPlugin',
+        ),
         'module' => array(
         ),
         'entity' => array(
@@ -195,6 +198,7 @@ class PluginAceadminpanel extends Plugin
             Engine::getInstance()->Plugin_Inherit($sFrom, $sTo, get_class($this));
             include_once($sFile);
         }
+        include_once(Plugin::GetPath($this->sPlugin) . '/classes/actions/ActionAdminPlugin.class.php');
     }
 }
 

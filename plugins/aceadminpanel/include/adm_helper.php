@@ -753,6 +753,11 @@ class HelperPluginLoader extends LsObject
      */
     protected function ClassToPath($xClass)
     {
+        return $this->Class2Dir($xClass);
+    }
+
+    public function Class2Dir($xClass)
+    {
         if (is_array($xClass)) $aClassElements = $xClass;
         else $aClassElements = HelperPlugin::ClassNameExplode($xClass);
 

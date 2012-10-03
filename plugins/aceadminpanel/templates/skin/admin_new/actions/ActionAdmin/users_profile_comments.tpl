@@ -1,4 +1,5 @@
 <table class="table table-bordered table-striped">
+    <thead>
     <tr>
         <th align="center" width="40px">&nbsp;</th>
         <th align="center" width="50px">ID</th>
@@ -9,7 +10,9 @@
         <th align="center" width="40px">Votes</th>
         <th align="center" width="40px">Rating</th>
     </tr>
+    </thead>
 
+    <tbody>
     {foreach $aComments as $oComment}
     {assign var=oTopic value=$oComment->getTarget()}
     <tr>
@@ -42,5 +45,6 @@
         </td>
     </tr>
     {/foreach}
+    </tbody>
 
 </table>

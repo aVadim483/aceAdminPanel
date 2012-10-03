@@ -1,20 +1,22 @@
 <?php
-    /*---------------------------------------------------------------------------
-    * @Plugin Name: aceAdminPanel
-    * @Plugin Id: aceadminpanel
-    * @Plugin URI:
-    * @Description: Advanced Administrator's Panel for LiveStreet/ACE
-    * @Version: 1.5.210
-    * @Author: Vadim Shemarov (aka aVadim)
-    * @Author URI:
-    * @LiveStreet Version: 0.5
-    * @File Name:
-    * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
-    *----------------------------------------------------------------------------
-    */
+/*---------------------------------------------------------------------------
+* @Plugin Name: aceAdminPanel
+* @Plugin Id: aceadminpanel
+* @Plugin URI:
+* @Description: Advanced Administrator's Panel for LiveStreet/ACE
+* @Version: 1.5.210
+* @Author: Vadim Shemarov (aka aVadim)
+* @Author URI:
+* @LiveStreet Version: 0.5
+* @File Name:
+* @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+*----------------------------------------------------------------------------
+*/
 
 class PluginAceadminpanel_ActionAdmin_EventPlugins extends PluginAceadminpanel_Inherit_ActionAdmin_EventPlugins
 {
+    protected $oAdminAction = null;
+
     protected function RegisterEvent()
     {
         parent::RegisterEvent();
@@ -26,12 +28,21 @@ class PluginAceadminpanel_ActionAdmin_EventPlugins extends PluginAceadminpanel_I
         $this->sMenuSubItemSelect = 'plugins';
         $this->_PluginSetTemplate('plugins');
 
-        if ($this->GetParam(0) == 'config') {
+        if ($this->GetParam(0) == 'ext') {
+            return $this->_EventPluginsExternalAdmin(1);
+        } elseif ($this->GetParam(0) == 'config') {
             $this->sMenuSubItemSelect = 'config';
             $this->PluginDelBlock('right', 'AdminInfo');
             return $this->_EventPluginsConfig();
         } else {
-            $this->sMenuSubItemSelect = 'list';
+            //$this->sMenuSubItemSelect = 'list';
+            $sParam = $this->GetParam(0);
+            if ($sParam AND $sParam != 'list') {
+                $aPlugins = $this->Plugin_GetActivePlugins();
+                if (in_array($sParam, $aPlugins)) {
+                    return $this->_EventPluginsExternalAdmin(0);
+                }
+            }
             return $this->_EventPluginsList();
         }
     }
@@ -88,6 +99,7 @@ class PluginAceadminpanel_ActionAdmin_EventPlugins extends PluginAceadminpanel_I
                 }
             }
         }
+
         $this->Viewer_Assign('aPluginList', $aPlugins);
         $this->Viewer_AddHtmlTitle($this->Lang_Get('plugins_administartion_title'));
         $this->Viewer_Assign('sMode', $sMode);
@@ -166,6 +178,33 @@ class PluginAceadminpanel_ActionAdmin_EventPlugins extends PluginAceadminpanel_I
         return $this->PluginAceadminpanel_Plugin_Deactivate($sPlugin);
     }
 
+    protected function _EventPluginsExternalAdmin($nOffset)
+    {
+        $sActionClass = 'Plugin' . ucfirst($this->GetParam($nOffset)) . '_ActionAdminPlugin';
+        $sActionClass = $this->Plugin_GetDelegate('action', $sActionClass);
+
+        //var_dump($sActionClass);
+        if ($this->Plugin_GetDelegationChain('action', $sActionClass)) {
+            $sActionClass = $this->Plugin_GetDelegate('action', $sActionClass);
+        }
+        $sFile = HelperPluginLoader::getInstance()->Class2Dir($sActionClass);
+        if (ACE::FileExists($sFile)) {
+            $this->sMenuSubItemSelect = 'plugins_admin_' . strtolower($this->GetParam($nOffset));
+
+            $this->oAdminAction = new $sActionClass($this->oEngine, 'admin');
+
+            if (method_exists($this->oAdminAction, 'Init'))
+                $this->oAdminAction->Init();
+            if (method_exists($this->oAdminAction, 'Admin'))
+                $this->oAdminAction->Admin();
+            elseif (method_exists($this->oAdminAction, 'EventIndex'))
+                $this->oAdminAction->EventIndex();
+            if (method_exists($this->oAdminAction, 'EventShutdown'))
+                $this->oAdminAction->EventShutdown();
+            if (method_exists($this->oAdminAction, 'Done'))
+                $this->oAdminAction->Done();
+        }
+    }
 }
 
 // EOF

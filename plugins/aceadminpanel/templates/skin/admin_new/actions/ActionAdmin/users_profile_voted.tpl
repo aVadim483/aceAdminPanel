@@ -1,4 +1,4 @@
-<h4>{$oLang->_adm_user_votes_users}</h4>
+<h4>{$oLang->_adm_user_voted_users}</h4>
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -10,7 +10,7 @@
     </thead>
 
     <tbody>
-{foreach $aVotes.users as $aData}
+{foreach $aVoted.users as $aData}
     <tr>
         <td>&nbsp;{$aData.vote_date}&nbsp;</td>
         <td>&nbsp;{$aData.user_login}&nbsp;</td>
@@ -24,7 +24,7 @@
 
 </table>
 
-<h4>{$oLang->_adm_user_votes_blogs}</h4>
+<h4>{$oLang->_adm_user_voted_blogs}</h4>
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -36,7 +36,7 @@
     </thead>
 
     <tbody>
-{foreach $aVotes.blogs as $aData}
+{foreach $aVoted.blogs as $aData}
     <tr>
         <td>&nbsp;{$aData.vote_date}&nbsp;</td>
         <td>&nbsp;{$aData.user_login}&nbsp;</td>
@@ -50,7 +50,7 @@
 
 </table>
 
-<h4>{$oLang->_adm_user_votes_topics}</h4>
+<h4>{$oLang->_adm_user_voted_topics}</h4>
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -62,7 +62,7 @@
     </thead>
 
     <tbody>
-{foreach $aVotes.topics as $aData}
+{foreach $aVoted.topics as $aData}
     <tr>
         <td>&nbsp;{$aData.vote_date}&nbsp;</td>
         <td>&nbsp;{$aData.user_login}&nbsp;</td>
@@ -76,7 +76,7 @@
 
 </table>
 
-<h4>{$oLang->_adm_user_votes_comments}</h4>
+<h4>{$oLang->_adm_user_voted_comments}</h4>
 <table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -88,7 +88,7 @@
     </thead>
 
     <tbody>
-{foreach $aVotes.comments as $aData}
+{foreach $aVoted.comments as $aData}
     <tr>
         <td>&nbsp;{$aData.vote_date}&nbsp;</td>
         <td>&nbsp;{$aData.user_login}&nbsp;</td>

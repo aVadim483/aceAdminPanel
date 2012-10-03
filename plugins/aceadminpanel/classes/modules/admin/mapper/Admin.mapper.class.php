@@ -4,10 +4,10 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 1.5.210
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version: 0.5
+ * @LiveStreet Version: 1.0.1
  * @File Name: Admin.mapper.class.php
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
@@ -539,6 +539,70 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         return $aResult;
     }
 
+    public function GetUserIps($nUserId, $nPerPage = null)
+    {
+        $sql = "SELECT target_id, target_type, vote_value, topic_title AS title, u.user_login, vote_date
+		FROM " . Config::Get('db.table.vote') . " AS v
+			LEFT JOIN " . Config::Get('db.table.topic') . " AS t ON t.topic_id=v.target_id
+			LEFT JOIN " . Config::Get('db.table.user') . " AS u ON u.user_id=v.user_voter_id
+		WHERE v.target_type='topic' AND t.user_id=?d ORDER BY vote_date DESC LIMIT ?d";
+        $aResult['topics'] = $this->oDb->select($sql, $nUserId, $iPerPage);
+
+        $sql = "SELECT vote_value, blog_title AS title, u.user_login, vote_date
+		FROM " . Config::Get('db.table.vote') . " AS v
+			LEFT JOIN " . Config::Get('db.table.blog') . " AS b ON b.blog_id=v.target_id
+			LEFT JOIN " . Config::Get('db.table.user') . " AS u ON u.user_id=v.user_voter_id
+		WHERE target_type='blog' AND b.user_owner_id=?d ORDER BY vote_date DESC LIMIT ?d";
+        $aResult['blogs'] = $this->oDb->select($sql, $nUserId, $iPerPage);
+
+        $sql =
+            "SELECT
+                'comment' AS action_type, comment_id AS action_id,
+                target_type, target_id,
+                comment_date AS action_date, comment_user_ip AS action_ip
+            FROM " . Config::Get('db.table.comment') . " AS t
+                WHERE t.user_id=?d ORDER BY comment_date DESC {LIMIT ?d}";
+        $aResult['comments'] = $this->oDb->select($sql, $nUserId, ($nPerPage ? $nPerPage : DBSIMPLE_SKIP));
+
+        $sql =
+            "SELECT
+                'talk' AS action_type, talk_id AS action_id,
+                '' AS target_type, '' AS target_id,
+                talk_date AS action_date, talk_user_ip AS action_ip
+            FROM " . Config::Get('db.table.talk') . " AS t
+                WHERE t.user_id=?d ORDER BY talk_date DESC {LIMIT ?d}";
+        $aResult['talk'] = $this->oDb->select($sql, $nUserId, ($nPerPage ? $nPerPage : DBSIMPLE_SKIP));
+
+        $sql =
+            "SELECT
+                'topic' AS action_type, topic_id AS action_id,
+                '' AS target_type, '' AS target_id,
+                topic_date_add AS action_date, topic_user_ip AS action_ip
+            FROM " . Config::Get('db.table.topic') . " AS t
+                WHERE t.user_id=?d ORDER BY topic_date_add DESC {LIMIT ?d}";
+        $aResult['topic'] = $this->oDb->select($sql, $nUserId, ($nPerPage ? $nPerPage : DBSIMPLE_SKIP));
+
+        $sql =
+            "SELECT
+                'topic' AS action_type, topic_id AS action_id,
+                '' AS target_type, '' AS target_id,
+                topic_date_add AS action_date, topic_user_ip AS action_ip
+            FROM " . Config::Get('db.table.topic') . " AS t
+                WHERE t.user_id=?d ORDER BY topic_date_add DESC {LIMIT ?d}";
+        $aResult['topic'] = $this->oDb->select($sql, $nUserId, ($nPerPage ? $nPerPage : DBSIMPLE_SKIP));
+
+        if (Config::Get('db.table.company_feedback'))
+        $sql =
+            "SELECT
+                'company_feedback' AS action_type, feedback_id AS action_id,
+                'company' AS target_type, company_id AS target_id,
+                feedback_date AS action_date, feedback_user_ip AS action_ip
+            FROM " . Config::Get('db.table.company_feedback') . " AS t
+                WHERE t.user_id=?d ORDER BY feedback_date DESC {LIMIT ?d}";
+        $aResult['company_feedback'] = $this->oDb->select($sql, $nUserId, ($nPerPage ? $nPerPage : DBSIMPLE_SKIP));
+        return $aResult;
+    }
+
     public function AddAdministrator($nUserId)
     {
         $sql = "SELECT user_id FROM " . Config::Get('db.table.user_administrator') . " WHERE user_id=?";
@@ -745,28 +809,22 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         if (isset($aParam['sort'])) {
             if ($aParam['sort'] == 'code') {
                 $sSort = 'i.invite_code';
-            }
-            elseif ($aParam['sort'] == 'user_from') {
+            } elseif ($aParam['sort'] == 'user_from') {
                 $sSort = 'u1.user_login';
-            }
-            elseif ($aParam['sort'] == 'date_add') {
+            } elseif ($aParam['sort'] == 'date_add') {
                 $sSort = 'i.invite_date_add';
-            }
-            elseif ($aParam['sort'] == 'user_to') {
+            } elseif ($aParam['sort'] == 'user_to') {
                 $sSort = 'u2.user_login';
-            }
-            elseif ($aParam['sort'] == 'date_used') {
+            } elseif ($aParam['sort'] == 'date_used') {
                 $sSort = 'i.invite_used';
-            }
-            else {
+            } else {
                 $sSort = 'invite_id';
             }
         }
         if (isset($aParam['order'])) {
             if ($aParam['order'] == 1) {
                 $sOrder = 'DESC';
-            }
-            else {
+            } else {
                 $sOrder = 'ASC';
             }
         }

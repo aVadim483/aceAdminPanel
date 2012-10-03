@@ -4,10 +4,10 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 1.5.210
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version: 0.5
+ * @LiveStreet Version: 1.0.1
  * @File Name: Plugin.entity.class.php
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
@@ -23,36 +23,39 @@ class PluginAceadminpanel_ModulePlugin_EntityPlugin extends Entity
             return null;
     }
 
-    public function GetProperty($prop)
+    public function GetProperty($sProp=null)
     {
-        return $this->_aData['property']->$prop;
+        if (is_null($sProp))
+            return $this->_aData['property'];
+        else
+            return $this->_aData['property']->$sProp;
     }
 
     public function GetName()
     {
         $xProp = $this->GetProperty('name');
-        if ($xProp->lang)
-            return $xProp->lang;
-        else
+        if ($xProp->data)
             return $xProp->data;
+        else
+            return $xProp->lang;
     }
 
     public function GetDescription()
     {
         $xProp = $this->GetProperty('description');
-        if ($xProp->lang)
-            return $xProp->lang;
-        else
+        if ($xProp->data)
             return $xProp->data;
+        else
+            return $xProp->lang;
     }
 
     public function GetAuthor()
     {
         $xProp = $this->GetProperty('author');
-        if ($xProp->lang)
-            return $xProp->lang;
-        else
+        if ($xProp->data)
             return $xProp->data;
+        else
+            return $xProp->lang;
     }
 
     public function GetPluginClass()

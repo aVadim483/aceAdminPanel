@@ -4,11 +4,11 @@
     * @Plugin Id: aceadminpanel
     * @Plugin URI:
     * @Description: Advanced Administrator's Panel for LiveStreet/ACE
-    * @Version: 1.5.210
+    * @Version: 2.0
     * @Author: Vadim Shemarov (aka aVadim)
     * @Author URI:
-    * @LiveStreet Version: 0.5
-    * @File Name: AceAdminPlugin.class.php
+    * @LiveStreet Version: 1.0.1
+    * @File Name: %%file_name%%
     * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
     *----------------------------------------------------------------------------
     */
@@ -29,11 +29,11 @@ class PluginAceadminpanel_ActionAdmin_EventPages extends PluginAceadminpanel_Inh
 
         $this->sMenuSubItemSelect = 'list';
 
-        if (($sAdminAction = $this->getRequestCheck('action'))) {
+        if (($sAdminAction = $this->_getRequestCheck('action'))) {
             $this->EventPagesAction($sAdminAction);
         }
         // * Обработка создания новой страницы
-        if ($this->getRequestCheck('submit_page_save')) {
+        if ($this->_getRequestCheck('submit_page_save')) {
             if (!getRequest('page_id')) {
                 $this->EventPagesAddSubmit();
             }
@@ -75,7 +75,7 @@ class PluginAceadminpanel_ActionAdmin_EventPages extends PluginAceadminpanel_Inh
     protected function EventPagesAction($sAdminAction = null)
     {
         if ($sAdminAction) {
-            $oPage = $this->PluginPage_Page_GetPageById($this->getRequestCheck('page_id'));
+            $oPage = $this->PluginPage_Page_GetPageById($this->_getRequestCheck('page_id'));
 
             if ($oPage) {
                 if (($sAdminAction == 'activate') OR ($sAdminAction == 'deactivate')) {
@@ -171,7 +171,7 @@ class PluginAceadminpanel_ActionAdmin_EventPages extends PluginAceadminpanel_Inh
     protected function EventPagesEdit()
     {
         if (($oPageEdit = $this->PluginPage_Page_GetPageById($this->GetParam(1)))) {
-            if ($this->getRequestCheck('submit_page_save')) {
+            if ($this->_getRequestCheck('submit_page_save')) {
                 // * Если отправили форму с редактированием, то обрабатываем её
                 $this->EventPagesEditSubmit($oPageEdit);
             } else {
@@ -254,7 +254,7 @@ class PluginAceadminpanel_ActionAdmin_EventPages extends PluginAceadminpanel_Inh
      */
     protected function EventPagesDelSubmit()
     {
-        $nPageId = $this->GetRequestCheck('page_id');
+        $nPageId = $this->_getRequestCheck('page_id');
         if ($this->PluginPage_Page_DeletePageById($nPageId)) {
             $this->_messageNotice($this->Lang_Get('page_admin_action_delete_ok'), 'page:delete', true);
             return true;
@@ -269,7 +269,7 @@ class PluginAceadminpanel_ActionAdmin_EventPages extends PluginAceadminpanel_Inh
      */
     protected function EventPagesOptions()
     {
-        if ($this->GetRequestCheck('submit_options_save')) {
+        if ($this->_getRequestCheck('submit_options_save')) {
             if ($this->EventInfoParamsSubmit()) {
                 $this->_messageNotice($this->Lang_Get('adm_saved_ok'), 'page:options');
             } else {

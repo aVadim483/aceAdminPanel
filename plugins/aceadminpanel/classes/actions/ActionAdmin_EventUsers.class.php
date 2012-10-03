@@ -4,10 +4,10 @@
 * @Plugin Id: aceadminpanel
 * @Plugin URI:
 * @Description: Advanced Administrator's Panel for LiveStreet/ACE
-* @Version: 1.5.210
+* @Version: 2.0
 * @Author: Vadim Shemarov (aka aVadim)
 * @Author URI:
-* @LiveStreet Version: 0.5
+* @LiveStreet Version: 1.0.1
 * @File Name:
 * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 *----------------------------------------------------------------------------
@@ -25,7 +25,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
     {
         $this->sMenuSubItemSelect = 'list';
 
-        if (($sAdminAction = $this->getRequestCheck('adm_user_action'))) {
+        if (($sAdminAction = $this->_getRequestCheck('adm_user_action'))) {
             if ($sAdminAction == 'adm_ban_user') {
                 $this->EventUsersBan();
             } elseif ($sAdminAction == 'adm_unban_user') {
@@ -66,9 +66,12 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
     protected function EventUserfields()
     {
-        return $this->EventUsersFields();
+        $xResult = parent::EventUserFields();
+        //return $this->EventUsersFields();
+        return $xResult;
     }
 
+    /*
     protected function EventUsersFields()
     {
         $this->sMenuSubItemSelect = 'fields';
@@ -81,6 +84,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         $this->Viewer_Assign('aUserFields', $aUserFields);
         $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users_fields.tpl');
     }
+    */
 
     protected function EventUsersBan($sUserLogin = null)
     {
@@ -131,7 +135,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
     protected function EventUsersAddAdministrator()
     {
-        $aUserLogins = ACE::Str2Array($this->getRequestCheck('user_login_admin'), ',', true);
+        $aUserLogins = ACE::Str2Array($this->_getRequestCheck('user_login_admin'), ',', true);
         if ($aUserLogins)
             foreach ($aUserLogins as $sUserLogin) {
                 if (!$sUserLogin OR !($oUser = $this->PluginAceadminpanel_Admin_GetUserByLogin($sUserLogin))) {
@@ -153,7 +157,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
     protected function EventUsersDelAdministrator()
     {
-        $sUserLogin = $this->getRequestCheck('user_login');
+        $sUserLogin = $this->_getRequestCheck('user_login');
         if (!$sUserLogin OR !($oUser = $this->PluginAceadminpanel_Admin_GetUserByLogin($sUserLogin))) {
             $this->_messageError($this->Lang_Get('adm_user_not_found', $sUserLogin), 'admins:delete');
         } else {
@@ -353,7 +357,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
     protected function EventUsersMessage()
     {
-        if ($this->getRequestCheck('send_common_message') == 'yes') {
+        if ($this->_getRequestCheck('send_common_message') == 'yes') {
             $this->EventUsersMessageCommon();
         } else {
             $this->EventUsersMessageSeparate();
@@ -379,9 +383,11 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         } elseif ($sMode == 'comments') {
             $this->EventUsersProfileComments($oUserProfile);
         } elseif ($sMode == 'voted') {
-            $this->EventUsersProfileVotedFor($oUserProfile);
+            $this->EventUsersProfileVotedBy($oUserProfile);
         } elseif ($sMode == 'votes') {
-            $this->EventUsersProfileVotes($oUserProfile);
+            $this->EventUsersProfileVotesFor($oUserProfile);
+        } elseif ($sMode == 'ips') {
+            $this->EventUsersProfileIps($oUserProfile);
         } else {
             $sMode = 'info';
             $this->EventUsersProfileInfo($oUserProfile);
@@ -475,18 +481,25 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         $this->Viewer_Assign('aPaging', $aPaging);
     }
 
-    protected function EventUsersProfileVotedFor($oUserProfile)
+    protected function EventUsersProfileVotedBy($oUserProfile)
     {
         $aVotes = $this->PluginAceadminpanel_Admin_GetVotedByUser($oUserProfile->getId(), $this->aConfig['votes_per_page']);
 
-        $this->Viewer_Assign('aVotes', $aVotes);
+        $this->Viewer_Assign('aVoted', $aVotes);
     }
 
-    protected function EventUsersProfileVotes($oUserProfile)
+    protected function EventUsersProfileVotesFor($oUserProfile)
     {
         $aVotes = $this->PluginAceadminpanel_Admin_GetVotesForUser($oUserProfile->getId(), $this->aConfig['votes_per_page']);
 
         $this->Viewer_Assign('aVotes', $aVotes);
+    }
+
+    protected function EventUsersProfileIps($oUserProfile)
+    {
+        $aIps = $this->PluginAceadminpanel_Admin_GetUserIps($oUserProfile->getId());
+
+        $this->Viewer_Assign('aIps', $aIps);
     }
 
     protected function EventUsersActivate()
@@ -532,7 +545,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
         $sUserFilterIp = '*.*.*.*';
         $sUserRegDate = '';
-        if ($this->getRequestCheck('adm_user_action') == 'adm_user_seek') {
+        if ($this->_getRequestCheck('adm_user_action') == 'adm_user_seek') {
             if (($sUserLogin = getRequest('user_filter_login'))) {
                 if ($this->PluginAceadminpanel_Admin_GetUserId($sUserLogin)) {
                     $aFilter['login'] = $sUserLogin;
@@ -707,7 +720,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
         $sUserFilterIp = '*.*.*.*';
         $sUserRegDate = '';
-        if ($this->getRequestCheck('adm_user_action') == 'adm_user_seek') {
+        if ($this->_getRequestCheck('adm_user_action') == 'adm_user_seek') {
             if (($sUserLogin = getRequest('user_login_seek'))) {
                 if ($this->PluginAceadminpanel_Admin_GetUserId($sUserLogin)) {
                     $aFilter['login'] = $sUserLogin;
@@ -857,14 +870,14 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             $sMode = 'list';
         }
 
-        $sInviteMode = $this->getRequestCheck('adm_invite_mode');
+        $sInviteMode = $this->_getRequestCheck('adm_invite_mode');
         if (!$sInviteMode) $sInviteMode = 'mail';
         $iInviteCount = 0 + intVal(getRequest('invite_count'));
         $aNewInviteList = array();
         $sInviteOrder = getRequest('invite_order');
         $sInviteSort = getRequest('invite_sort');
 
-        if ($this->getRequestCheck('adm_invite_submit')) {
+        if ($this->_getRequestCheck('adm_invite_submit')) {
             if ($sInviteMode == 'text') {
                 if ($iInviteCount <= 0) {
                     $this->_messageError($this->Lang_Get('adm_invaite_text_empty'));

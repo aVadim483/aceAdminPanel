@@ -1,4 +1,5 @@
 <table class="table table-bordered table-striped">
+    <thead>
     <tr>
         <th align="center" width="40px">&nbsp;</th>
         <th align="center" width="50px">Topic ID</th>
@@ -8,7 +9,9 @@
         <th align="center">Votes</th>
         <th align="center">Rating</th>
     </tr>
+    </thead>
 
+    <tbody>
 {foreach from=$aTopics item=oTopic}
     <tr>
         <td align="right">
@@ -39,5 +42,6 @@
         </td>
     </tr>
 {/foreach}
+    </tbody>
 
 </table>

@@ -77,6 +77,9 @@ return array(
 
     'adm_menu_users_fields' => 'Дополнительные поля',
 
+    'adm_menu_additional' => 'Дополнительно',
+    'adm_menu_additional_item' => 'Дополнительно ',
+
     'adm_info_versions' => 'Версии',
 
     'adm_info_version_php' => 'Версия PHP',

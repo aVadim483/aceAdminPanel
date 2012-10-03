@@ -1,3 +1,6 @@
+label {
+    font-weight: bold;
+}
 .nav.logo img {
     margin-top: 5px;
 }
@@ -57,7 +60,12 @@
 }
 .plugins-list td.action .btn {
     width: 32px;
-    padding: 4px 0;
+    padding-top: 4px;
+    height: 26px;
+}
+.plugins-list td.action .btn.btn-inset {
+    margin-top: 1px;;
+    height: 25px;
 }
 
 #user_login_seek {
@@ -68,10 +76,6 @@ form.adm-report .well p {
 }
 .adm_info_value {
     font-weight: bold;
-}
-.form_note {
-    color: #777;
-    font-size: 0.9em;
 }
 #plugin_list .title {
     font-weight: bold;
@@ -260,4 +264,27 @@ h1 .badge, h2 .badge, h3 .badge, h4 .badge {
 span.input-text.file-name {
     margin-left: 8px;
     font-weight: bold;
+}
+button[name=mblog_category_add_blog], button[name=mblog_category_del_blog] {
+    width: 140px;
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+
+.userfield-list li {
+    background: none repeat scroll 0 0 #EEEEEE;
+    color: #777777;
+    line-height: 12px;
+    margin-bottom: 1px;
+    overflow: hidden;
+    padding: 10px;
+}
+
+.userfield-list li .userfield_admin_name {
+    color: #333333;
+    font-weight: bold;
+}
+.userfield-list li .userfield-actions {
+    float: right;
 }

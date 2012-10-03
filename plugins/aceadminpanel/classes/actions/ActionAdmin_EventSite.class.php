@@ -413,6 +413,8 @@ class PluginAceadminpanel_ActionAdmin_EventSite extends PluginAceadminpanel_Inhe
         if (($result = parent::Init())) {
             return $result;
         }
+        if ($this->sCurrentEvent != 'site') return;
+
         //$this->Lang_LoadFile('%%language%%.site_settings');
         $this->_PluginLoadLangFile('%%language%%.site_settings');
         $this->_SetFields();

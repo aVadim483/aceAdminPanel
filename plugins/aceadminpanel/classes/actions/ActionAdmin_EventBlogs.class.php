@@ -4,11 +4,11 @@
     * @Plugin Id: aceadminpanel
     * @Plugin URI:
     * @Description: Advanced Administrator's Panel for LiveStreet/ACE
-    * @Version: 1.5.210
+    * @Version: 2.0
     * @Author: Vadim Shemarov (aka aVadim)
     * @Author URI:
-    * @LiveStreet Version: 0.5
-    * @File Name: AceAdminPlugin.class.php
+    * @LiveStreet Version: 1.0.1
+    * @File Name: %%file_name%%
     * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
     *----------------------------------------------------------------------------
     */
@@ -66,9 +66,9 @@ class PluginAceadminpanel_ActionAdmin_EventBlogs extends PluginAceadminpanel_Inh
     protected function _blogDelete()
     {
         $bOk = false;
-        $iBlogId = $this->GetRequestCheck('blog_id');
-        if ($iBlogId AND ($oBlog = $this->Blog_GetBlogById($iBlogId))) {
-            $bOk = $this->PluginAceadminpanel_Admin_DelBlog($iBlogId);
+        $nBlogId = $this->_GetRequestCheck('blog_id');
+        if ($nBlogId AND ($oBlog = $this->Blog_GetBlogById($nBlogId))) {
+            $bOk = $this->PluginAceadminpanel_Admin_DelBlog($nBlogId);
         }
         if ($bOk) {
             $this->_messageNotice($this->Lang_Get('adm_action_ok'), 'blog_del');

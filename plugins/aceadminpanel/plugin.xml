@@ -7,9 +7,9 @@
         <lang name="default">Vadim Shemarov (aka aVadim)</lang>
     </author>
     <homepage></homepage>
-    <version>1.7.307</version>
+    <version>2.0.312-dev</version>
     <requires>
-        <livestreet>0.5.1</livestreet>
+        <livestreet>1.0.1</livestreet>
         <plugins>
         </plugins>
         <system>

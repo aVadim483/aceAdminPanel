@@ -4,10 +4,10 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 1.5.210
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet Version: 0.5
+ * @LiveStreet Version: 1.0.1
  * @File Name: Admin.class.php
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
@@ -300,6 +300,14 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         if (is_object($oUserId)) $nUserId = $oUserId->GetId();
         else $nUserId = intval($oUserId);
         $data = $this->oMapper->GetVotesForUserId($nUserId, $iPerPage);
+        return $data;
+    }
+
+    public function GetUserIps($oUserId, $nPerPage=null)
+    {
+        if (is_object($oUserId)) $nUserId = $oUserId->GetId();
+        else $nUserId = intval($oUserId);
+        $data = $this->oMapper->GetUserIps($nUserId, $nPerPage);
         return $data;
     }
 

@@ -1,7 +1,8 @@
 // ace-admin.js
+var aceAdmin = aceAdmin || {};
 
-if (aceAdmin === undefined) {
-    var aceAdmin = {
+(function ($) {
+    aceAdmin = {
         store:{},
 
         init:function () {
@@ -9,110 +10,168 @@ if (aceAdmin === undefined) {
         }
     };
 
-    (function () {
-        var $this = aceAdmin;
+    var $this = aceAdmin;
 
-        $this.init = function () {
-        };
+    $this.init = function () {
+    };
 
-        $this.uniqId = function () {
-            return 'id-' + new Date().valueOf() + '-' + Math.floor(Math.random() * 1000000000);
+    $this.uniqId = function () {
+        return 'id-' + new Date().valueOf() + '-' + Math.floor(Math.random() * 1000000000);
+    }
+
+    $this.progressOn = function (element) {
+        element = $(element);
+        if (!element.data('adm-progress-store')) {
+            element.data('adm-progress-store', element.html());
         }
+        element.css('width', element.outerWidth());
+        element.html('<i class="adm-progress"></i>');
+    }
 
-        $this.progressOn = function (element) {
-            element = $(element);
-            if (!element.data('adm-progress-store')) {
-                element.data('adm-progress-store', element.html());
-            }
-            element.css('width', element.outerWidth());
-            element.html('<i class="adm-progress"></i>');
+    $this.progressOff = function (element) {
+        element = $(element);
+        element.find('i.adm-progress').remove();
+        if (element.data('adm-progress-store')) element.html(element.data('adm-progress-store'));
+    }
+
+    $this.plugin = {
+        switch:function (pluginId, action) {
+            var url = aRouter['admin'] + 'plugins/?plugin=' + pluginId + '&action=' + action + '&security_ls_key=' + LIVESTREET_SECURITY_KEY;
+            document.location = url;
+        },
+
+        switchOn:function (pluginId) {
+            return $this.plugin.switch(pluginId, 'activate');
+        },
+
+        switchOff:function (pluginId) {
+            return $this.plugin.switch(pluginId, 'deactivate');
         }
+    }
 
-        $this.progressOff = function (element) {
-            element = $(element);
-            element.find('i.adm-progress').remove();
-            if (element.data('adm-progress-store')) element.html(element.data('adm-progress-store'));
-        }
+    $this.popoverExt = function (element, options) {
+        options = $.extend({
+            attr:{ },
+            css:{ },
+            events:{ }
+        }, options);
+        if (!options.attr.id) options.attr.id = aceAdmin.uniqId();
+        element = $(element);
+        element.popover(options);
+        element.data('popoverOptions', options);
 
-        $this.plugin = {
-            switch:function (pluginId, action) {
-                var url = aRouter['admin'] + 'plugins/?plugin=' + pluginId + '&action=' + action + '&security_ls_key=' + LIVESTREET_SECURITY_KEY;
-                document.location = url;
-            },
+        var popover = element.data('popover');
+        var popoverElement = $(popover.tip());
 
-            switchOn:function (pluginId) {
-                return $this.plugin.switch(pluginId, 'activate');
-            },
-
-            switchOff:function (pluginId) {
-                return $this.plugin.switch(pluginId, 'deactivate');
-            }
-        };
-
-        // указательные окна
-        $this.pointup = function (element, options) {
-            options = $.extend({
-                trigger:'manual',
-                placement:'top',
-                onCancel:function (e, popover) {
-                    // nothing
-                },
-                onConfirm:function (e, popover) {
-                    // nothing
+        if (options.attr) {
+            $.each(options.attr, function (key, value) {
+                switch (key) {
+                    case 'class':
+                        popoverElement.addClass(value);
+                        break;
+                    default:
+                        popoverElement.prop(key, value);
                 }
-            }, options);
-            if (!options.attr.id) options.attr.id = aceAdmin.uniqId();
+            });
+        }
+        if (options.css) {
+            $.each(options.css, function (key, value) {
+                popoverElement.css(key, value);
+            });
+        }
+        $.each(options.events, function (key, func) {
+            $(element).on(key, function (e) {
+                func.apply(this, [e]);
+            });
+        });
+        if (popover.getTitle() === false) {
+            popoverElement.find('.popover-title').css({display:'none'});
+        }
+        return popoverElement;
+    }
 
-            element = $(element);
-            element.popover(options);
-            element.data('popoverOptions', options);
+    // указательные окна
+    $this.pointup = function (element, options) {
+        options = $.extend({
+            trigger:'manual',
+            placement:'top',
+            onCancel:function (e, popover) {
+                // nothing
+            },
+            onConfirm:function (e, popover) {
+                // nothing
+            }
+        }, options);
+        if (!options.attr.id) options.attr.id = aceAdmin.uniqId();
 
-            var popover = element.data('popover');
+        element = $(element);
+        var popoverElement = aceAdmin.popoverExt(element, options);
+
+        $(document).on('click', '#' + options.attr.id + ".popover .confirm", {source:element}, function (e) {
+            var opt = element.data('popoverOptions');
+            if (opt.onConfirm) opt.onConfirm(e, $('#' + opt.attr.id));
+            element.popover('hide');
+        });
+        $(document).on('click', '#' + options.attr.id + ".popover .cancel", {source:element}, function (e) {
+            var opt = element.data('popoverOptions');
+            if (opt.onCancel) opt.onCancel(e, $('#' + opt.attr.id));
+            element.popover('hide');
+        });
+
+        return popoverElement;
+    }
+
+    $this.getPopover = function (element) {
+        var popover = element.data('popover');
+        if (popover) {
             var popoverElement = $(popover.tip());
-
-            if (options.attr) {
-                $.each(options.attr, function (key, value) {
-                    switch (key) {
-                        case 'class':
-                            popoverElement.addClass(value);
-                            break;
-                        default:
-                            popoverElement.prop(key, value);
-                    }
-                });
-            }
-            if (popover.getTitle() === false) {
-                popoverElement.find('.popover-title').css({display:'none'});
-            }
-
-            $(document).on('click', '#' + options.attr.id + ".popover .confirm", {source:element}, function (e) {
-                var opt = element.data('popoverOptions');
-                if (opt.onConfirm) opt.onConfirm(e, $('#' + opt.attr.id));
-                element.popover('hide');
-            });
-            $(document).on('click', '#' + options.attr.id + ".popover .cancel", {source:element}, function (e) {
-                var opt = element.data('popoverOptions');
-                if (opt.onCancel) opt.onCancel(e, $('#' + opt.attr.id));
-                element.popover('hide');
-            });
-
             return popoverElement;
         }
+    }
 
-        $this.isEmpty = function (mixedVar) {
-            return ((typeof mixedVar == 'undefined') || (mixedVar === null));
-        }
+    $this.isEmpty = function (mixedVar) {
+        return ((typeof mixedVar == 'undefined') || (mixedVar === null));
+    }
 
-        $this.init();
-        if ($this.short) $ace = $this;
-    })();
-}
+})(jQuery);
+
+$(function(){
+    aceAdmin.init();
+});
 
 !function ($) {
     "use strict"; // jshint ;_;
 
-    $.fn.pointup = function (option) {
-        return $.fn.popover(option)
+    $.fn.isVisible = function () {
+        var element = $(this);
+        return (element.css('display') != 'none' && element.parent().length);
+    }
+
+}(window.jQuery);
+
+!function ($) {
+    "use strict"; // jshint ;_;
+
+    $.fn.setPopover = function (options) {
+        return aceAdmin.popoverExt(this, options);
+    }
+
+}(window.jQuery);
+
+!function ($) {
+    "use strict"; // jshint ;_;
+
+    $.fn.getPopover = function () {
+        return aceAdmin.getPopover(this);
+    }
+
+}(window.jQuery);
+
+!function ($) {
+    "use strict"; // jshint ;_;
+
+    $.fn.pointup = function (options) {
+        return $.fn.popover(options)
     }
 
 }(window.jQuery);
@@ -225,113 +284,96 @@ aceAdmin.vote = function (type, idTarget, value, viewElements, funcDone) {
 
 }
 
-aceAdmin.switchFormToggle = function (id, show, single) {
-    if (typeof id == 'string') {
-        var el = $('#' + id);
+aceAdmin.selectAllRows = function (element, func) {
+    var table = $(element).parents('table').first();
+    if ($(element).prop('checked')) {
+        $(table).find('tr.selectable td.checkbox input[type=checkbox]').prop('checked', true);
+        $(table).find('tr.selectable').addClass('info');
     } else {
-        var el = $(id);
-        id = el.attr('id');
+        $(table).find('tr.selectable td.checkbox input[type=checkbox]').prop('checked', false);
+        $(table).find('tr.selectable').removeClass('info');
     }
-    if (!single) {
-        var group = el.parents('.switch-form-group').first();
-        if (group.length) {
-            group.find('.switch-form').each(function(){
-                if (el.attr('id') != $(this).attr('id'))
-                    aceAdmin.switchFormToggle($(this), false, true);
-            });
-        }
-    }
-    var btn = el.find('.btn.switch-form-button').removeClass('btn-gray');
-    var form = el.find('.switch-form-content');
-    if ((typeof show == 'undefined' ) || (show === null)) show = form.is(':hidden');
-    if (show) {
-        form.slideDown(function () {
-            form.find('input[type=text]:first').focus();
-        });
-        btn.addClass('btn-gray');
-        if (el.hasClass('switch-form-save')) $.cookie(id, 1);
-    } else {
-        form.slideUp();
-        $.cookie(id, null);
-    }
-};
-
-aceAdmin.switchFormShow = function (id) {
-    return aceAdmin.switchFormToggle(id, true);
-}
-
-aceAdmin.switchFormHide = function (id) {
-    return aceAdmin.switchFormToggle(id, false);
+    if (func) func(element);
 }
 
 aceAdmin.inputFileStyle = function (id) {
     if (aceAdmin.isEmpty(id)) id = $('input.input-file');
     else id = $(id);
 
-    id.each(function(){
+    id.each(function () {
         var inputFile = $(this);
         var wrapper = inputFile.css('opacity', 0)
-            .wrap($('<div></div>').css({position: 'relative'}))
+            .wrap($('<div></div>').css({position:'relative'}))
             .parent();
-        var inner = $('<div></div>').css({position: 'absolute', left: 0, top: 0}).appendTo(wrapper);
+        var inner = $('<div></div>').css({position:'absolute', left:0, top:0}).appendTo(wrapper);
         inner.append(
             $('<button></button>')
                 .addClass('btn')
                 .html(ls.lang.get('aceadminpanel_adm_select_file'))
         ).append($('<span class="input-text file-name"></span>'));
-        inputFile.on('change', function(){
+        inputFile.on('change', function () {
             var fileName = inputFile.val().replace(/^.*[\/\\]/g, '')
             wrapper.find('span.input-text.file-name').text(fileName);
         });
-        wrapper.click(function(event){
+        wrapper.click(function (event) {
             if (!event.target.type || event.target.type != 'file') inputFile.click();
         });
     });
 }
 
-aceAdmin.nativeUiCompatible = function() {
-    /*
-    $('button.button').addClass('btn');
-    $('button.button-primary').addClass('btn-primary');
-
-    $('ul.nav-pills-tabs').addClass('nav-tabs').find('li').each(function(){
-        var link = $(this).data('type');
-        if (link) {
-            $(this).find('a').prop('href', '#' + link);
-        }
-    });
-    */
-
+aceAdmin.nativeUiCompatible = function () {
     // Автокомплит
-    ls.autocomplete.add($(".autocomplete-tags-sep"), aRouter['ajax']+'autocompleter/tag/', true);
-    ls.autocomplete.add($(".autocomplete-tags"), aRouter['ajax']+'autocompleter/tag/', false);
-    ls.autocomplete.add($(".autocomplete-users-sep"), aRouter['ajax']+'autocompleter/user/', true);
-    ls.autocomplete.add($(".autocomplete-users"), aRouter['ajax']+'autocompleter/user/', false);
+    ls.autocomplete.add($(".autocomplete-tags-sep"), aRouter['ajax'] + 'autocompleter/tag/', true);
+    ls.autocomplete.add($(".autocomplete-tags"), aRouter['ajax'] + 'autocompleter/tag/', false);
+    ls.autocomplete.add($(".autocomplete-users-sep"), aRouter['ajax'] + 'autocompleter/user/', true);
+    ls.autocomplete.add($(".autocomplete-users"), aRouter['ajax'] + 'autocompleter/user/', false);
 
     // Всплывающие окна
     $('#window_upload_img').jqm();
-    /*
-    $('#window_login_form').jqm();
-    $('#blog_delete_form').jqm({trigger: '#blog_delete_show'});
-    $('#add_friend_form').jqm({trigger: '#add_friend_show'});
-    $('#userfield_form').jqm();
-    $('#favourite-form-tags').jqm();
-    $('#modal_write').jqm({trigger: '.js-write-window-show'});
-    $('#foto-resize').jqm({modal: true});
-    $('#avatar-resize').jqm({modal: true});
     $('#userfield_form').jqm({toTop: true});
-    $('#photoset-upload-form').jqm({trigger: '#photoset-start-upload'});
-    */
+    /*
+     $('#window_login_form').jqm();
+     $('#blog_delete_form').jqm({trigger: '#blog_delete_show'});
+     $('#add_friend_form').jqm({trigger: '#add_friend_show'});
+     $('#userfield_form').jqm();
+     $('#favourite-form-tags').jqm();
+     $('#modal_write').jqm({trigger: '.js-write-window-show'});
+     $('#foto-resize').jqm({modal: true});
+     $('#avatar-resize').jqm({modal: true});
+     $('#photoset-upload-form').jqm({trigger: '#photoset-start-upload'});
+     */
 }
 
 $(function () {
     $('.switch-form').each(function () {
         var element = $(this);
         var id = element.attr('id');
-        element.find('.switch-form-button').first().on('click', function () {
-            aceAdmin.switchFormToggle(id);
+        element.find('.switch-form-button').click(function (e) {
+            console.log(this);
+            //aceAdmin.switchFormToggle(id);
+            e.stopPropagation();
         });
         //if ($.cookie(id)) aceAdmin.switchFormShow(id);
+    });
+    $('.accordion-body').each(function () {
+        $(this).on('button').each(function () {
+            var id = $(this).attr('id');
+            var but = $(this).parents('.accordion-group').find('.accordion-heading button');
+            if (but.data('toggle') == 'collapse' && (but.data('target') == '#' + id)) {
+                $(this).on('show', function(){
+                    but.addClass('btn-gray');
+                });
+                $(this).on('shown', function(){
+                    $(this).find('form input[type=text]').first().focus();
+                    if ($(this).hasClass('collapse-save')) $.cookie(id, 1);
+                });
+                $(this).on('hide', function(){
+                    but.removeClass('btn-gray');
+                    $.cookie(id, null);
+                });
+            }
+            if ($.cookie(id)) $('#' + id).collapse('show');
+        });
     });
 
     var nav_containers = $('.fix-on-container');
@@ -363,4 +405,5 @@ $(function () {
     aceAdmin.inputFileStyle();
 });
 
+var $ace = aceAdmin || {};
 // EOF

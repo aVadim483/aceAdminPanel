@@ -1,4 +1,4 @@
-{if $sMode=='ids'}				
+{if $sMode=='ids'}
 {literal}
 <script type="text/javascript">
 js_admin["block_ban"] = {
@@ -102,13 +102,13 @@ function AdminReset() {
 <div class="block white">
     <div class="tl"><div class="tr"></div></div>
     <div class="cl"><div class="cr">
-            <h1>{$oLang->adm_users_action} &darr;</h1>
+            <h1>{$oLang->_adm_users_action} &darr;</h1>
             <div style="margin-left:20px;">
                 {if $sMode=='ips'}
                 <form method="post" action="">
                     <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}" />
                     <input type="hidden" name="adm_user_ref" value="{$sPageRef}" />
-                    <h4><span id="a1"><a href="#" onclick="AdminBanAction(1); return false;">{$oLang->adm_include}</a></span><span id="t1" style="display:none;">{$oLang->adm_include}</span></h4>
+                    <h4><span id="a1"><a href="#" onclick="AdminBanAction(1); return false;">{$oLang->_adm_include}</a></span><span id="t1" style="display:none;">{$oLang->_adm_include}</span></h4>
                     <div id="d1" style="margin-left:20px;display:none;">
                         <br />
                         <table>
@@ -123,62 +123,62 @@ function AdminReset() {
                                     <input type="text" name="adm_ip2_3" id="admin_ip2_3" maxlength="3" style="width:25px;text-align:center;" /> .
                                     <input type="text" name="adm_ip2_4" id="admin_ip2_4" maxlength="3" style="width:25px;text-align:center;" /></td></tr>
                         </table><br />
-                        <input type="radio" name="ban_period" value="days" checked />{$oLang->adm_ban_for} <input type="text" name="ban_days" id="ban_days" style="width:25px;padding:0;text-align:right;" /> {$oLang->adm_ban_days}<br />
-                        <input type="radio" name="ban_period" value="unlim" />{$oLang->adm_ban_unlim} <br /><br />
-                        {$oLang->adm_ban_comment} <input type="text" name="ban_comment" maxlength="255" style="width:200px;" /><br />
+                        <input type="radio" name="ban_period" value="days" checked />{$oLang->_adm_ban_for} <input type="text" name="ban_days" id="ban_days" style="width:25px;padding:0;text-align:right;" /> {$oLang->_adm_ban_days}<br />
+                        <input type="radio" name="ban_period" value="unlim" />{$oLang->_adm_ban_unlim} <br /><br />
+                        {$oLang->_adm_ban_comment} <input type="text" name="ban_comment" maxlength="255" style="width:200px;" /><br />
                         <br />
                         <input type="hidden" name="adm_user_action" value="adm_ban_ip" />
-                        <input type="submit" name="adm_action_submit" value="{$oLang->adm_include}" onclick="return AdminBanIpSubmit();" />
+                        <input type="submit" name="adm_action_submit" value="{$oLang->_adm_include}" onclick="return AdminBanIpSubmit();" />
                     </div>
                 </form>
                 {else}
-                <h4><span id="a1"><a href="#" onclick="AdminBanAction(1); return false;">{$oLang->adm_seek}</a></span><span id="t1" style="display:none;">{$oLang->adm_seek}</span></h4>
+                <h4><span id="a1"><a href="#" onclick="AdminBanAction(1); return false;">{$oLang->_adm_seek}</a></span><span id="t1" style="display:none;">{$oLang->_adm_seek}</span></h4>
                 <form method="post" action="" id="admin_form_seek">
                     <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}" />
                     <div id="d1" style="margin-left:20px;display:none;">
                         <p>
-                            <label for="user_login_seek">{$oLang->adm_user_login}</label><br />
+                            <label for="user_login_seek">{$oLang->_adm_user_login}</label><br />
                             <input type="text" name="user_login_seek" id="user_login_seek" value="{$sUserLoginSeek}" maxlength="30" style="width:250px;" /><br />
                         </p>
                         <p>
-                            <label for="user_ip1_seek">{$oLang->adm_user_ip}</label><br />
+                            <label for="user_ip1_seek">{$oLang->_adm_user_ip}</label><br />
                             <input type="text" name="user_ip1_seek" id="user_ip1_seek" value="{$aUserIp.0}" maxlength="3" style="width:30px;text-align:center;" onfocus="AdminSelect('user_ip1_seek')" /> .
                             <input type="text" name="user_ip2_seek" id="user_ip2_seek" value="{$aUserIp.1}" maxlength="3" style="width:30px;text-align:center;" onfocus="AdminSelect('user_ip2_seek')" /> .
                             <input type="text" name="user_ip3_seek" id="user_ip3_seek" value="{$aUserIp.2}" maxlength="3" style="width:30px;text-align:center;" onfocus="AdminSelect('user_ip3_seek')" /> .
                             <input type="text" name="user_ip4_seek" id="user_ip4_seek" value="{$aUserIp.3}" maxlength="3" style="width:30px;text-align:center;" onfocus="AdminSelect('user_ip4_seek')" />
                             <br />
-                            <span class="form_note">{$oLang->adm_user_ip_seek_notice}</span>
+                            <span class="help-block">{$oLang->_adm_user_ip_seek_notice}</span>
                         </p>
                         <p>
-                            <label for="user_regdate_seek">{$oLang->adm_users_date_reg}</label><br />
+                            <label for="user_regdate_seek">{$oLang->_adm_users_date_reg}</label><br />
                             <input type="text" name="user_regdate_seek" id="user_regdate_seek" value="{$aFilter.regdate}" maxlength="10" style="width:250px;" /><br />
-                            <span class="form_note">{$oLang->adm_user_regdate_seek_notice}</span>
+                            <span class="help-block">{$oLang->_adm_user_regdate_seek_notice}</span>
                         </p>
                         <p>
                             <input type="hidden" name="user_list_sort" id="user_list_sort" value="{$sUserListSort}" />
                             <input type="hidden" name="user_list_order" id="user_list_order" value="{$sUserListOrder}" />
                             <input type="hidden" name="adm_user_ref" value="{$sPageRef}" />
                             <input type="hidden" name="adm_user_action" value="adm_user_seek" />
-                            <input type="submit" name="adm_action_submit" value="{$oLang->adm_seek}" />
-                            <input type="reset" name="adm_action_reset" value="{$oLang->adm_reset}" onclick="AdminReset()" />
+                            <input type="submit" name="adm_action_submit" value="{$oLang->_adm_seek}" />
+                            <input type="reset" name="adm_action_reset" value="{$oLang->_adm_reset}" onclick="AdminReset()" />
                         </p>
                     </div>
                 </form>
 
-                <h4><span id="a2"><a href="#" onclick="AdminBanAction(2); return false;">{$oLang->adm_include}</a></span><span id="t2" style="display:none;">{$oLang->adm_include}</span></h4>
+                <h4><span id="a2"><a href="#" onclick="AdminBanAction(2); return false;">{$oLang->_adm_include}</a></span><span id="t2" style="display:none;">{$oLang->_adm_include}</span></h4>
                 <div id="d2" style="margin-left:20px;display:none;">
                     <form method="post" action="">
                         <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}" />
                         <input type="hidden" name="adm_user_ref" value="{$sPageRef}" />
                         <p>
-                            <label for="ban_login">{$oLang->adm_user_login}</label><input type="text" name="ban_login" id="ban_login" maxlength="30" style="width:250px;" /><br />
+                            <label for="ban_login">{$oLang->_adm_user_login}</label><input type="text" name="ban_login" id="ban_login" maxlength="30" style="width:250px;" /><br />
                         </p>
-                        <input type="radio" name="ban_period" value="days" checked />{$oLang->adm_ban_for} <input type="text" name="ban_days" id="ban_days" style="width:25px;padding:0;text-align:right;" /> {$oLang->adm_ban_days}<br />
-                        <input type="radio" name="ban_period" value="unlim" />{$oLang->adm_ban_unlim} <br /><br />
-                        {$oLang->adm_ban_comment} <input type="text" name="ban_comment" maxlength="255" style="width:200px;" /><br />
+                        <input type="radio" name="ban_period" value="days" checked />{$oLang->_adm_ban_for} <input type="text" name="ban_days" id="ban_days" style="width:25px;padding:0;text-align:right;" /> {$oLang->_adm_ban_days}<br />
+                        <input type="radio" name="ban_period" value="unlim" />{$oLang->_adm_ban_unlim} <br /><br />
+                        {$oLang->_adm_ban_comment} <input type="text" name="ban_comment" maxlength="255" style="width:200px;" /><br />
                         <br />
                         <input type="hidden" name="adm_user_action" value="adm_ban_user" />
-                        <input type="submit" name="adm_action_submit" value="{$oLang->adm_include}" />
+                        <input type="submit" name="adm_action_submit" value="{$oLang->_adm_include}" />
                     </form>
                 </div>
                 {/if}
