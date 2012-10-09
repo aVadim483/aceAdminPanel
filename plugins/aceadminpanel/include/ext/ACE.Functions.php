@@ -89,9 +89,32 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return self::FilePath(Config::Get('path.root.server'));
     }
 
-    static function GetPluginsDir()
+    /**
+     * Возвращает путь к папке с плагинами (если не задано имя плагина)
+     * или путь к папке конкретного плагина (если задано имя плагина)
+     *
+     * @param   null|string $sPlugin
+     *
+     * @return  string
+     */
+    static function GetPluginsDir($sPlugin=null)
     {
-        return self::FilePath(self::GetRootDir() . '/plugins/');
+        if ($sPlugin)
+            return self::GetPluginDir($sPlugin);
+        else
+            return self::FilePath(self::GetRootDir() . '/plugins/');
+    }
+
+    /**
+     * Возвращает путь к папке заданного плагина
+     *
+     * @param   null|string $sPlugin
+     *
+     * @return  string
+     */
+    static function GetPluginDir($sPlugin)
+    {
+        return self::FilePath(self::GetPluginsDir() . strtolower($sPlugin) . '/');
     }
 
     static function GetRootUrl()
@@ -316,6 +339,12 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
 
     static function FullDir($sFile)
     {
+        if (substr(strtolower($sFile), 0, 7) == 'plugin:') {
+            $aParts = explode(':', substr($sFile, 7));
+            if (sizeof($aParts) == 2 AND in_array($aParts[0], LS::E()->Plugin_GetActivePlugins())) {
+                $sFile = ACE::FilePath(ACE::GetPluginDir($aParts[0]) . '/' . $aParts[1]);
+            }
+        }
         if (self::IsLocalDir($sFile)) {
             return self::FilePath($sFile);
         }
@@ -614,6 +643,29 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     static function AutoLoadRegister($xFunc)
     {
         return HelperPlugin::AutoLoadRegister($xFunc);
+    }
+
+    /**
+     * Восстановление сохраненного скина, чтобы сторонние плагины могли создать свою собственную админику
+     *
+     * @param $aEvents
+     */
+    static function RestoreAdminSkin($aEvents)
+    {
+        if (Config::Get('saved')) {
+            if ($aEvents AND !is_array($aEvents))
+                $aEvents = array_map('trim', explode(',', $aEvents));
+            else
+                $aEvents = (array)$aEvents;
+            if (Router::GetAction() == 'admin' AND (!$aEvents OR in_array(Router::GetActionEvent(), $aEvents))) {
+                if (Config::Get('saved.view.skin'))
+                    Config::Set('view.skin', Config::Get('saved.view.skin'));
+                if (Config::Get('saved.path.smarty.template'))
+                    Config::Set('path.smarty.template', Config::Get('saved.path.smarty.template'));
+                if (Config::Get('saved.path.static.skin'))
+                    Config::Set('path.static.skin', Config::Get('saved.path.static.skin'));
+            }
+        }
     }
 
 }

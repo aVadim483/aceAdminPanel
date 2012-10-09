@@ -4,7 +4,7 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description:
- * @Version:
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -25,6 +25,8 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
 
     protected $bLocal = false;
     protected $bAddPluginDirs = false;
+
+    protected $aTplHooks = array();
 
     /**
      * Вспомогательная функция для сортировки блоков
@@ -352,6 +354,17 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         if (Config::Get($this->sPlugin . '.saved.view.skin')) {
             $sTemplate = $this->_getRealTeplate($sTemplate);
         }
+        if ($this->aTplHooks) {
+            if (!class_exists('phpQuery')) ACE::FileInclude('plugin:aceadminpanel:lib/phpQuery/phpQuery.php');
+            if (class_exists('phpQuery')) {
+                // Подключаем Smarty-плагин
+                $oSmarty = $this->GetSmartyObject();
+                $oSmarty->addPluginsDir(ACE::FullDir('plugin:aceadminpanel:classes/modules/viewer/plugs'));
+                //$oSmarty->loadFilter('post', 'htmlhook');
+                $oSmarty->loadFilter('pre', 'tplhook');
+                $this->Assign('aTplHooks', $this->aTplHooks);
+            }
+        }
         return parent::Fetch($sTemplate);
     }
 
@@ -398,6 +411,25 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         return parent::DefineTypeBlock($sName, $sDir);
     }
 
+    public function HookInsert($sTemplate, $sSelector, $xAction)
+    {
+        $oTplHook = Engine::GetEntity('ModuleViewer_EntityHook', array(
+            'template' => $sTemplate,
+            'selector' => $sSelector,
+            'action' => $xAction,
+        ));
+        $this->aTplHooks[] = $oTplHook;
+    }
+
+    public function AddHtmlHook($sTemplate, $sSelector, $sCallBack)
+    {
+        $aTplHook = array(
+            'template' => $sTemplate,
+            'selector' => $sSelector,
+            'callback' => $sCallBack,
+        );
+        $this->aTplHooks[] = $aTplHook;
+    }
 }
 
 // EOF

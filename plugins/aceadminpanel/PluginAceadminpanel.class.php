@@ -28,10 +28,8 @@ class PluginAceadminpanel extends Plugin
         'action' => array(
             'ActionAdminPlugin' => 'PluginAceblogextender_ActionAdminPlugin',
         ),
-        'module' => array(
-        ),
-        'entity' => array(
-        ),
+        'module' => array(),
+        'entity' => array(),
         'template' => array(
             'statistics_performance.tpl',
         ),
@@ -64,6 +62,9 @@ class PluginAceadminpanel extends Plugin
         'mapper' => array(
             'ModuleUser_MapperUser' => '_ModuleUser_MapperUser',
             'ModuleTopic_MapperTopic' => '_ModuleTopic_MapperTopic',
+        ),
+        'entity' => array(
+            'ModuleViewer_EntityHook',
         ),
     );
 

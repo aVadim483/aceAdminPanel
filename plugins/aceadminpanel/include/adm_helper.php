@@ -13,11 +13,14 @@
  *----------------------------------------------------------------------------
  */
 
-require_once(Config::Get('path.root.engine') . "/classes/Engine.class.php");
-
+/*
+if (!class_exists('Engine'))
+    require_once(Config::Get('path.root.engine') . "/classes/Engine.class.php");
+*/
 /**
  * Абстрактный класс плагина
  */
+/*
 abstract class AcePlugin extends Plugin
 {
     public function __construct()
@@ -26,11 +29,12 @@ abstract class AcePlugin extends Plugin
         HelperPlugin::InitPlugin($this);
     }
 }
+*/
 
 /**
  * Хелпер для работы с плагинами
  */
-class HelperPlugin extends LsObject
+class HelperPlugin
 {
     static protected $_aPluginSkin = array();
 
@@ -280,7 +284,10 @@ class HelperPlugin extends LsObject
         $sPluginName = self::GetPluginStr($sPluginName);
         if (!isset(self::$_aPluginSkin[$sPluginName]['skin'])) {
             if ($sPluginName == 'aceadminpanel') {
-                $sSiteSkin = Config::Get('view.skin');
+                if (Config::Get('plugin.aceadminpanel.skin'))
+                    $sSiteSkin = 'admin_' . Config::Get('plugin.aceadminpanel.skin');
+                else
+                    $sSiteSkin = Config::Get('view.skin');
             } else {
                 $sSiteSkin = Config::Get('saved.view.skin') ? Config::Get('saved.view.skin') : Config::Get('view.skin');
             }
@@ -465,7 +472,7 @@ class HelperPlugin extends LsObject
 /**
  * Загрузчик файлов плагинов
  */
-class HelperPluginLoader extends LsObject
+class HelperPluginLoader
 {
     static protected $oInstance = null;
     protected $bInialized = false;
@@ -508,12 +515,12 @@ class HelperPluginLoader extends LsObject
     /**
      * Инициализация старого автозагрузчика классов
      *
-     * @return
+     * @return void
      */
     protected function InitOld()
     {
         if ($this->bInialized) return;
-
+echo 'zzzzzzzzzzzzzzzzzzzzzz';
         $aFunc = spl_autoload_functions();
         if (is_array($aFunc) AND sizeof($aFunc) == 1) {
             // Первый вызов spl_autoload_register отключает __autoload,
@@ -530,7 +537,7 @@ class HelperPluginLoader extends LsObject
     /**
      * Инициализация нового автозгручика классов, совместимого с Yii
      *
-     * @return
+     * @return void
      */
     protected function InitNew()
     {

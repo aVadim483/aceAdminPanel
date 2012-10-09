@@ -31,6 +31,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
         }
         $this->AddHook('engine_init_complete', 'EngineInitComplete', __CLASS__, 1000);
         $this->AddHook('init_action', 'InitAction', __CLASS__, 1000);
+        $this->AddHook('template_html_head_end', 'HtmlHeadEnd', __CLASS__);
         $this->AddHook('template_body_end', 'MemoryStats', __CLASS__);
     }
 
@@ -144,6 +145,12 @@ class PluginAceadminpanel_HookAdmin extends Hook
         if ($oUser->IsBannedByLogin() || ($oUser->IsBannedByIp() AND !$oUser->IsAdministrator())) {
             return $this->_UserBanned($oUser);
         }
+    }
+
+    public function HtmlHeadEnd()
+    {
+        $sTpl = HelperPlugin::GetPluginSkinPath($this->sPlugin) . 'hook.html_head_end.tpl';
+        return $this->Viewer_Fetch($sTpl);
     }
 
     public function MemoryStats()
