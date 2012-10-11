@@ -26,6 +26,8 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
     protected $bLocal = false;
     protected $bAddPluginDirs = false;
 
+    protected $aSmartyOptions = array();
+
     protected $aTplHooks = array();
 
     /**
@@ -133,7 +135,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         return $sTemplate;
     }
 
-    protected function _JsUniq($sJs, $aParams)
+    protected function _jsUniq($sJs, $aParams)
     {
         if ((in_array($sJs, $this->aJsInclude['append']) OR in_array($sJs, $this->aJsInclude['prepend']))
             AND $this->aFilesParams['js'][$sJs] === $aParams
@@ -141,7 +143,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         else return false;
     }
 
-    protected function _CssUniq($sCss, $aParams)
+    protected function _cssUniq($sCss, $aParams)
     {
         if ((in_array($sCss, $this->aCssInclude['append']) OR in_array($sCss, $this->aCssInclude['prepend']))
             AND $this->aFilesParams['css'][$sCss] === $aParams
@@ -149,12 +151,24 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         else return false;
     }
 
+    protected function _initTplHooks()
+    {
+        if ($this->aTplHooks OR Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
+            if (!class_exists('phpQuery')) ACE::FileInclude('plugin:aceadminpanel:lib/phpQuery/phpQuery.php');
+            if (class_exists('phpQuery')) {
+                // Подключаем Smarty-плагин
+                $this->oSmarty->loadFilter('pre', 'tplhook');
+                $this->Assign('aTplHooks', $this->aTplHooks);
+            }
+        }
+    }
+
     /**
      * Инициализация вьюера
      *
      * @param bool $bLocal
      *
-     * @return void
+     * @return null|string
      */
     public function Init($bLocal = false)
     {
@@ -169,6 +183,33 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         }
         $this->oSmarty->addPluginsDir(dirname(__FILE__) . '/plugs');
         $this->oSmarty->default_template_handler_func = array($this, 'TemplateHandler');
+
+        // устанавливаем опции Smarty
+        $this->aSmartyOptions = (array)Config::Get('plugin.aceadminpanel.smarty.options');
+
+        foreach ($this->aSmartyOptions as $sKey=>$xVal) {
+            switch($sKey) {
+                case 'compile_check':
+                    $this->oSmarty->compile_check = (bool)$xVal;
+                    break;
+                case 'force_compile':
+                    $this->oSmarty->force_compile = (bool)$xVal;
+                    break;
+                case 'caching':
+                    if ($xVal === true) {
+                        $xVal = 1;
+                    } elseif (intval($xVal) > 2) {
+                        $xVal = 1;
+                    } elseif (intval($xVal) < 0) {
+                        $xVal = 0;
+                    }
+                    $this->oSmarty->caching = intval($xVal);
+                    break;
+                case 'cache_lifetime':
+                    $this->oSmarty->cache_lifetime = intval($xVal);
+                    break;
+            }
+        }
         return $xResult;
     }
 
@@ -346,6 +387,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
                 }
             }
         }
+        $this->_initTplHooks();
         return parent::Display($sTemplate);
     }
 
@@ -354,17 +396,7 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         if (Config::Get($this->sPlugin . '.saved.view.skin')) {
             $sTemplate = $this->_getRealTeplate($sTemplate);
         }
-        if ($this->aTplHooks) {
-            if (!class_exists('phpQuery')) ACE::FileInclude('plugin:aceadminpanel:lib/phpQuery/phpQuery.php');
-            if (class_exists('phpQuery')) {
-                // Подключаем Smarty-плагин
-                $oSmarty = $this->GetSmartyObject();
-                $oSmarty->addPluginsDir(ACE::FullDir('plugin:aceadminpanel:classes/modules/viewer/plugs'));
-                //$oSmarty->loadFilter('post', 'htmlhook');
-                $oSmarty->loadFilter('pre', 'tplhook');
-                $this->Assign('aTplHooks', $this->aTplHooks);
-            }
-        }
+        $this->_initTplHooks();
         return parent::Fetch($sTemplate);
     }
 

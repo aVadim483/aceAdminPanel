@@ -1,2 +1,2 @@
-[v2.0.316-dev; rev.$WCREV$]
-  * bugfix
+[v2.0.317-dev; rev.$WCREV$]
+  * minor bugfix

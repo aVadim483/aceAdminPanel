@@ -18,7 +18,7 @@ if (!class_exists('Config')) die('Hacking attempt!');
 if (defined('ACEADMINPANEL_VERSION')) return array();
 
 define('ACEADMINPANEL_VERSION', '2.0-dev');
-define('ACEADMINPANEL_VERSION_BUILD', '316');
+define('ACEADMINPANEL_VERSION_BUILD', '317');
 
 $config = array('version' => ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD);
 
@@ -116,6 +116,19 @@ $config['tmp']['dir']['sys'] = 'sys/'; // папка для файлового �
 $config['tmp']['dir']['tpl']['compiled'] = 'smarty/compiled/'; // папка для скомпилированных шаблонов Smarty
 $config['tmp']['dir']['tpl']['cache'] = 'smarty/cache/'; // папка для кеша Smarty
 $config['tmp']['dir']['log'] = 'log/'; // папка для лог-файлов
+
+
+/***
+ * Опции шаблонизатора Smarty
+ */
+$config['smarty']['options']['compile_check'] = true;    // включать ли проверку компилации шаблонов
+$config['smarty']['options']['force_compile'] = false;   // принудительная компиляция шаблнов
+$config['smarty']['options']['caching'] = false;         // включать ли кеширование
+$config['smarty']['options']['cache_lifetime'] = 600;    // время жизни кеша (в сек)
+
+// нестандартная опция
+$config['smarty']['options']['mark_template'] = false;    // показывать в комментариях шаблон
+
 
 return $config;
 
