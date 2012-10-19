@@ -178,6 +178,11 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         if (!is_dir(Config::Get('path.smarty.cache'))) @mkdir(Config::Get('path.smarty.cache'), 0775, true);
 
         $xResult = parent::Init($bLocal);
+        $this->sCurentPath = ACE::CurrentRoute();
+
+        // хуки шаблонизатора
+        $this->InitHooks();
+
         if (Config::Get($this->sPlugin . '.saved.path.smarty.template')) {
             $this->AddTemplateDir(Config::Get($this->sPlugin . '.saved.path.smarty.template'));
         }
@@ -187,13 +192,29 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         // устанавливаем опции Smarty
         $this->aSmartyOptions = (array)Config::Get('plugin.aceadminpanel.smarty.options');
 
-        foreach ($this->aSmartyOptions as $sKey=>$xVal) {
-            switch($sKey) {
+        foreach ($this->aSmartyOptions as $sKey => $xVal) {
+            switch ($sKey) {
                 case 'compile_check':
                     $this->oSmarty->compile_check = (bool)$xVal;
                     break;
                 case 'force_compile':
-                    $this->oSmarty->force_compile = (bool)$xVal;
+                    // Если массив, то задаются значения для разных путей
+                    if (is_array($xVal)) {
+                        $bResult = null;
+                        foreach ($xVal as $sKey=>$aPaths) {
+                            if (!is_array($aPaths)) $aPaths = explode(',', $aPaths);
+                            if (ACE::InPath($this->sCurentPath, $aPaths)) {
+                                $bResult = ((is_null($bResult) ? true : false) AND ACE::Boolean($sKey));
+                            } else {
+                                // Если есть только ключи 'off', то считаем, что по умолчанию - 'on'
+                                if (is_null($bResult) AND !ACE::Boolean($sKey))
+                                    $bResult = true;
+                            }
+                        }
+                    } else {
+                        $bResult = ACE::Boolean($xVal);
+                    }
+                    $this->oSmarty->force_compile = (bool)$bResult;
                     break;
                 case 'caching':
                     if ($xVal === true) {
@@ -211,6 +232,23 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
             }
         }
         return $xResult;
+    }
+
+    /**
+     * Инициализация хуков шаблонизатора
+     */
+    public function InitHooks()
+    {
+        $aActivePlugins = $this->Plugin_GetActivePlugins();
+        foreach ($aActivePlugins as $sPlugin) {
+            $aConfig = ACE::FileIncludeIfExists(Plugin::GetTemplatePath($sPlugin) . '/settings/config/config.php');
+            Config::Load($aConfig, false);
+        }
+        $aHooks = Config::Get('view.hooks');
+        if (is_array($aHooks))
+            foreach ($aHooks as $aHook) {
+                $this->TplHookCreate($aHook['template'], $aHook['selector'], $aHook['content'], $aHook['action']);
+            }
     }
 
     /**
@@ -443,24 +481,110 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         return parent::DefineTypeBlock($sName, $sDir);
     }
 
-    public function HookInsert($sTemplate, $sSelector, $xAction)
+    /**
+     * Добавить объект TPL-хук
+     *
+     * @param   $oTplHook
+     */
+    public function AddTplHook($oTplHook)
     {
-        $oTplHook = Engine::GetEntity('ModuleViewer_EntityHook', array(
-            'template' => $sTemplate,
-            'selector' => $sSelector,
-            'action' => $xAction,
-        ));
         $this->aTplHooks[] = $oTplHook;
     }
 
-    public function AddHtmlHook($sTemplate, $sSelector, $sCallBack)
+    public function TplHookCreate($sTemplate, $sSelector, $xContent, $sAction)
     {
-        $aTplHook = array(
+        $aParams = array(
             'template' => $sTemplate,
             'selector' => $sSelector,
-            'callback' => $sCallBack,
+            'content_source' => $xContent,
+            'action' => $sAction,
         );
-        $this->aTplHooks[] = $aTplHook;
+        $oTplHook = Engine::GetEntity('Viewer_TplHook', $aParams);
+        $this->AddTplHook($oTplHook);
+    }
+
+    /**
+     * TPL-хук: вставить контент перед дочерними элементами
+     *
+     * @param $sTemplate
+     * @param $sSelector
+     * @param $xContent
+     */
+    public function TplHookPrepend($sTemplate, $sSelector, $xContent)
+    {
+        $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'prepend');
+    }
+
+    /**
+     * TPL-хук: вставить контент после дочерних элементов
+     *
+     * @param $sTemplate
+     * @param $sSelector
+     * @param $xContent
+     */
+    public function TplHookAppend($sTemplate, $sSelector, $xContent)
+    {
+        $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'append');
+    }
+
+    /**
+     * TPL-хук: вставить контент после всех найденных элементов
+     *
+     * @param $sTemplate
+     * @param $sSelector
+     * @param $xContent
+     */
+    public function TplHookAfter($sTemplate, $sSelector, $xContent)
+    {
+        $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'after');
+    }
+
+    /**
+     * TPL-хук: вставить контент перед всеми найденными элементами
+     *
+     * @param $sTemplate
+     * @param $sSelector
+     * @param $xContent
+     */
+    public function TplHookBefore($sTemplate, $sSelector, $xContent)
+    {
+        $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'before');
+    }
+
+    /**
+     * TPL-хук: заменить контентом все найденные элементы
+     *
+     * @param $sTemplate
+     * @param $sSelector
+     * @param $xContent
+     */
+    public function TplHookReplace($sTemplate, $sSelector, $xContent)
+    {
+        $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'replace');
+    }
+
+    /**
+     * TPL-хук: заменить html-контент у всех найденных элементов
+     *
+     * @param $sTemplate
+     * @param $sSelector
+     * @param $xContent
+     */
+    public function TplHookHtml($sTemplate, $sSelector, $xContent)
+    {
+        $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'html');
+    }
+
+    /**
+     * TPL-хук: заменить текстовый контент у всех найденных элементов
+     *
+     * @param $sTemplate
+     * @param $sSelector
+     * @param $xContent
+     */
+    public function TplHookText($sTemplate, $sSelector, $xContent)
+    {
+        $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'text');
     }
 }
 

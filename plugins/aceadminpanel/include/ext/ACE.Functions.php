@@ -273,6 +273,13 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return (bool)self::LocalUrl($sPath);
     }
 
+    static function CurrentRoute()
+    {
+        $sCurentRoute = Router::GetAction() . '/';
+        if (Router::GetActionEvent()) $sCurentRoute .= Router::GetActionEvent() . '/';
+        if (Router::GetParams()) $sCurentRoute .= implode('/', Router::GetParams()) . '/';
+        return $sCurentRoute;
+    }
     /**
      * Соответствует ли проверяемый путь одному из заданных путей
      *
@@ -283,10 +290,12 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     static function InPath($sNeedle, $aPaths)
     {
         if (!is_array($aPaths)) $aPaths = array((string)$aPaths);
-        $sNeedle = self::FilePath($sNeedle);
-        $aCheckPaths = self::FilePath($aPaths);
+        $sNeedle = self::FilePath($sNeedle, '/');
+        $aCheckPaths = self::FilePath($aPaths, '/');
         foreach ($aCheckPaths as $n => $sPath) {
-            if (substr($sPath, -2) == '/*') {
+            if ($sPath == '*') {
+                return $aPaths[$n];
+            } elseif (substr($sPath, -2) == '/*') {
                 $sPath = substr($sPath, 0, strlen($sPath) - 2);
                 if (strpos($sNeedle, $sPath) === 0) return $aPaths[$n];
             } else {
@@ -356,6 +365,13 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return is_file($sFile);
     }
 
+    /**
+     * Подключение файла
+     *
+     * @param   string  $sFile
+     * @param   bool    $bOnce
+     * @return  array|mixed|null
+     */
     static function FileInclude($sFile, $bOnce = true)
     {
         $config = array();
@@ -371,12 +387,38 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         return $xResult;
     }
 
+    /**
+     * Подключение файла, если он существует
+     *
+     * @param   string  $sFile
+     * @param   bool    $bOnce
+     * @return  array|mixed|null
+     */
     static function FileIncludeIfExists($sFile, $bOnce = true)
     {
         $xResult = null;
         $sFile = self::FullDir($sFile);
         if (ACE::FileExists($sFile)) $xResult = self::FileInclude($sFile, $bOnce);
         return $xResult;
+    }
+
+    /**
+     * Сравнение одного пути (имени файла) с другим
+     *
+     * @param   string  $sPath1     - сравниваемый путь (имя файла)
+     * @param   string  $sPath2     - с чем сравнивается
+     * @param   bool    $bByEnd     - сравнивать конец пути (имени файла)
+     *
+     * @return  bool
+     */
+    static function PathCompare($sPath1, $sPath2, $bByEnd=false)
+    {
+        if (!$bByEnd) {
+            return (bool) ACE::LocalPath($sPath1, $sPath2);
+        }
+        $sPath1 = ACE::FilePath($sPath1);
+        $sPath2 = ACE::FilePath($sPath2);
+        return substr($sPath2, -strlen($sPath1)) == $sPath1;
     }
 
     /**
@@ -668,6 +710,16 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         }
     }
 
+    static function Boolean($xVal)
+    {
+        $bResult = null;
+        if (!is_numeric($xVal) AND is_string($xVal)) {
+            if (in_array($xVal, array('on', 'enable', 'yes', 'true', 'include'))) $bResult = true;
+            if (in_array($xVal, array('off', 'disable', 'no', 'false', 'exclude'))) $bResult = false;
+        }
+        if (is_null($bResult)) $bResult = (bool)$xVal;
+        return $bResult;
+    }
 }
 
 class ACE_Func extends ACE_Functions

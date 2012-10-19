@@ -25,19 +25,45 @@ function smarty_prefilter_tplhook($sSource, Smarty_Internal_Template $oTemplate)
     $sHtml = $sSource;
     $bChanged = false;
     foreach ($aTplHooks as $oTplHook) {
-        if ($oTplHook->isTemplateEnd($oTemplate->smarty->_current_file)) {
+        if ($oTplHook->isCurrentTemplate($oTemplate->smarty->_current_file)) {
             if (is_null($aSmartyExp)) {
                 $aSmartyExp = array();
                 $sHtml = _smarty_prefilter_tplhook_replace($sHtml, $aSmartyExp);
             }
             $doc = phpQuery::newDocumentHTML($sHtml);
-            $aElements = $doc->find($oTplHook->GetSelector());
+            $sSelector = $oTplHook->GetSelector();
+            $bParent = (substr($sSelector, -7) == ':parent');
+            if ($bParent)
+                $aElements = $doc->find($sSelector)->parent();
+            else
+                $aElements = $doc->find($sSelector);
             if ($aElements) {
                 $bChanged = true;
                 foreach ($aElements as $el) {
                     $sTplCode = $oTplHook->Call();
                     $sTplCode = _smarty_prefilter_tplhook_replace($sTplCode, $aSmartyExp);
-                    pq($el)->after($sTplCode);
+                    switch ($oTplHook->GetAction()) {
+                        case 'prepend':
+                            pq($el)->prepend($sTplCode);
+                            break;
+                        case 'append':
+                            pq($el)->append($sTplCode);
+                            break;
+                        case 'before':
+                            pq($el)->before($sTplCode);
+                            break;
+                        case 'after':
+                            pq($el)->after($sTplCode);
+                            break;
+                        case 'html':
+                            pq($el)->html($sTplCode);
+                            break;
+                        case 'text':
+                            pq($el)->text($sTplCode);
+                            break;
+                        default:
+                            pq($el)->replaceWith($sTplCode);
+                    }
                 }
             }
         }
@@ -77,7 +103,7 @@ function _smarty_prefilter_tplhook_replace($sHtml, &$aSmartyExp)
             $nOffset += strlen($sExpId) - strlen($m[0]);
         }
     } else {
-        $aSmartyExp = array();
+        $aSmartyExp = ($aSmartyExp ? $aSmartyExp : array());
     }
     return $sHtml;
 }

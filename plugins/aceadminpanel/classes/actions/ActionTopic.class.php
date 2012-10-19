@@ -21,8 +21,11 @@ class PluginAceadminpanel_ActionTopic extends PluginAceadminpanel_Inherit_Action
 {
     private $sPlugin = 'aceadminpanel';
 
+    protected $sBackUrl;
+
     public function Init()
     {
+        if (isset($_SERVER['HTTP_REFERER'])) $this->sBackUrl = $_SERVER['HTTP_REFERER'];
         return parent::Init();
     }
 
@@ -43,12 +46,20 @@ class PluginAceadminpanel_ActionTopic extends PluginAceadminpanel_Inherit_Action
         if (!$this->ACL_IsAllowDeleteTopic($oTopic, $this->oUserCurrent)) {
             return parent::EventNotFound();
         }
+        $oBlog = $oTopic->getBlog();
         // * Гарантировано удаляем топик и его зависимости
         $this->Hook_Run('topic_delete_before', array('oTopic' => $oTopic));
         $this->PluginAceadminpanel_Admin_DelTopic($oTopic->GetId());
         $this->Hook_Run('topic_delete_after', array('oTopic' => $oTopic));
+
         // * Перенаправляем на страницу со списком топиков из блога этого топика
-        Router::Location($oTopic->getBlog()->getUrlFull());
+        //Router::Location($oTopic->getBlog()->getUrlFull());
+        if ($this->sBackUrl AND $this->sBackUrl != $oTopic->getUrl()) {
+            ACE::HeaderLocation($this->sBackUrl);
+        } else {
+            ACE::HeaderLocation($oTopic->getBlog()->getUrlFull());
+        }
+
     }
 
     protected function SetTemplate($sTemplate)

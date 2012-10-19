@@ -19,13 +19,15 @@ var aceAdmin = aceAdmin || {};
         return 'id-' + new Date().valueOf() + '-' + Math.floor(Math.random() * 1000000000);
     }
 
-    $this.progressOn = function (element) {
+    $this.progressOn = function (element, progressClass) {
         element = $(element);
         if (!element.data('adm-progress-store')) {
             element.data('adm-progress-store', element.html());
         }
         element.css('width', element.outerWidth());
-        element.html('<i class="adm-progress"></i>');
+        //element.css('height', element.outerHeight());
+        if (!progressClass) progressClass = 'adm-progress';
+        element.html('<i class="' + progressClass + '"></i>');
     }
 
     $this.progressOff = function (element) {
@@ -135,7 +137,7 @@ var aceAdmin = aceAdmin || {};
 
 })(jQuery);
 
-$(function(){
+$(function () {
     aceAdmin.init();
 });
 
@@ -321,6 +323,54 @@ aceAdmin.inputFileStyle = function (id) {
     });
 }
 
+aceAdmin.getCallstack = function () {
+    var callstack = [];
+    var isCallstackPopulated = false;
+    try {
+        i.dont.exist += 0; //does not exist - that's the point
+    } catch (e) {
+        if (e.stack) { //Firefox
+            var lines = e.stack.split("\n");
+            for (var i = 0, len = lines.length; i < len; i++) {
+                if (lines[i].match(/^\s*[A-Za-z0-9\-_\$]+\(/)) {
+                    callstack.push(lines[i]);
+                }
+            }
+            //Remove call to printStackTrace()
+            callstack.shift();
+            isCallstackPopulated = true;
+        }
+        else if (window.opera && e.message) { //Opera
+            var lines = e.message.split("\n");
+            for (var i = 0, len = lines.length; i < len; i++) {
+                if (lines[i].match(/^\s*[A-Za-z0-9\-_\$]+\(/)) {
+                    var entry = lines[i];
+                    //Append next line also since it has the file info
+                    if (lines[i + 1]) {
+                        entry += " at " + lines[i + 1];
+                        i++;
+                    }
+                    callstack.push(entry);
+                }
+            }
+            //Remove call to printStackTrace()
+            callstack.shift();
+            isCallstackPopulated = true;
+        }
+    }
+    if (!isCallstackPopulated) { //IE and Safari
+        var currentFunction = arguments.callee.caller;
+        while (currentFunction) {
+            var fn = currentFunction.toString();
+            //If we can't get the function name set to "anonymous"
+            var fname = fn.substring(fn.indexOf("function") + 8, fn.indexOf("(")) || "anonymous";
+            callstack.push(fname);
+            currentFunction = currentFunction.caller;
+        }
+    }
+    return callstack;
+}
+
 aceAdmin.nativeUiCompatible = function () {
     // Автокомплит
     ls.autocomplete.add($(".autocomplete-tags-sep"), aRouter['ajax'] + 'autocompleter/tag/', true);
@@ -330,7 +380,7 @@ aceAdmin.nativeUiCompatible = function () {
 
     // Всплывающие окна
     $('#window_upload_img').jqm();
-    $('#userfield_form').jqm({toTop: true});
+    $('#userfield_form').jqm({toTop:true});
     /*
      $('#window_login_form').jqm();
      $('#blog_delete_form').jqm({trigger: '#blog_delete_show'});
@@ -360,14 +410,14 @@ $(function () {
             var id = $(this).attr('id');
             var but = $(this).parents('.accordion-group').find('.accordion-heading button');
             if (but.data('toggle') == 'collapse' && (but.data('target') == '#' + id)) {
-                $(this).on('show', function(){
+                $(this).on('show', function () {
                     but.addClass('btn-gray');
                 });
-                $(this).on('shown', function(){
+                $(this).on('shown', function () {
                     $(this).find('form input[type=text]').first().focus();
                     if ($(this).hasClass('collapse-save')) $.cookie(id, 1);
                 });
-                $(this).on('hide', function(){
+                $(this).on('hide', function () {
                     but.removeClass('btn-gray');
                     $.cookie(id, null);
                 });
