@@ -77,16 +77,22 @@ function smarty_prefilter_tplhook($sSource, Smarty_Internal_Template $oTemplate)
         }
     }
     if (Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
-        if ((strtoupper(substr($sSource, 0, 10)) == '<!DOCTYPE ') AND ($n = strpos($sSource, '>'))) {
-            $sSource = substr($sSource, 0, $n+1)
-                . "\n<!-- TEMPLATE BEGIN " . $oTemplate->smarty->_current_file . " -->\n"
-                . substr($sSource, $n+1)
-                . "\n<!-- TEMPLATE END " . $oTemplate->smarty->_current_file . " -->\n";
-        } else {
-            $sSource = "\n<!-- TEMPLATE BEGIN " . $oTemplate->smarty->_current_file . " -->\n"
-                . $sSource . "\n<!-- TEMPLATE END " . $oTemplate->smarty->_current_file . " -->\n";
-        }
+        $sSource = _smarty_prefilter_tplhook_mark($sSource, $oTemplate);
     }
+    return $sSource;
+}
+
+function _smarty_prefilter_tplhook_mark($sSource, Smarty_Internal_Template $oTemplate)
+{
+    $sTemplateFile = ACE::FilePath($oTemplate->smarty->_current_file);
+    $nLevel = intval(Config::Get('plugin.aceadminpanel.smarty.options.mark_template_lvl'));
+
+    $sSource = ($nLevel ? "\n\n" : "")
+        . "<!-- TEMPLATE BEGIN ($nLevel " . $sTemplateFile . ") -->" . ($nLevel ? "\n" : "")
+        . $sSource . ($nLevel ? "\n" : "")
+        . "<!-- TEMPLATE END ($nLevel " . $sTemplateFile . ") -->" . ($nLevel ? "\n" : "");
+
+    Config::Set('plugin.aceadminpanel.smarty.options.mark_template_lvl', ++$nLevel);
     return $sSource;
 }
 
