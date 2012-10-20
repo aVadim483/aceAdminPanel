@@ -107,6 +107,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
     public function EngineInitComplete()
     {
         ACE_Config::LoadCustomConfig();
+        $this->Logger_CheckLogFiles(true);
     }
 
     public function InitAction()

@@ -15,28 +15,59 @@
 
 class PluginAceadminpanel_ModuleLogger extends PluginAceadminpanel_Inherit_ModuleLogger
 {
-    protected $bLogEnable = true;
+    protected $bCheckLogFiles = false;
+    protected $oUserCurrent;
+    protected $aCheckedFiles = array();
 
     public function Init()
     {
         parent::Init();
-        $this->sPathLogs = Config::Get('sys.logs.path') . '/';
+        if (Config::Get('sys.logs.path'))
+            $this->sPathLogs = Config::Get('sys.logs.path') . '/';
+    }
 
-        // Проверяем, можем ли писать в лог-файл
-        $sFile = ACE::FilePath($this->sPathLogs . $this->sFileName);
-        $fp = @fopen($sFile, 'a');
-        if (!$fp) {
-            $this->bLogEnable = false;
-        } else {
-            fclose($fp);
+    /**
+     * Задаем признак проверки
+     * Это можно делать только после инициализации всех плагинов
+     *
+     * @param   bool    $bVal
+     */
+    public function CheckLogFiles($bVal)
+    {
+        $this->bCheckLogFiles = $bVal;
+    }
+
+    /**
+     * Проверка, можем ли писать в текущий лог-файл
+     */
+    protected function _checkLogFile()
+    {
+        if ($this->bCheckLogFiles AND $this->sFileName AND $this->sFileName != '-') {
+            $sFile = ACE::FilePath($this->sPathLogs . $this->sFileName);
+            if (!isset($this->aCheckedFiles[$sFile])) {
+                // Проверяем, можем ли писать в лог-файл
+                if ($fp = @fopen($sFile, 'a')) {
+                    fclose($fp);
+                    $this->aCheckedFiles[$sFile] = true;
+                } else {
+                    if (($this->oUserCurrent OR ($this->oUserCurrent = $this->User_GetUserCurrent())) AND $this->oUserCurrent->isAdministrator()) {
+                        $this->Message_AddError('Cannot write to log file "' . $sFile . '"', $this->Lang_Get('error'));
+                        //$this->Message_AddError('Cannot write to log file "' . $sFile . '"', $this->Lang_Get('error'), true);
+                    }
+                    $this->aCheckedFiles[$sFile] = false;
+                }
+            }
+            return $this->aCheckedFiles[$sFile];
         }
+        return true;
     }
 
     protected function write($msg)
     {
         // Если в лог-файл писать не можем, то даже и не пытаемся
-        if (!$this->bLogEnable) return false;
-        return parent::write($msg);
+        if ($this->_checkLogFile()) {
+            return parent::write($msg);
+        }
     }
 
     /*
