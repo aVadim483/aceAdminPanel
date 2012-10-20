@@ -15,10 +15,28 @@
 
 class PluginAceadminpanel_ModuleLogger extends PluginAceadminpanel_Inherit_ModuleLogger
 {
+    protected $bLogEnable = true;
+
     public function Init()
     {
         parent::Init();
         $this->sPathLogs = Config::Get('sys.logs.path') . '/';
+
+        // Проверяем, можем ли писать в лог-файл
+        $sFile = ACE::FilePath($this->sPathLogs . $this->sFileName);
+        $fp = @fopen($sFile, 'a');
+        if (!$fp) {
+            $this->bLogEnable = false;
+        } else {
+            fclose($fp);
+        }
+    }
+
+    protected function write($msg)
+    {
+        // Если в лог-файл писать не можем, то даже и не пытаемся
+        if (!$this->bLogEnable) return false;
+        return parent::write($msg);
     }
 
     /*
