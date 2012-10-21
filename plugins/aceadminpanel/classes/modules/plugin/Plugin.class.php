@@ -13,16 +13,44 @@
  *----------------------------------------------------------------------------
  */
 
-//require_once('Plugin.class.php');
+require_once('Plugin.class.php');
 
 class AceModulePlugin extends Module
 {
     protected $oPluginObj;
+    protected $aProps;
 
     public function Init()
     {
         $this->oPluginObj = Engine::getInstance()->GetModuleObject('Plugin');
-        return $this->oPluginObj->Init();
+        $sResult = $this->oPluginObj->Init();
+        $reflection = new ReflectionClass($this->oPluginObj);
+        $properties = $reflection->getProperties();
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $this->aProps[$property->getName()] = $property->getValue($this->oPluginObj);
+            if (!$property->isPublic())
+                $property->setAccessible(false);
+        }
+        return $sResult;
+    }
+
+    protected function _getProp($sName)
+    {
+        if (isset($this->aProps[$sName])) {
+            return $this->aProps[$sName];
+        } else {
+            return $this->$sName;
+        }
+    }
+
+    public function __get($sName)
+    {
+        if (isset($this->aProps[$sName])) {
+            return $this->aProps[$sName];
+        } else {
+            return parent::$sName;
+        }
     }
 
     public function __call($sMethod, $aArgs)
@@ -39,6 +67,7 @@ class AceModulePlugin extends Module
 class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
 {
     const PLUGIN_ADMIN_FILE = 'plugins.adm';
+    const PLUGIN_XML_FILE = 'plugin.xml';
 
     protected $sPluginsDatFile;
 
@@ -66,7 +95,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
 
         $sFile = ACE::FilePath("{$this->sPluginsDir}{$sPlugin}/Plugin{$sPluginName}.class.php");
         if (is_file($sFile)) {
-            require_once($sFile);
+            ACE::FileInclude($sFile);
 
             $sClassName = "Plugin{$sPluginName}";
             $oPlugin = new $sClassName;
