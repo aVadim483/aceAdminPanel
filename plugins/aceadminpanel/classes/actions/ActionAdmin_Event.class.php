@@ -272,6 +272,15 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
         return $result;
     }
 
+    public function EventNotFound()
+    {
+        if ($this->oUserCurrent AND $this->oUserCurrent->isAdministrator()) {
+            $this->SetTemplateAction('error404');
+        } else {
+            ACE::HeaderLocation(Router::GetPath('error'));
+        }
+    }
+
     public function EventShutdown()
     {
         parent::EventShutdown();

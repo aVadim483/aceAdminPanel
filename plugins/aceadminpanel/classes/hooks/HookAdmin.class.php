@@ -26,7 +26,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->sSkinName = Config::Get('plugin.' . $this->sPlugin . '.skin');
         Config::Set('path.admin.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/admin_' . $this->sSkinName);
 
-        if (Router::GetAction() == 'admin') {
+        $aAutonomusEvents = ACE::Str2Array(Config::Get('plugin.aceadminpanel.autonomous.events'));
+        if (Router::GetAction() == 'admin' AND (!in_array(Router::GetActionEvent(), $aAutonomusEvents))) {
             $this->_preInit();
         }
         $this->AddHook('engine_init_complete', 'EngineInitComplete', __CLASS__, 1000);

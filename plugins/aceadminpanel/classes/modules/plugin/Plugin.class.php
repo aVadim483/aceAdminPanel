@@ -13,9 +13,30 @@
  *----------------------------------------------------------------------------
  */
 
-require_once('Plugin.class.php');
+//require_once('Plugin.class.php');
 
-class PluginAceadminpanel_ModulePlugin extends ModulePlugin
+class AceModulePlugin extends Module
+{
+    protected $oPluginObj;
+
+    public function Init()
+    {
+        $this->oPluginObj = Engine::getInstance()->GetModuleObject('Plugin');
+        return $this->oPluginObj->Init();
+    }
+
+    public function __call($sMethod, $aArgs)
+    {
+        $aArgsRef = array();
+        foreach ($aArgs as $key => $v) {
+            $aArgsRef[] =& $aArgs[$key];
+        }
+        return call_user_func_array(array($this->oPluginObj, $sMethod), $aArgsRef);
+    }
+
+}
+
+class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
 {
     const PLUGIN_ADMIN_FILE = 'plugins.adm';
 
@@ -446,6 +467,22 @@ class PluginAceadminpanel_ModulePlugin extends ModulePlugin
             return array($this->aDelegates[$sType][$sFrom]['delegate']);
         }
         return null;
+    }
+
+    /**
+     * Возвращает цепочку делегатов
+     *
+     * @param string $sType
+     * @param string $sTo
+     * @return array
+     */
+    public function GetDelegationChain($sType, $sTo)
+    {
+        if (strpos($sTo, 'PluginAceadminpanel_ActionAdmin_Event') === 0) {
+            $sTo = 'ActionAdmin';
+        }
+        $sResult = parent::GetDelegationChain($sType, $sTo);
+        return $sResult;
     }
 
 }

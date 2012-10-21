@@ -70,7 +70,7 @@ function adminPluginSave() {
                         <div class="{if $oPlugin->IsActive()}active{else}inactive{/if}"></div>
                         <div class="title">{$oPlugin->GetName()|escape:'html'}</div>
                         <div class="description">
-                        <b>{$oPlugin->GetCode()}</b> - {$oPlugin->GetDescription()|escape:'html'}
+                        <b>{$oPlugin->GetCode()}</b> - {$oPlugin->GetDescription()}
                         </div>
                         {if ($oPlugin->GetHomepage()>'')}
                         <div class="url">
