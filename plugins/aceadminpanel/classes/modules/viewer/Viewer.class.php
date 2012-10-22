@@ -378,16 +378,29 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
      */
     public function AddTemplateDir($aTemplateDirs, $bFirst = false)
     {
-        $aSavedDirs = $this->oSmarty->getTemplateDir();
+        $aSavedDirs = ACE::FilePath($this->oSmarty->getTemplateDir());
         if (!is_array($aTemplateDirs)) {
             $aTemplateDirs = array((string)$aTemplateDirs);
         }
         if ($bFirst) {
-            $aTemplateDirs = array_unique(func_array_merge_assoc(ACE::FilePath($aTemplateDirs), ACE::FilePath($aSavedDirs)));
+            $aTemplateDirs = array_merge(ACE::FilePath($aTemplateDirs), $aSavedDirs);
         } else {
-            $aTemplateDirs = array_unique(func_array_merge_assoc(ACE::FilePath($aSavedDirs), ACE::FilePath($aTemplateDirs)));
+            $aTemplateDirs = array_merge($aSavedDirs, ACE::FilePath($aTemplateDirs));
         }
-        $this->oSmarty->setTemplateDir(ACE::FilePath($aTemplateDirs));
+        $this->SetTemplateDir($aTemplateDirs);
+    }
+
+    /**
+     * Задать путь (пути) к шаблонам Smarty
+     * Раннее заданные пути удаляются
+     *
+     * @param   array|string    $aTemplateDirs
+     *
+     * @return  void
+     */
+    public function SetTemplateDir($aTemplateDirs)
+    {
+        $this->oSmarty->setTemplateDir(array_unique(ACE::FilePath($aTemplateDirs)));
     }
 
     public function GetTemplateDir()
