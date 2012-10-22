@@ -120,27 +120,6 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
 
         $oLang = $this->Lang_Dictionary();
         $this->Viewer_Assign('oLang', $oLang);
-        $this->aAddons = array(
-            'sitesettings' => array(
-                'path' => 'admin/site/settings',
-                'class' => 'PluginAceadminpanel_AdminSiteSettings',
-                'file' => Config::Get('root.path.server') . 'plugins/aceadminpanel/classes/actions/ActionAdminSiteSettings.class.php',
-                //'template'=>HelperPlugin::GetTemplatePath('admin_site_settings.tpl'),
-                'language' => HelperPlugin::GetPluginPath() . '/templates/language/%%language%%.site_settings.php',
-            ),
-            'sitereset' => array(
-                'path' => 'admin/site/reset',
-                'class' => 'PluginAceadminpanel_AdminSiteReset',
-                'file' => Config::Get('root.path.server') . 'plugins/aceadminpanel/classes/actions/ActionAdminSiteReset.class.php',
-                'template' => HelperPlugin::GetTemplatePath('actions/ActionAdmin/site_reset.tpl'),
-            ),
-            'toolscomments' => array(
-                'path' => 'admin/tools/comments',
-                'class' => 'PluginAceadminpanel_AdminToolsComments',
-                'file' => Config::Get('root.path.server') . 'plugins/aceadminpanel/classes/actions/ActionAdminToolsComments.class.php',
-                'template' => HelperPlugin::GetTemplatePath('admin_tools_comments.tpl'),
-            ),
-        );
     }
 
     protected function RegisterEvent()
@@ -168,7 +147,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
             throw new Exception("The module has no required method: " . get_called_class() . '->' . $sName . '()');
     }
 
-    protected function _PluginSetTemplate($sTemplate)
+    protected function _pluginSetTemplate($sTemplate)
     {
         $this->SetTemplate($this->_GetTemplateFile('/actions/ActionAdmin/' . $sTemplate . '.tpl'));
     }
@@ -275,7 +254,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
     public function EventNotFound()
     {
         if ($this->oUserCurrent AND $this->oUserCurrent->isAdministrator()) {
-            $this->SetTemplateAction('error404');
+            $this->_pluginSetTemplate('error404');
         } else {
             ACE::HeaderLocation(Router::GetPath('error'));
         }

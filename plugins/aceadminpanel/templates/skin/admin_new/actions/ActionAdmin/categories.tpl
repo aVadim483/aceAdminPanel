@@ -7,7 +7,7 @@
 {if $aParams.0=='new'}
     &rarr; {$oLang->adm_pages_new}
     {elseif $aParams.0=='edit'}
-    &rarr; {$oLang->page_edit} �{$oPageEdit->getTitle()}�
+    &rarr; {$oLang->page_edit} "{$oPageEdit->getTitle()}"
     {elseif $aParams.0=='options'}
     &rarr; {$oLang->adm_pages_options}
 {/if}

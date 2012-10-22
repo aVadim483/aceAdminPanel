@@ -182,7 +182,6 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
 
         // хуки шаблонизатора
         $this->InitHooks();
-
         if (Config::Get($this->sPlugin . '.saved.path.smarty.template')) {
             $this->AddTemplateDir(Config::Get($this->sPlugin . '.saved.path.smarty.template'));
         }
@@ -373,24 +372,22 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
      * Добавить путь к шаблонам Smarty
      *
      * @param   array|string    $aTemplateDirs
-     * @param   bool            $bFirst
+     * @param   bool            $bFirst     - вставляем в начало списка
      *
      * @return  void
      */
     public function AddTemplateDir($aTemplateDirs, $bFirst = false)
     {
-        if ($bFirst) {
-            if (!is_array($this->oSmarty->template_dir)) $this->oSmarty->template_dir = array();
-            if (!is_array($aTemplateDirs)) {
-                $aTemplateDirs = array((string)$aTemplateDirs);
-            } else {
-                $aTemplateDirs = array_reverse($aTemplateDirs);
-            }
-            foreach ($aTemplateDirs as $sDir)
-                array_unshift($this->oSmarty->template_dir, $sDir);
-        } else {
-            $this->oSmarty->addTemplateDir($aTemplateDirs);
+        $aSavedDirs = $this->oSmarty->getTemplateDir();
+        if (!is_array($aTemplateDirs)) {
+            $aTemplateDirs = array((string)$aTemplateDirs);
         }
+        if ($bFirst) {
+            $aTemplateDirs = array_unique(func_array_merge_assoc(ACE::FilePath($aTemplateDirs), ACE::FilePath($aSavedDirs)));
+        } else {
+            $aTemplateDirs = array_unique(func_array_merge_assoc(ACE::FilePath($aSavedDirs), ACE::FilePath($aTemplateDirs)));
+        }
+        $this->oSmarty->setTemplateDir(ACE::FilePath($aTemplateDirs));
     }
 
     public function GetTemplateDir()

@@ -24,6 +24,9 @@ class AceModulePlugin extends Module
     {
         $this->oPluginObj = Engine::getInstance()->GetModuleObject('Plugin');
         $sResult = $this->oPluginObj->Init();
+
+        $this->aProps = array();
+        /* PHP 5.3
         $reflection = new ReflectionClass($this->oPluginObj);
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
@@ -32,6 +35,14 @@ class AceModulePlugin extends Module
             if (!$property->isPublic())
                 $property->setAccessible(false);
         }
+        */
+
+        /* PHP 5.2 */
+        while (list($key, $value) = each($this->oPluginObj)) {
+            $key = ($key{0} === "\0") ? substr($key, strpos($key, "\0", 1) + 1) : $key;
+            $this->aProps[$key] = $value;
+        }
+
         return $sResult;
     }
 
