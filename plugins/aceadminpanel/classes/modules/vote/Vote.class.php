@@ -16,7 +16,6 @@
 class PluginAceadminpanel_ModuleVote extends PluginAceadminpanel_Inherit_ModuleVote {
 
     public function Init() {
-        //$this->oMapper = HelperPlugin::GetMapper();
         $this->oMapper = Engine::GetMapper(__CLASS__);
     }
 

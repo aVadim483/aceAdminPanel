@@ -43,7 +43,7 @@ class PluginAceadminpanel extends Plugin
     public $aInherits = array(
         'action' => array(
             'ActionAdmin',
-            'ActionError',
+            //'ActionError',
             'ActionTopic',
             'ActionAjax',
         ),

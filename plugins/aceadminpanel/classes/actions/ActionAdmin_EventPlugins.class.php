@@ -4,10 +4,10 @@
 * @Plugin Id: aceadminpanel
 * @Plugin URI:
 * @Description: Advanced Administrator's Panel for LiveStreet/ACE
-* @Version: 1.5.210
+* @Version: 2.0
 * @Author: Vadim Shemarov (aka aVadim)
 * @Author URI:
-* @LiveStreet Version: 0.5
+* @LiveStreet Version: 1.0.1
 * @File Name:
 * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 *----------------------------------------------------------------------------
@@ -183,7 +183,6 @@ class PluginAceadminpanel_ActionAdmin_EventPlugins extends PluginAceadminpanel_I
         $sActionClass = 'Plugin' . ucfirst($this->GetParam($nOffset)) . '_ActionAdminPlugin';
         $sActionClass = $this->Plugin_GetDelegate('action', $sActionClass);
 
-        //var_dump($sActionClass);
         if ($this->Plugin_GetDelegationChain('action', $sActionClass)) {
             $sActionClass = $this->Plugin_GetDelegate('action', $sActionClass);
         }
@@ -195,12 +194,15 @@ class PluginAceadminpanel_ActionAdmin_EventPlugins extends PluginAceadminpanel_I
 
             if (method_exists($this->oAdminAction, 'Init'))
                 $this->oAdminAction->Init();
+
             if (method_exists($this->oAdminAction, 'Admin'))
                 $this->oAdminAction->Admin();
             elseif (method_exists($this->oAdminAction, 'EventIndex'))
                 $this->oAdminAction->EventIndex();
+
             if (method_exists($this->oAdminAction, 'EventShutdown'))
                 $this->oAdminAction->EventShutdown();
+
             if (method_exists($this->oAdminAction, 'Done'))
                 $this->oAdminAction->Done();
         }

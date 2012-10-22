@@ -66,6 +66,8 @@ label {
 .plugins-list td.action .btn.btn-inset {
     margin-top: 1px;;
     height: 25px;
+    padding-right: 0;
+    padding-left: 0;
 }
 
 #user_login_seek {

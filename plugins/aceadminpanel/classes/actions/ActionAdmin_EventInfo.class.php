@@ -85,7 +85,8 @@ class PluginAceadminpanel_ActionAdmin_EventInfo extends PluginAceadminpanel_Inhe
                 'data' => array(
                     'url' => array('label' => $this->Lang_Get('adm_info_site_url'), 'value' => Config::Get('path.root.web'),),
                     'skin' => array('label' => $this->Lang_Get('adm_info_site_skin'), 'value' => Config::Get('aceadminpanel.saved.view.skin'),),
-                    'jslib' => array('label' => $this->Lang_Get('adm_info_site_jslib'), 'value' => Config::Get('js.lib'),),
+                    //'jslib' => array('label' => $this->Lang_Get('adm_info_site_jslib'), 'value' => Config::Get('js.lib'),),
+                    'client' => array('label' => $this->Lang_Get('adm_info_site_client'), 'value' => $_SERVER['HTTP_USER_AGENT'],),
                 ),
             ),
             'plugins' => array(

@@ -323,7 +323,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
                 'filename' => '',
                 'params' => '',
             ),
-            pathinfo($sPath)
+            pathinfo(self::FilePath($sPath))
         );
         $n = strpos($aResult['extension'], '?');
         if ($n !== false) {
@@ -333,6 +333,12 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
             $aResult['basename'] = substr($aResult['basename'], 0, $n);
         }
         return $aResult;
+    }
+
+    static function FileExtension($sPath)
+    {
+        $aInfo = self::PathInfo($sPath);
+        return $aInfo['extension'];
     }
 
     static protected function _calledFilePath()

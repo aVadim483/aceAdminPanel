@@ -16,7 +16,6 @@
 class PluginAceadminpanel_ModuleTools extends Module {
 
     public function Init() {
-        //$this->oMapper = HelperPlugin::GetMapper();
         $this->oMapper = Engine::GetMapper(__CLASS__);
     }
 

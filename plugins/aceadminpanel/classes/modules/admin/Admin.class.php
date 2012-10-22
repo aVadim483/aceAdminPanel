@@ -29,7 +29,6 @@ class PluginAceadminpanel_ModuleAdmin extends Module
 
     public function Init()
     {
-        //$this->oMapper = HelperPlugin::GetMapper();
         $this->oMapper = Engine::GetMapper(__CLASS__);
         $this->sVersionDB = $this->oMapper->GetAdminValue('version');
     }
