@@ -259,6 +259,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
                     if ($sUserLogin AND $sUserLogin != $this->oUserCurrent->getLogin() AND ($iUserId = $this->PluginAceadminpanel_Admin_GetUserId($sUserLogin))) {
                         $oTalk = Engine::GetEntity('Talk_Talk');
                         $oTalk->setUserId($this->oUserCurrent->getId());
+                        $oTalk->setUserIdLast($this->oUserCurrent->getId());
                         $oTalk->setTitle($sTitle);
                         $oTalk->setText($sText);
                         $oTalk->setDate($sDate);
@@ -303,7 +304,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
         $sTitle = getRequest('talk_title');
         $sText = $this->Text_Parser(getRequest('talk_text'));
-        $sDate = date("Y-m-d H:i:s");
+        $sDate = date('Y-m-d H:i:s');
         $sIp = func_getIp();
 
         if (($sUsers = getRequest('users_list'))) {
@@ -316,6 +317,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             if ($bOk AND $aUsers) {
                 $oTalk = Engine::GetEntity('Talk_Talk');
                 $oTalk->setUserId($this->oUserCurrent->getId());
+                $oTalk->setUserIdLast($this->oUserCurrent->getId());
                 $oTalk->setTitle($sTitle);
                 $oTalk->setText($sText);
                 $oTalk->setDate($sDate);
@@ -549,7 +551,9 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             if (($sUserLogin = getRequest('user_filter_login'))) {
                 if ($this->PluginAceadminpanel_Admin_GetUserId($sUserLogin)) {
                     $aFilter['login'] = $sUserLogin;
+                    $aFilter['like'] = null;
                 } else {
+                    $aFilter['login'] = null;
                     $aFilter['like'] = $sUserLogin;
                 }
             } else {

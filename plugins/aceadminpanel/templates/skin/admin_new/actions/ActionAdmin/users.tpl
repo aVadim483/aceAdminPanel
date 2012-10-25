@@ -6,20 +6,20 @@
 
     aceAdmin.user.messageSubmit = function (msg) {
         var i, el;
-        if ((el = $('users_list'))) {
-            if (!el.value) {
+        if ((el = $('#users_list'))) {
+            if (!el.val()) {
                 alert(msg[0]);
                 return false;
             }
         }
-        if ((el = $('talk_title'))) {
-            if (el.value.length < 2 || el.value.length > 200) {
+        if ((el = $('#talk_title'))) {
+            if (el.val().length < 2 || el.value.length > 200) {
                 alert(msg[1]);
                 return false;
             }
         }
-        if ((el = $('talk_text'))) {
-            if (el.value.length < 2 || el.value.length > 3000) {
+        if ((el = $('#talk_text'))) {
+            if (el.val().length < 2 || el.value.length > 3000) {
                 alert(msg[2]);
                 return false;
             }
@@ -305,7 +305,7 @@
                 <input type="hidden" name="adm_user_action" value="adm_user_message"/>
 
                 <button type="submit" name="adm_action_submit" class="btn btn-primary"
-                        onclick="return $ace.user.messageSubmit(['{$oLang->_talk_create_users_error}', '{$oLang->talk_create_title_error}', '{$oLang->talk_create_text_error}'])">
+                        onclick="return $ace.user.messageSubmit(['{$oLang->_talk_create_users_error}', '{$oLang->_talk_create_title_error}', '{$oLang->talk_create_text_error}'])">
                     {$oLang->_talk_create_submit}
                 </button>
 

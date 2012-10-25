@@ -15,6 +15,9 @@ label {
 .sidebar .well label {
     font-weight: bold;
 }
+.sidebar .well input[type=radio] {
+    margin: 0;
+}
 .sidebar .well .input-prepend .add-on {
     font-weight: bold;
 }

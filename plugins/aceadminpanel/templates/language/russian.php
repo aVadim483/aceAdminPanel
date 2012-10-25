@@ -97,7 +97,7 @@ return array(
     'adm_info_site_url' => 'Адрес сайта',
     'adm_info_site_skin' => 'Текущий скин',
     'adm_info_site_jslib' => 'Используемая библиотека javascript',
-    'adm_info_site_client' => 'Текущий веб-клиент',
+    'adm_info_site_client' => 'Веб-клиент',
 
     'adm_active_plugins' => 'Активные плагины',
 
