@@ -118,16 +118,6 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
                             . 'default-' . Config::Get('js.lib') . '/' . $aMatches[2]);
                 }
             }
-        } elseif (Config::Get('js.lib')) {
-            if (strpos($sTemplate, $sPathRoot) !== 0 AND !is_file($sTemplate) AND ($sPlugin = $this->_getCallerPlugin())) {
-                $sRealTemplate = $sPathRoot . '/plugins/' . $sPlugin . '/templates/skin/'
-                    . 'default-' . Config::Get('js.lib') . '/' . $sTemplate;
-            } elseif (preg_match('|^' . $sPathRoot . '/plugins/(\w+)/templates/skin/default/(.*)$|', $sTemplate, $aMatches)) {
-                // если дефолтный шаблон плагина, то проверим, нет ли дефолтного шаблона с учетом js-lib
-                $sRealTemplate = ACE::FilePath(
-                    Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
-                        . 'default-' . Config::Get('js.lib') . '/' . $aMatches[2]);
-            }
         }
         if ($sRealTemplate AND is_file($sRealTemplate)) {
             $sTemplate = $sRealTemplate;
@@ -154,8 +144,8 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
     protected function _initTplHooks()
     {
         if ($this->aTplHooks OR Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
-            if (!class_exists('phpQuery')) ACE::FileInclude('plugin:aceadminpanel:lib/phpQuery/phpQuery.php');
-            if (class_exists('phpQuery')) {
+            if (!class_exists('TplDoc')) ACE::FileInclude('plugin:aceadminpanel:lib/TplDoc.class.php');
+            if (class_exists('TplDoc')) {
                 // Подключаем Smarty-плагин
                 $this->oSmarty->loadFilter('pre', 'tplhook');
                 $this->Assign('aTplHooks', $this->aTplHooks);

@@ -1,2 +1,2 @@
-[v2.0.300; rev.$WCREV$]
-  + The adaptation for LS 1.0.1
+[v2.0.330-dev; rev.$WCREV$]
+  * phpQuery was replaced by Simple Html Dom

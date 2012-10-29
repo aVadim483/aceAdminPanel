@@ -30,48 +30,53 @@ function smarty_prefilter_tplhook($sSource, Smarty_Internal_Template $oTemplate)
                 $aSmartyExp = array();
                 $sHtml = _smarty_prefilter_tplhook_replace($sHtml, $aSmartyExp);
             }
+            $sHtml = '<footer></footer></article>';
+            phpQuery::$defaultDoctype = '<!DOCTYPE HTML>';
+            $doc = phpQuery::newDocumentHTML($sHtml);
+            $s = '' . $doc;
             $sSelector = $oTplHook->GetSelector();
-            $sTplCode = $oTplHook->Call();
-            $sTplCode = _smarty_prefilter_tplhook_replace($sTplCode, $aSmartyExp);
-
-            $doc = new TplDoc($sHtml);
-
-            $aElements = $doc->find($sSelector);
+            $bParent = (substr($sSelector, -7) == ':parent');
+            if ($bParent)
+                $aElements = $doc->find($sSelector)->parent();
+            else
+                $aElements = $doc->find($sSelector);
             if ($aElements) {
                 $bChanged = true;
                 foreach ($aElements as $el) {
+                    $sTplCode = $oTplHook->Call();
+                    $sTplCode = _smarty_prefilter_tplhook_replace($sTplCode, $aSmartyExp);
                     switch ($oTplHook->GetAction()) {
                         case 'prepend':
-                            $el->prepend($sTplCode);
+                            pq($el)->prepend($sTplCode);
                             break;
                         case 'append':
-                            $el->append($sTplCode);
+                            pq($el)->append($sTplCode);
                             break;
                         case 'before':
-                            $el->before($sTplCode);
+                            pq($el)->before($sTplCode);
                             break;
                         case 'after':
-                            $el->after($sTplCode);
+                            pq($el)->after($sTplCode);
                             break;
                         case 'html':
-                            $el->html($sTplCode);
+                            pq($el)->html($sTplCode);
                             break;
                         case 'text':
-                            $el->text($sTplCode);
+                            pq($el)->text($sTplCode);
                             break;
                         default:
-                            $el->replaceWith($sTplCode);
+                            pq($el)->replaceWith($sTplCode);
                     }
                 }
             }
-            $sSource = $doc->html();
-            $doc->clear();
-            unset($doc);
         }
     }
-    if ($bChanged AND $aSmartyExp) {
-        foreach ($aSmartyExp as $sKey => $sVal) {
-            $sSource = str_replace($sKey, $sVal, $sSource);
+    if ($bChanged AND isset($doc)) {
+        $sSource = '' . $doc;
+        if ($aSmartyExp) {
+            foreach ($aSmartyExp as $sKey => $sVal) {
+                $sSource = str_replace($sKey, $sVal, $sSource);
+            }
         }
     }
     if (Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
@@ -96,13 +101,11 @@ function _smarty_prefilter_tplhook_mark($sSource, Smarty_Internal_Template $oTem
 
 function _smarty_prefilter_tplhook_replace($sHtml, &$aSmartyExp)
 {
-    return $sHtml;
     if (is_null($aSmartyExp)) $aSmartyExp = array();
-    if (preg_match_all('|\{[a-z\$\/].*?\}|imuU', $sHtml, $aMatches, PREG_OFFSET_CAPTURE)) {
+    if (preg_match_all('|\{[a-z\$\/].*\}|imuU', $sHtml, $aMatches, PREG_OFFSET_CAPTURE)) {
         $nOffset = 0;
         foreach ($aMatches[0] as $m) {
-            //$sExpId = uniqid('smarty_expression_' . time() . '_');
-            $sExpId = uniqid('smarty_exp_');
+            $sExpId = uniqid('smarty_expression_' . time() . '_');
             $aSmartyExp[$sExpId] = $m[0];
             $nPos = $m[1] + $nOffset;
             $sHtml = substr($sHtml, 0, $nPos) . $sExpId . substr($sHtml, $nPos + strlen($m[0]));
