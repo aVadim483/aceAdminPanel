@@ -193,6 +193,9 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         if (preg_match('|^([a-z]+://)(.*)|i', $sPath, $aMatches)) {
             $sPrefix = $aMatches[1];
             $sPath = $aMatches[2];
+        } elseif (preg_match('|^([a-z])(\:[\\\\/].*)$|u', $sPath, $aMatches)) {
+            $sPrefix = '';
+            $sPath = strtoupper($aMatches[1]) . $aMatches[2];
         } else {
             $sPrefix = '';
         }
