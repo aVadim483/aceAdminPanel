@@ -111,12 +111,6 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
                 $sRealTemplate = ACE::FilePath(
                     Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
                         . Config::Get($this->sPlugin . '.saved.view.skin') . '/' . $aMatches[2]);
-                // если нет, то смотрим с учетом js-lib
-                if (!is_file($sRealTemplate)) {
-                    $sRealTemplate = ACE::FilePath(
-                        Config::Get('path.root.server') . '/plugins/' . $aMatches[1] . '/templates/skin/'
-                            . 'default-' . Config::Get('js.lib') . '/' . $aMatches[2]);
-                }
             }
         }
         if ($sRealTemplate AND is_file($sRealTemplate)) {
@@ -141,11 +135,14 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         else return false;
     }
 
+    /**
+     * Инициализация хуков и префильтра Smarty
+     */
     protected function _initTplHooks()
     {
         if ($this->aTplHooks OR Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
-            if (!class_exists('TplDoc')) ACE::FileInclude('plugin:aceadminpanel:lib/TplDoc.class.php');
-            if (class_exists('TplDoc')) {
+            if (!class_exists('DomFrag')) ACE::FileInclude('plugin:aceadminpanel:lib/DomFrag.class.php');
+            if (class_exists('DomFrag')) {
                 // Подключаем Smarty-плагин
                 $this->oSmarty->loadFilter('pre', 'tplhook');
                 $this->Assign('aTplHooks', $this->aTplHooks);

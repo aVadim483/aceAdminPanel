@@ -77,6 +77,9 @@ ul, ol {
     padding-right: 14px;
     padding-left: 14px;
 }
+.btn-block.btn.left {
+    float: none;
+}
 .btn-gray,
 .btn-gray:hover {
     color: #ffffff;

@@ -49,21 +49,23 @@ class PluginAceadminpanel_ActionAdmin_EventInfo extends PluginAceadminpanel_Inhe
         $aActivePlugins = $this->Plugin_GetActivePlugins();
         $aPluginList = array();
         foreach ($aActivePlugins as $sPlugin) {
-            $aPliginProps = $aPlugins[$sPlugin];
-            $sPluginName = htmlspecialchars((string)$aPliginProps['property']->name->data);
-            $aPluginInfo = array(
-                'item' => $sPlugin,
-                'label' => $sPluginName,
-            );
-            if ($aPliginProps['property']->version) {
-                $aPluginInfo['value'] = 'v.' . htmlspecialchars((string)$aPliginProps['property']->version);
+            if (isset($aPlugins[$sPlugin])) {
+                $aPliginProps = $aPlugins[$sPlugin];
+                $sPluginName = htmlspecialchars((string)$aPliginProps['property']->name->data);
+                $aPluginInfo = array(
+                    'item' => $sPlugin,
+                    'label' => $sPluginName,
+                );
+                if ($aPliginProps['property']->version) {
+                    $aPluginInfo['value'] = 'v.' . htmlspecialchars((string)$aPliginProps['property']->version);
+                }
+                $sPluginClass = 'Plugin' . ucfirst($sPlugin);
+                if (class_exists($sPluginClass) AND method_exists($sPluginClass, 'GetUpdateInfo')) {
+                    $oPlugin = new $sPluginClass;
+                    $aPluginInfo['.html'] = ' - ' . $oPlugin->GetUpdateInfo();
+                }
+                $aPluginList[$sPlugin] = $aPluginInfo;
             }
-            $sPluginClass = 'Plugin' . ucfirst($sPlugin);
-            if (class_exists($sPluginClass) AND method_exists($sPluginClass, 'GetUpdateInfo')) {
-                $oPlugin = new $sPluginClass;
-                $aPluginInfo['.html'] = ' - ' . $oPlugin->GetUpdateInfo();
-            }
-            $aPluginList[$sPlugin] = $aPluginInfo;
         }
 
         $aSiteStat = $this->PluginAceadminpanel_Admin_GetSiteStat();

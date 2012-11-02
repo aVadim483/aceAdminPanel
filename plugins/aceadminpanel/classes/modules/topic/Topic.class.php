@@ -50,9 +50,7 @@ class PluginAceadminpanel_ModuleTopic extends PluginAceadminpanel_Inherit_Module
 
         $this->Comment_DeleteCommentByTargetId($nTopicId, 'topic');
 
-        if (version_compare(LS_VERSION, '0.5', '>=')) {
-            $this->ClearStreamByTopic($nTopicId);
-        }
+        $this->ClearStreamByTopic($nTopicId);
 
         // * Чистим зависимые кеши ПОСЛЕ удаления топика
         $this->Cache_Clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array('topic_update'));

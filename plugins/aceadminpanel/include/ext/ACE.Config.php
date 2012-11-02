@@ -44,7 +44,7 @@ class ACE_Config
 
     static function Init()
     {
-        ACE_Config::LoadCustomPluginsConfig('aceadminpanel', true);
+        ACE_Config::LoadCustomPluginsConfig('aceadminpanel', true, true);
         ACE_Config::CheckTmpDirs();
     }
 
@@ -94,13 +94,14 @@ class ACE_Config
      *
      * @param   null|string|array $aPlugins - имя плагина или массив имен, если не задано, то все активные плагины
      * @param   bool    $bForce  - подгружать, даже если подгрузка запрещена в конфиге
+     * @param   bool    $bPluginOnly - подгружать только кофиг плагина
      */
-    static function LoadCustomPluginsConfig($aPlugins = null, $bForce = false)
+    static function LoadCustomPluginsConfig($aPlugins = null, $bForce = false, $bPluginOnly = false)
     {
         if (self::_getVal('custom_config.enable') OR $bForce) {
             if (($sCustomConfigPath = self::_getCustomConfigPath()) AND is_dir($sCustomConfigPath)) {
                 // Подгрузка общего файла конфигурации, если он есть
-                if (is_file($sCustomConfigPath . '/config.php')) {
+                if (!$bPluginOnly AND is_file($sCustomConfigPath . '/config.php')) {
                     Config::LoadFromFile($sCustomConfigPath . '/config.php', false);
                 }
                 if (self::_getVal('custom_config.plugins')) {

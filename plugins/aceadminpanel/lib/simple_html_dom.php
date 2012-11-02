@@ -520,7 +520,7 @@ class simple_html_dom_node
             {
                 $ret = array();
                 foreach ($head as $k=>$v)
-                {
+                {   /** @var $n DomFragNode */
                     $n = ($k===-1) ? $this->dom->root : $this->dom->nodes[$k];
                     //PaperG - Pass this optional parameter on to the seek function.
                     $n->seek($selectors[$c][$l], $ret, $lowercase);

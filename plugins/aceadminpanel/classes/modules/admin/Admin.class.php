@@ -44,8 +44,7 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         if (floatval($this->sVersionDB) != floatval($sVersion)) {
             //return $sVersion . '/' . $this->sVersionDB;
             return $sVersion;
-        }
-        else {
+        } else {
             return $sVersion;
         }
     }
@@ -65,7 +64,7 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         return ($this->oMapper->SetAdminValue($sKey, $xValue));
     }
 
-    public function GetValueArrayByPrefix($sPrefix, $bSimpleArray=false)
+    public function GetValueArrayByPrefix($sPrefix, $bSimpleArray = false)
     {
         $aResult = (array)$this->oMapper->GetAdminValue('prefix:' . $sPrefix);
         if ($bSimpleArray) {
@@ -204,10 +203,9 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         if (!$nDays) {
             $nUnlim = 1;
             $dDate = null;
-        }
-        else {
+        } else {
             $nUnlim = 0;
-            $dDate = date("Y-m-d H:i:s", time() + 3600 * 24 * $nDays);
+            $dDate = date('Y-m-d H:i:s', time() + 3600 * 24 * $nDays);
         }
         $this->Session_Drop($nUserId);
         $bOk = $this->oMapper->SetBanUser($nUserId, $dDate, $nUnlim, $sComment);
@@ -253,10 +251,9 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         if (!$nDays) {
             $nUnlim = 1;
             $dDate = null;
-        }
-        else {
+        } else {
             $nUnlim = 0;
-            $dDate = date("Y-m-d H:i:s", time() + 3600 * 24 * $nDays);
+            $dDate = date('Y-m-d H:i:s', time() + 3600 * 24 * $nDays);
         }
 
         //чистим зависимые кеши
@@ -302,7 +299,7 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         return $data;
     }
 
-    public function GetUserIps($oUserId, $nPerPage=null)
+    public function GetUserIps($oUserId, $nPerPage = null)
     {
         if (is_object($oUserId)) $nUserId = $oUserId->GetId();
         else $nUserId = intval($oUserId);
@@ -330,14 +327,27 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         return $bOk;
     }
 
-    public function DelUser($nUserId)
+    /**
+     * TODO: не всегда удаляются комментарии удаляемого пользователя - проверить, почему?
+     *
+     * @param   int|object  $oUserId
+     * @return  bool
+     */
+    public function DelUser($oUserId)
     {
+        if (is_object($oUserId)) $nUserId = $oUserId->getId();
+        else $nUserId = intval($oUserId);
+
+        /**
+         * TODO: не возникают ли взаимные блокировки при удалении связанных сущностей?
+         *
         $this->oMapper->transaction();
+        */
 
         // Удаляем блоги
         $aBlogsId = $this->Blog_GetBlogsByOwnerId($nUserId, true);
         if ($aBlogsId) {
-            foreach ($aBlogsId as $sBlogId) $this->DelBlog($sBlogId, false);
+            foreach ($aBlogsId as $nBlogId) $this->DelBlog($nBlogId, false);
         }
         $oBlog = $this->Blog_GetPersonalBlogByUserId($nUserId);
         if ($oBlog)
@@ -357,15 +367,15 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         } while ($aTalks['count'] > $iPerPage);
 
         // Чистим ленту активности
-        if (version_compare(LS_VERSION, '0.5', '>=')) {
-            $this->ClearStreamByUser($nUserId);
-        }
+        $this->ClearStreamByUser($nUserId);
 
         $bOk = $this->oMapper->DelUser($nUserId);
+        /*
         if ($bOk)
             $this->oMapper->commit();
         else
             $this->oMapper->rollback();
+        */
 
         // Слишком много взаимосвязей, поэтому просто сбрасываем кеш
         $this->Cache_Clean();
@@ -376,16 +386,14 @@ class PluginAceadminpanel_ModuleAdmin extends Module
     /**
      * Чистка ленты по ID пользователя
      *
-     * @param   int|obj $oUserId
+     * @param   int|object $oUserId
      * @return  bool
      */
     public function ClearStreamByUser($oUserId)
     {
-        if (is_object($oUserId)) {
-            $nUserId = $oUserId->getId();
-        } else {
-            $nUserId = (int)$oUserId;
-        }
+        if (is_object($oUserId)) $nUserId = $oUserId->getId();
+        else $nUserId = intval($oUserId);
+
         return $this->oMapper->ClearStreamByUser($nUserId);
     }
 
@@ -433,25 +441,29 @@ class PluginAceadminpanel_ModuleAdmin extends Module
     /**
      * Все (и персональные, и нет) блоги юзера
      *
-     * @param   integer $sUserId
-     * @return  mixed
+     * @param   integer|object $oUserId
+     * @return  array
      */
-    public function GetBlogsByUserId($sUserId)
+    public function GetBlogsByUserId($oUserId)
     {
+        if (is_object($oUserId)) $nUserId = $oUserId->getId();
+        else $nUserId = intval($oUserId);
+
         $iCount = 0;
-        $aParam = array('user_id' => $sUserId);
+        $aParam = array('user_id' => $nUserId);
         $data = $this->GetBlogList($iCount, 1, 1000, $aParam);
         return $data['collection'];
     }
 
-    public function DelBlog($sBlogId, $bClearCache = true)
+    public function DelBlog($oBlogId, $bClearCache = true)
     {
-        $aTopicsId = $this->Topic_GetTopicsByBlogId($sBlogId);
-        $bOk = $this->Blog_DeleteBlog($sBlogId);
+        if (is_object($oBlogId)) $nBlogId = $oBlogId->getId();
+        else $nBlogId = intval($oBlogId);
+
+        $aTopicsId = $this->Topic_GetTopicsByBlogId($nBlogId);
+        $bOk = $this->Blog_DeleteBlog($nBlogId);
         if ($bOk) {
-            if (version_compare(LS_VERSION, '0.5', '>=')) {
-                $this->ClearStreamByBlog($sBlogId);
-            }
+            $this->ClearStreamByBlog($nBlogId);
             if ($aTopicsId) {
                 foreach ($aTopicsId as $nTopicId) $this->DelTopic($nTopicId, false);
             }
@@ -464,21 +476,19 @@ class PluginAceadminpanel_ModuleAdmin extends Module
     /**
      * Чистка ленты по ID блога
      *
-     * @param   int|obj $oBlogId
+     * @param   int|object $oBlogId
      * @return  bool
      */
     public function ClearStreamByBlog($oBlogId)
     {
-        if (is_object($oBlogId)) {
-            $nBlogId = $oBlogId->getId();
-        } else {
-            $nBlogId = (int)$oBlogId;
-        }
+        if (is_object($oBlogId)) $nBlogId = $oBlogId->getId();
+        else $nBlogId = intval($oBlogId);
+
         return $this->oMapper->ClearStreamByBlog($nBlogId);
     }
 
     /**
-     * @param   obj|int     $oTopicId
+     * @param   int|object     $oTopicId
      * @param   bool        $bClearCache
      * @return  bool
      */

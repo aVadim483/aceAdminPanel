@@ -310,7 +310,8 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
     /**
      * Возвращает список плагинов, добавляя им приоритет загрузки
      *
-     * @return  array
+     * @param array $aFilter
+     * @return array
      */
     public function GetList($aFilter = array())
     {

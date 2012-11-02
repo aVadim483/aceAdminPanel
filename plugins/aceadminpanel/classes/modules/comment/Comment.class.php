@@ -25,9 +25,7 @@ class PluginAceadminpanel_CommentTopic extends PluginAceadminpanel_Inherit_Modul
         parent::DeleteCommentByTargetId($nTargetId, $sTarget);
         parent::DeleteCommentOnlineByTargetId($nTargetId, $sTarget);
         if ($aComments) {
-            if (version_compare(LS_VERSION, '0.5', '>=')) {
-                $this->ClearStreamByComment($aComments);
-            }
+            $this->ClearStreamByComment($aComments);
         }
 
     }
@@ -35,14 +33,14 @@ class PluginAceadminpanel_CommentTopic extends PluginAceadminpanel_Inherit_Modul
     /**
      * Чистка ленты по ID коммента
      *
-     * @param   int|obj $oCommentId
+     * @param   int|object $oCommentId
      * @return  bool
      */
     public function ClearStreamByComment($oCommentId)
     {
         if (is_object($oCommentId)) {
             $aCommentsId = array($oCommentId->getId());
-        } elseif(is_array($oCommentId)) {
+        } elseif (is_array($oCommentId)) {
             $aCommentsId = array();
             foreach ($oCommentId as $xComment) {
                 if (is_object($xComment)) {

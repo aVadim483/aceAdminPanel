@@ -21,57 +21,41 @@
 function smarty_prefilter_tplhook($sSource, Smarty_Internal_Template $oTemplate)
 {
     $aTplHooks = $oTemplate->getTemplateVars('aTplHooks');
-    $aSmartyExp = null;
-    $sHtml = $sSource;
-    $bChanged = false;
     foreach ($aTplHooks as $oTplHook) {
         if ($oTplHook->isCurrentTemplate($oTemplate->smarty->_current_file)) {
-            if (is_null($aSmartyExp)) {
-                $aSmartyExp = array();
-                $sHtml = _smarty_prefilter_tplhook_replace($sHtml, $aSmartyExp);
-            }
             $sSelector = $oTplHook->GetSelector();
             $sTplCode = $oTplHook->Call();
-            $sTplCode = _smarty_prefilter_tplhook_replace($sTplCode, $aSmartyExp);
 
-            $doc = new TplDoc($sHtml);
-
-            $aElements = $doc->find($sSelector);
-            if ($aElements) {
-                $bChanged = true;
-                foreach ($aElements as $el) {
-                    switch ($oTplHook->GetAction()) {
-                        case 'prepend':
-                            $el->prepend($sTplCode);
-                            break;
-                        case 'append':
-                            $el->append($sTplCode);
-                            break;
-                        case 'before':
-                            $el->before($sTplCode);
-                            break;
-                        case 'after':
-                            $el->after($sTplCode);
-                            break;
-                        case 'html':
-                            $el->html($sTplCode);
-                            break;
-                        case 'text':
-                            $el->text($sTplCode);
-                            break;
-                        default:
-                            $el->replaceWith($sTplCode);
-                    }
+            $doc = new DomFrag($sSource);
+            //$s = $doc->html();
+            $oElements = $doc->find($sSelector);
+            if ($oElements->count()) {
+                switch ($oTplHook->GetAction()) {
+                    case 'prepend':
+                        $oElements->prepend($sTplCode);
+                        break;
+                    case 'append':
+                        $oElements->append($sTplCode);
+                        break;
+                    case 'before':
+                        $oElements->before($sTplCode);
+                        break;
+                    case 'after':
+                        $oElements->after($sTplCode);
+                        break;
+                    case 'html':
+                        $oElements->html($sTplCode);
+                        break;
+                    case 'text':
+                        $oElements->text($sTplCode);
+                        break;
+                    default:
+                        $oElements->replaceWith($sTplCode);
                 }
             }
             $sSource = $doc->html();
             $doc->clear();
             unset($doc);
-        }
-    }
-    if ($bChanged AND $aSmartyExp) {
-        foreach ($aSmartyExp as $sKey => $sVal) {
-            $sSource = str_replace($sKey, $sVal, $sSource);
         }
     }
     if (Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
@@ -92,26 +76,6 @@ function _smarty_prefilter_tplhook_mark($sSource, Smarty_Internal_Template $oTem
 
     Config::Set('plugin.aceadminpanel.smarty.options.mark_template_lvl', ++$nLevel);
     return $sSource;
-}
-
-function _smarty_prefilter_tplhook_replace($sHtml, &$aSmartyExp)
-{
-    return $sHtml;
-    if (is_null($aSmartyExp)) $aSmartyExp = array();
-    if (preg_match_all('|\{[a-z\$\/].*?\}|imuU', $sHtml, $aMatches, PREG_OFFSET_CAPTURE)) {
-        $nOffset = 0;
-        foreach ($aMatches[0] as $m) {
-            //$sExpId = uniqid('smarty_expression_' . time() . '_');
-            $sExpId = uniqid('smarty_exp_');
-            $aSmartyExp[$sExpId] = $m[0];
-            $nPos = $m[1] + $nOffset;
-            $sHtml = substr($sHtml, 0, $nPos) . $sExpId . substr($sHtml, $nPos + strlen($m[0]));
-            $nOffset += strlen($sExpId) - strlen($m[0]);
-        }
-    } else {
-        $aSmartyExp = ($aSmartyExp ? $aSmartyExp : array());
-    }
-    return $sHtml;
 }
 
 // EOF
