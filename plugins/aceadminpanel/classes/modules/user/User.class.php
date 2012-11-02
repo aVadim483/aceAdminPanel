@@ -22,7 +22,7 @@ class PluginAceadminpanel_ModuleUser extends PluginAceadminpanel_Inherit_ModuleU
     public function Init()
     {
         parent::Init();
-        $this->oMapper = Engine::GetMapper(__CLASS__);
+        //$this->oMapper = Engine::GetMapper(__CLASS__);
     }
 
     /**
