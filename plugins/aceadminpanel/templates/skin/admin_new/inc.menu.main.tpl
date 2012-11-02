@@ -134,5 +134,12 @@
                 submenu.popover('hide');
             }
         });
+
+        /*
+        $('#admin_action_item a').each(function(){
+            var href = $(this).prop('href');
+            $(this).prop('href', href.replace(aRouter['admin'], aRouter['admin'] + 'x/'));
+        });
+        */
     });
 </script>

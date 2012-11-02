@@ -305,8 +305,6 @@ class HelperPlugin
 
                 if (in_array($sSiteSkin, $aSkins)) {
                     $sPluginSkin = $sSiteSkin;
-                } elseif (in_array('default-' . Config::Get('js.lib'), $aSkins)) {
-                    $sPluginSkin = 'default-' . Config::Get('js.lib');
                 } else {
                     $sPluginSkin = 'default';
                 }
@@ -327,13 +325,26 @@ class HelperPlugin
      */
     static public function GetPluginSkinPath($sPluginName = null)
     {
+        return self::GetPluginSkinDir($sPluginName);
+        /*
         $sPluginName = self::GetPluginStr($sPluginName);
         if (!isset(self::$_aPluginSkin[$sPluginName]['path'])) {
             self::$_aPluginSkin[$sPluginName]['path'] = ACE::Url2Path(self::GetPluginSkinUrl($sPluginName), '/');
+            self::$_aPluginSkin[$sPluginName]['path'] = self::GetPluginPath($sPluginName);
         }
         return self::$_aPluginSkin[$sPluginName]['path'];
+        */
     }
 
+    static public function GetPluginSkinDir($sPluginName = null)
+    {
+        $sPluginName = self::GetPluginStr($sPluginName);
+        if (!isset(self::$_aPluginSkin[$sPluginName]['dir'])) {
+            //self::$_aPluginSkin[$sPluginName]['path'] = ACE::Url2Path(self::GetPluginSkinUrl($sPluginName), '/');
+            self::$_aPluginSkin[$sPluginName]['dir'] = ACE::FilePath(self::GetPluginPath($sPluginName) . '/templates/skin/' . self::GetPluginSkin($sPluginName) . '/', '/');
+        }
+        return self::$_aPluginSkin[$sPluginName]['dir'];
+    }
     /**
      * Возвращает URL к скину плагина
      *
