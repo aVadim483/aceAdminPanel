@@ -359,7 +359,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     {
         if (substr(strtolower($sFile), 0, 7) == 'plugin:') {
             $aParts = explode(':', substr($sFile, 7));
-            if (sizeof($aParts) == 2 AND in_array($aParts[0], LS::E()->Plugin_GetActivePlugins())) {
+            if (sizeof($aParts) == 2 AND in_array($aParts[0], Engine::getInstance()->Plugin_GetActivePlugins())) {
                 $sFile = ACE::FilePath(ACE::GetPluginDir($aParts[0]) . '/' . $aParts[1]);
             }
         }
