@@ -22,8 +22,7 @@ function smarty_prefilter_tplhook($sSource, Smarty_Internal_Template $oTemplate)
 {
     $aTplHooks = $oTemplate->getTemplateVars('aTplHooks');
     foreach ($aTplHooks as $oTplHook) {
-        if ($oTplHook->isCurrentTemplate($oTemplate->smarty->_current_file)) {
-            $sSelector = $oTplHook->GetSelector();
+        if ($oTplHook->isCurrentTemplate($oTemplate->smarty->_current_file) AND ($sSelector = $oTplHook->GetSelector())) {
             $sTplCode = $oTplHook->Call();
 
             $doc = new DomFrag($sSource);

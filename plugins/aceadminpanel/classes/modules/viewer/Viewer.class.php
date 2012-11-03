@@ -270,24 +270,28 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
 
     public function AppendScript($sJs, $aParams = array())
     {
+        $sJs = ACE::Dir2Url($sJs);
         if (!in_array($sJs, $this->aJsInclude['append']) OR $this->aFilesParams['js'][$sJs] !== $aParams)
             return parent::AppendScript($sJs, $aParams);
     }
 
     public function PrependScript($sJs, $aParams = array())
     {
+        $sJs = ACE::Dir2Url($sJs);
         if (!in_array($sJs, $this->aJsInclude['prepend']) OR $this->aFilesParams['js'][$sJs] !== $aParams)
             return parent::PrependScript($sJs, $aParams);
     }
 
     public function AppendStyle($sCss, $aParams = array())
     {
+        $sCss = ACE::Dir2Url($sCss);
         if (!in_array($sCss, $this->aCssInclude['append']) OR $this->aFilesParams['css'][$sCss] !== $aParams)
             return parent::AppendStyle($sCss, $aParams);
     }
 
     public function PrependStyle($sCss, $aParams = array())
     {
+        $sCss = ACE::Dir2Url($sCss);
         if (!in_array($sCss, $this->aCssInclude['prepend']) OR $this->aFilesParams['css'][$sCss] !== $aParams)
             return parent::PrependStyle($sCss, $aParams);
     }

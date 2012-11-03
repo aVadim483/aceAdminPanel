@@ -15,6 +15,8 @@
 
 require_once 'simple_html_dom.php';
 
+define('HDOM_ROOT_PSEUDOTAG', 'hdomrootpseudotag');
+
 class DomFrag extends simple_html_dom
 {
     public function __construct($sHtml)
@@ -77,6 +79,8 @@ class DomFrag extends simple_html_dom
     function load($str, $lowercase = true, $stripRN = true, $defaultBRText = DEFAULT_BR_TEXT, $defaultSpanText = DEFAULT_SPAN_TEXT)
     {
         global $debugObject;
+
+        $str = '<' . HDOM_ROOT_PSEUDOTAG . '>' . $str . '</' . HDOM_ROOT_PSEUDOTAG . '>';
 
         // prepare
         $this->prepare($str, $lowercase, $stripRN, $defaultBRText, $defaultSpanText);
@@ -207,6 +211,10 @@ class DomFragNode extends simple_html_dom_node
             $aNodes = parent::find($selector, $idx, $lowercase);
         } elseif ($sPseudo == 'nth-child') {
             $aNodes = parent::find($selector, $idx - 1, $lowercase);
+        } elseif ($sPseudo == 'first') {
+            $aNodes = parent::find($selector, 1, $lowercase);
+        } elseif ($sPseudo == 'last') {
+            $aNodes = parent::find($selector, -1, $lowercase);
         } else {
             $aNodes = parent::find($selector, $idx, $lowercase);
         }
@@ -245,6 +253,11 @@ class DomFragNode extends simple_html_dom_node
         return ($this->tag == '__dummy__');
     }
 
+    function outertext()
+    {
+        if ($this->tag === HDOM_ROOT_PSEUDOTAG) return $this->innertext();
+        return parent::outertext();
+    }
 }
 
 class DomFragSet

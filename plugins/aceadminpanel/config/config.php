@@ -18,9 +18,9 @@ if (!class_exists('Config')) die('Hacking attempt!');
 if (defined('ACEADMINPANEL_VERSION')) return array();
 
 define('ACEADMINPANEL_VERSION', '2.0-rc');
-define('ACEADMINPANEL_VERSION_BUILD', '336');
+define('ACEADMINPANEL_VERSION_BUILD', '341');
 
-$config = array('version' => ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD);
+//$config = array('version' => ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD);
 
 // определение таблиц
 Config::Set('db.table.adminset', '___db.table.prefix___adminset');
@@ -44,7 +44,7 @@ Config::Set('head.rules.admin',
 
 Config::Set('head.admin.css',
     array(
-        "___path.static.skin___/css/admin.css?v=" . $config['version'],
+        "___path.static.skin___/css/admin.css?v=" . ACEADMINPANEL_VERSION_BUILD,
         "___path.static.skin___/css/style.css?v=1",
         "___path.static.skin___/css/Roar.css",
         "___path.static.skin___/css/piechart.css",
@@ -54,14 +54,14 @@ Config::Set('head.admin.css',
 
 Config::Set('head.admin.js',
     array(
-        "___path.static.skin___/js/admin.js?v=" . $config['version'],
+        "___path.static.skin___/js/admin.js?v=" . ACEADMINPANEL_VERSION_BUILD,
         "___path.static.skin___/js/vote.js",
         "___path.static.skin___/js/favourites.js",
         "___path.static.skin___/js/questions.js",
         "___path.static.skin___/js/block_loader.js",
         "___path.static.skin___/js/friend.js",
         "___path.static.skin___/js/blog.js",
-        "___path.static.skin___/js/other.js?v=" . $config['version'],
+        "___path.static.skin___/js/other.js?v=" . ACEADMINPANEL_VERSION_BUILD,
         "___path.static.skin___/js/login.js",
         "___path.static.skin___/js/panel.js",
         "___path.static.skin___/js/vote.js",
@@ -123,8 +123,8 @@ $config['tmp']['dir']['log'] = 'log/'; // папка для лог-файлов
 /***
  * Опции шаблонизатора Smarty
  */
-$config['smarty']['options']['compile_check'] = true;    // включать ли проверку компилации шаблонов
-$config['smarty']['options']['force_compile'] = false;   // принудительная компиляция шаблнов
+$config['smarty']['options']['compile_check'] = true;    // включать ли проверку компиляции шаблонов
+$config['smarty']['options']['force_compile'] = false;   // принудительная компиляция шаблонов
 $config['smarty']['options']['caching'] = false;         // включать ли кеширование
 $config['smarty']['options']['cache_lifetime'] = 600;    // время жизни кеша (в сек)
 

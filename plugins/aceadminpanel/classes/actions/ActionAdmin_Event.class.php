@@ -80,7 +80,13 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
         $this->_PluginSetTemplate(Router::GetActionEvent());
         $this->sMenuItemSelect = Router::GetActionEvent();
         $this->sMenuSubItemSelect = Router::GetParam(0);
-        $this->aPluginInfo = array('version' => HelperPlugin::GetConfig('version'));
+
+        $sVerion = HelperPlugin::GetConfig('version');
+        if (!$sVerion) $sVerion = ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD;
+        if (preg_match('|[a-z\-]+|i', $sVerion, $m)) {
+            $sVerion = str_replace($m[0], '', $sVerion) . $m[0];
+        }
+        $this->aPluginInfo = array('version' => $sVerion);
 
         $sHtmlTitle = $this->Lang_Get('adm_title') . ' v.' . $this->PluginAceadminpanel_Admin_getVersion();
         $this->Viewer_AddHtmlTitle($sHtmlTitle);
@@ -258,6 +264,12 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
         } else {
             ACE::HeaderLocation(Router::GetPath('error'));
         }
+    }
+
+    public function EventDenied()
+    {
+        $this->Message_AddErrorSingle($this->Lang_Get('adm_denied_text'), $this->Lang_Get('adm_denied_title'));
+        return Router::Action('error');
     }
 
     public function EventShutdown()
