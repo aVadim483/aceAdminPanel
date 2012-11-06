@@ -21,6 +21,8 @@ class DomFrag extends simple_html_dom
 {
     public function __construct($sHtml)
     {
+        $this->block_tags[HDOM_ROOT_PSEUDOTAG] = 1;
+
         $this->dom_node_class = 'DomFragNode';
         parent::__construct($sHtml, false, false, 'UTF-8', false);
     }
@@ -106,7 +108,10 @@ class DomFrag extends simple_html_dom
         $this->remove_noise("'(<\?)(.*?)(\?>)'s", true);
 
         $cnt = 0;
-        $this->doc = preg_replace('|"___noise___(\d{5})\>|siu', '" ___noise___$1>', $this->doc, -1, $cnt);
+        /*
+         * отвратительный хак, но без него пропадают {/if} в конце тегов
+         */
+        $this->doc = preg_replace('|(["\'])___noise___(\d{5})\>|siu', '$1 ___noise___$2>', $this->doc, -1, $cnt);
         $this->size += $cnt;
         // parsing
         while ($this->parse()) ;
@@ -115,9 +120,11 @@ class DomFrag extends simple_html_dom
         $this->parse_charset();
 
         // "закрываем" незакрытые теги
+        /* псевдорутовый тег решает эту проблему
         foreach ($this->nodes as $oNode) {
-            if (!isset($oNode->_[HDOM_INFO_END])) $oNode->_[HDOM_INFO_END] = $this->cursor;
+            //if (!isset($oNode->_[HDOM_INFO_END])) $oNode->_[HDOM_INFO_END] = $this->cursor;
         }
+        */
 
         // make load function chainable
         return $this;
