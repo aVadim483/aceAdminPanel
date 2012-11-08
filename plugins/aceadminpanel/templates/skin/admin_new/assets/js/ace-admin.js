@@ -371,6 +371,30 @@ aceAdmin.getCallstack = function () {
     return callstack;
 }
 
+aceAdmin.blog = {
+    delete:function (msg, name, blog_id) {
+        if (name) msg = msg.replace('%%blog%%', name);
+        if (confirm(msg)) {
+            var url = DIR_WEB_ROOT+'/admin/blogs/delete/?blog_id='+blog_id+'&security_ls_key='+LIVESTREET_SECURITY_KEY;
+            document.location.href = url;
+            return true;
+        }
+        return false;
+    }
+}
+
+aceAdmin.topic = {
+    delete:function (msg, name, topic_id) {
+        if (name) msg = msg.replace('%%topic%%', name);
+        if (confirm(msg)) {
+            var url = DIR_WEB_ROOT+'/admin/topics/delete/?topic_id='+topic_id+'&security_ls_key='+LIVESTREET_SECURITY_KEY;
+            document.location.href = url;
+            return true;
+        }
+        return false;
+    }
+}
+
 aceAdmin.nativeUiCompatible = function () {
     // Автокомплит
     ls.autocomplete.add($(".autocomplete-tags-sep"), aRouter['ajax'] + 'autocompleter/tag/', true);
@@ -400,10 +424,8 @@ $(function () {
         var id = element.attr('id');
         element.find('.switch-form-button').click(function (e) {
             console.log(this);
-            //aceAdmin.switchFormToggle(id);
             e.stopPropagation();
         });
-        //if ($.cookie(id)) aceAdmin.switchFormShow(id);
     });
     $('.accordion-body').each(function () {
         $(this).on('button').each(function () {
@@ -443,7 +465,6 @@ $(function () {
     });
 
     $('tr.selectable td.checkbox input[type=checkbox]').on('click', function (event) {
-        //console.log($(this).prop('checked'), $(this).parents('tr'));
         if ($(this).prop('checked')) {
             $(this).parents('tr').first().addClass('info');
         } else {

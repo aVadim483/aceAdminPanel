@@ -272,6 +272,17 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
         return Router::Action('error');
     }
 
+    /**
+     * Вернуться на предыдущую страницу
+     */
+    protected function _gotoBackPage()
+    {
+        if ($this->sPageRef)
+            ACE::HeaderLocation($this->sPageRef);
+        else
+            ACE::HeaderLocation(Router::GetPath('admin'));
+    }
+
     public function EventShutdown()
     {
         parent::EventShutdown();

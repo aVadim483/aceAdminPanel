@@ -28,7 +28,7 @@ class PluginAceadminpanel_ActionAdmin_EventBlogs extends PluginAceadminpanel_Inh
 
         $sCmd = $this->GetParam(0);
         if ($sCmd == 'delete') {
-            $this->_blogsDelete();
+            $this->_blogDelete();
         } else {
             // * Передан ли номер страницы
             if (preg_match("/^page(\d+)$/i", $this->_getLastParam(), $aMatch)) {
@@ -75,7 +75,7 @@ class PluginAceadminpanel_ActionAdmin_EventBlogs extends PluginAceadminpanel_Inh
         } else {
             $this->_messageError($this->Lang_Get('adm_action_err'), 'blog_del');
         }
-        $this->GoToBackPage();
+        $this->_gotoBackPage();
     }
 
 

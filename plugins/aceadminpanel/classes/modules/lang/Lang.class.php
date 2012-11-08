@@ -120,6 +120,10 @@ class PluginAceadminpanel_ModuleLang extends PluginAceadminpanel_Inherit_ModuleL
      */
     public function Get($sName, $aReplace = array(), $bDelete = true)
     {
+        if (is_string($aReplace) AND strpos($aReplace, '=>')) {
+            list($sKey, $sVal) = explode('=>', $aReplace);
+            $aReplace = array($sKey => $sVal);
+        }
         $sResult = parent::Get($sName, $aReplace, $bDelete);
         if ($sResult == 'NOT_FOUND_LANG_TEXT') {
             if (isset($this->aLangMsg[$sName])) {

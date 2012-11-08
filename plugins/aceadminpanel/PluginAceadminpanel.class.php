@@ -117,6 +117,13 @@ class PluginAceadminpanel extends Plugin
      */
     public function Init()
     {
+        if (preg_match('/^([\d\.]+)([^\d\.].*)$/', ACEADMINPANEL_VERSION, $m)) {
+            $sVersion = $m[1] . '.' . ACEADMINPANEL_VERSION_BUILD . $m[2];
+        } else {
+            $sVersion = ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD;
+        }
+        Config::Set('plugin.aceadminpanel.version', $sVersion);
+
         //HelperPlugin::InitPlugin($this);
         HelperPlugin::AutoLoadRegister(array($this, 'Autoloader'));
         $sDataFile = $this->PluginAceadminpanel_Admin_GetCustomConfigFile();

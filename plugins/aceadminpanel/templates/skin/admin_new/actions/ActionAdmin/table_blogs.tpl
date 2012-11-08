@@ -20,11 +20,11 @@
         <td class="name">
             {if $aBlog.blog_type=='personal'}
                 <i class="icon-pencil icon-gray opacity50"></i>
-                {else}
+            {else}
                 <a href="{router page='blog'}edit/{$aBlog.blog_id}/" title="{$oLang->_adm_blog_edit}">
                     <i class="icon-pencil"></i></a>
             {/if}
-            <a href="#" title="{$oLang->adm_blog_delete}" onclick="AdminBlogDelete('{$oLang->adm_blog_del_confirm}','{$sBlogTitle}','{$aBlog.blog_id}'); return false;">
+            <a href="#" title="{$oLang->_adm_blog_delete}" onclick="$ace.blog.delete('{$oLang->Get('adm_blog_del_confirm', "blog=>$sBlogTitle")}','{$sBlogTitle}','{$aBlog.blog_id}'); return false;">
                 <i class="icon-remove"></i></a>
         </td>
         <td class="number">{$aBlog.blog_id}</td>
