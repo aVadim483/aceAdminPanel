@@ -13,6 +13,9 @@
  *----------------------------------------------------------------------------
  */
 
+ /**
+ * DOM Fragmental
+ */
 require_once 'simple_html_dom.php';
 
 define('HDOM_ROOT_PSEUDOTAG', 'hdomrootpseudotag');
@@ -111,7 +114,7 @@ class DomFrag extends simple_html_dom
         /*
          * отвратительный хак, но без него пропадают {/if} в конце тегов
          */
-        $this->doc = preg_replace('|(["\'])___noise___(\d{5})\>|siu', '$1 ___noise___$2>', $this->doc, -1, $cnt);
+        $this->doc = preg_replace('|(["\'])___noise___(\d{5}\s*\/?)\>|siu', '$1 ___noise___$2>', $this->doc, -1, $cnt);
         $this->size += $cnt;
         // parsing
         while ($this->parse()) ;
