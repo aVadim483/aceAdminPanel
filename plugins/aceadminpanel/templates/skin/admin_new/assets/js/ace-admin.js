@@ -37,17 +37,17 @@ var aceAdmin = aceAdmin || {};
     }
 
     $this.plugin = {
-        switch:function (pluginId, action) {
+        turn:function (pluginId, action) {
             var url = aRouter['admin'] + 'plugins/?plugin=' + pluginId + '&action=' + action + '&security_ls_key=' + LIVESTREET_SECURITY_KEY;
             document.location = url;
         },
 
-        switchOn:function (pluginId) {
-            return $this.plugin.switch(pluginId, 'activate');
+        turnOn:function (pluginId) {
+            return $this.plugin.turn(pluginId, 'activate');
         },
 
-        switchOff:function (pluginId) {
-            return $this.plugin.switch(pluginId, 'deactivate');
+        turnOff:function (pluginId) {
+            return $this.plugin.turn(pluginId, 'deactivate');
         }
     }
 
@@ -423,7 +423,7 @@ $(function () {
         var element = $(this);
         var id = element.attr('id');
         element.find('.switch-form-button').click(function (e) {
-            console.log(this);
+            //console.log(this);
             e.stopPropagation();
         });
     });

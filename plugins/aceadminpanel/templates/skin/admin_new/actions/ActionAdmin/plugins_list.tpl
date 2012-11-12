@@ -82,12 +82,12 @@ function adminPluginSave() {
                     <td class="author">{$oPlugin->GetAuthor()|escape:'html'}</td>
                     <td class="action {if $oPlugin->IsActive()}deactivate{else}activate{/if}">
                             {if $oPlugin->isActive()}
-                                <div class="btn-group btn-switch-on" rel="tooltip" title="{$oLang->adm_act_deactivate}" onclick="aceAdmin.plugin.switchOff('{$oPlugin->GetId()}'); return false;">
+                                <div class="btn-group btn-switch-on" rel="tooltip" title="{$oLang->adm_act_deactivate}" onclick="aceAdmin.plugin.turnOff('{$oPlugin->GetId()}'); return false;">
                                     <button class="btn btn-outset"></button>
                                     <button class="btn btn-inset">ON</button>
                                 </div>
                             {else}
-                                <div class="btn-group btn-switch-off" rel="tooltip" title="{$oLang->adm_act_activate}" onclick="aceAdmin.plugin.switchOn('{$oPlugin->GetId()}'); return false;">
+                                <div class="btn-group btn-switch-off" rel="tooltip" title="{$oLang->adm_act_activate}" onclick="aceAdmin.plugin.turnOn('{$oPlugin->GetId()}'); return false;">
                                     <button class="btn btn-inset">OFF</button>
                                     <button class="btn btn-outset"></button>
                                 </div>
