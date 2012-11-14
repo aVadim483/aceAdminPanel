@@ -1,2 +1,2 @@
-[v2.0.346; rev.$WCREV$]
-  * minor bugfix
+[v2.0.347; rev.$WCREV$]
+  * bugfix: _EntityUser

@@ -41,3 +41,5 @@ class PluginAceadminpanel_ModuleUser extends PluginAceadminpanel_Inherit_ModuleU
         return $aStat;
     }
 }
+
+// EOF
