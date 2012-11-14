@@ -1,2 +1,2 @@
-[v2.0.345; rev.$WCREV$]
-  * bugfix: ace-admin.js under IE8
+[v2.0.346; rev.$WCREV$]
+  * minor bugfix

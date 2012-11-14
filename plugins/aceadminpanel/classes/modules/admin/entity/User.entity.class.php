@@ -13,43 +13,52 @@
  *----------------------------------------------------------------------------
  */
 
-class PluginAceadminpanel_ModuleAdmin_EntityUser extends ModuleUser_EntityUser
+class PluginAceadminpanel_ModuleAdmin_EntityUser extends ModuleUser_Inherit_EntityUser
 {
-    public function GetProperty($prop) {
+    public function GetProperty($prop)
+    {
         if (isset($this->_aData[$prop])) return $this->_aData[$prop];
         else return null;
     }
 
-    public function GetBanLine() {
+    public function GetBanLine()
+    {
         return $this->GetProperty('banline');
     }
 
-    public function IsBannedUnlim() {
+    public function IsBannedUnlim()
+    {
         return ($this->GetProperty('banunlim'));
     }
 
-    public function GetBanComment() {
+    public function GetBanComment()
+    {
         return $this->GetProperty('bancomment');
     }
 
-    public function IsBannedByLogin() {
-        $dBanline=$this->getBanLine();
-        return ($this->IsBannedUnlim() || ($dBanline && ($dBanline > date("Y-m-d H:i:s")) && $this->GetProperty('banactive')));
+    public function IsBannedByLogin()
+    {
+        $dBanline = $this->getBanLine();
+        return ($this->IsBannedUnlim() OR ($dBanline AND ($dBanline > date('Y-m-d H:i:s')) AND $this->GetProperty('banactive')));
     }
 
-    public function IsBannedByIp() {
+    public function IsBannedByIp()
+    {
         return ($this->GetProperty('ban_ip'));
     }
 
-    public function IsBanned() {
-        return ($this->IsBannedByLogin() || $this->IsBannedByIp());
+    public function IsBanned()
+    {
+        return ($this->IsBannedByLogin() OR $this->IsBannedByIp());
     }
 
-    public function GetCountComments() {
+    public function GetCountComments()
+    {
         return ($this->GetProperty('comments_count'));
     }
 
-    public function GetCountTopics() {
+    public function GetCountTopics()
+    {
         return ($this->GetProperty('topics_count'));
     }
 
