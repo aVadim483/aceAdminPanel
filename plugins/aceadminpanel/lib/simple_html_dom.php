@@ -1018,7 +1018,8 @@ class simple_html_dom
     {
         if ($str)
         {
-            if (preg_match("/^http:\/\//i",$str) || is_file($str))
+            //if (preg_match("/^http:\/\//i",$str) || is_file($str)) // is_file() может выдавать ошибку при передаче строки
+            if (preg_match("/^http:\/\//i",$str))
             {
                 $this->load_file($str);
             }

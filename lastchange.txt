@@ -1,2 +1,2 @@
-[v2.0.347; rev.$WCREV$]
-  * bugfix: _EntityUser
+[v2.0.348; rev.$WCREV$]
+  * bugfix: DomFrag
