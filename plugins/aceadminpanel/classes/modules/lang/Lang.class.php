@@ -69,6 +69,7 @@ class PluginAceadminpanel_ModuleLang extends PluginAceadminpanel_Inherit_ModuleL
         if (!$sLanguage) $sLanguage = $this->sCurrentLang;
 
         // * Если используется кеширование через memcaсhed, то сохраняем данные языкового файла в кеш
+        /*
         if (Config::Get('sys.cache.use') AND Config::Get('sys.cache.type') == 'memory') {
             if (false === ($this->aLangMsg = $this->Cache_Get("lang_" . $sLanguage))) {
                 $this->aLangMsg = array();
@@ -78,9 +79,12 @@ class PluginAceadminpanel_ModuleLang extends PluginAceadminpanel_Inherit_ModuleL
         } else {
             $this->LoadLangFiles($sLanguage);
         }
+        */
+
+        parent::InitLang($sLanguage);
 
         // * Загружаем в шаблон
-        $this->Viewer_Assign('aLang', $this->aLangMsg);
+        //$this->Viewer_Assign('aLang', $this->aLangMsg);
         $this->Viewer_Assign('oLang', $this);
     }
 
