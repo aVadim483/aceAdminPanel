@@ -1,2 +1,2 @@
-[v2.0.348; rev.$WCREV$]
-  * bugfix: DomFrag
+[v2.0.349; rev.$WCREV$]
+  * bugfix: Lang
