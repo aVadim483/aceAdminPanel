@@ -18,7 +18,7 @@ if (!class_exists('Config')) die('Hacking attempt!');
 if (defined('ACEADMINPANEL_VERSION')) return array();
 
 define('ACEADMINPANEL_VERSION', '2.0');
-define('ACEADMINPANEL_VERSION_BUILD', '350');
+define('ACEADMINPANEL_VERSION_BUILD', '352');
 
 //$config = array('version' => ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD);
 
@@ -139,10 +139,10 @@ $config['smarty']['options']['mark_template'] = false;    // показыват�
  * скин админпанели, а будет использован действующий скин сайта
  */
 $config['autonomous']['events'] = array(
-    'restorecomment',
-    'recalcfavourite',
-    'recalcvote',
-    'recalctopic',
+);
+
+$config['compatible'] = array(
+    //'default' => 'compatible',
 );
 
 return $config;

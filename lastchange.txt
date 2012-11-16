@@ -1,2 +1,2 @@
-[v2.0.350; rev.$WCREV$]
-  * bugfix: Lang
+[v2.0.352; rev.$WCREV$]
+  * minor bugfix

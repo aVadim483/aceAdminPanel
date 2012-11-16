@@ -371,11 +371,12 @@ aceAdmin.getCallstack = function () {
     return callstack;
 }
 
+// IE8 плохо воспринимает 'delete'
 aceAdmin.blog = {
-    delete:function (msg, name, blog_id) {
+    del:function (msg, name, blog_id) {
         if (name) msg = msg.replace('%%blog%%', name);
         if (confirm(msg)) {
-            var url = DIR_WEB_ROOT+'/admin/blogs/delete/?blog_id='+blog_id+'&security_ls_key='+LIVESTREET_SECURITY_KEY;
+            var url = DIR_WEB_ROOT + '/admin/blogs/delete/?blog_id=' + blog_id + '&security_ls_key=' + LIVESTREET_SECURITY_KEY;
             document.location.href = url;
             return true;
         }
@@ -383,17 +384,20 @@ aceAdmin.blog = {
     }
 }
 
+if (!aceAdmin.topic) aceAdmin.topic = {};
+
 aceAdmin.topic = {
-    delete:function (msg, name, topic_id) {
+    del:function (msg, name, topic_id) {
         if (name) msg = msg.replace('%%topic%%', name);
         if (confirm(msg)) {
-            var url = DIR_WEB_ROOT+'/admin/topics/delete/?topic_id='+topic_id+'&security_ls_key='+LIVESTREET_SECURITY_KEY;
+            var url = DIR_WEB_ROOT + '/admin/topics/delete/?topic_id=' + topic_id + '&security_ls_key=' + LIVESTREET_SECURITY_KEY;
             document.location.href = url;
             return true;
         }
         return false;
     }
 }
+
 
 aceAdmin.nativeUiCompatible = function () {
     // Автокомплит

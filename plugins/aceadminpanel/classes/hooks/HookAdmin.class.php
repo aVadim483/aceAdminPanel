@@ -19,6 +19,10 @@ class PluginAceadminpanel_HookAdmin extends Hook
     protected $oUser = null;
     protected $sSkinName = 'default';
     protected $sCustomConfigPath;
+    protected $aCompatibleEvents = array(
+        'index', 'info', 'params', 'blogs', 'site', 'plugins', 'users', 'pages', 'others',
+        'userfields',
+    );
 
     public function RegisterHook()
     {
@@ -26,9 +30,15 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->sSkinName = Config::Get('plugin.' . $this->sPlugin . '.skin');
         Config::Set('path.admin.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/admin_' . $this->sSkinName);
 
-        $aAutonomusEvents = ACE::Str2Array(Config::Get('plugin.aceadminpanel.autonomous.events'));
-        if (Router::GetAction() == 'admin' AND (!in_array(Router::GetActionEvent(), $aAutonomusEvents)) AND !getRequest('_autonomous')) {
-            $this->_preInit();
+        $sActionEvent = Router::GetActionEvent();
+        if (Router::GetAction() == 'admin') {
+            if (Config::Get('plugin.aceadminpanel.compatible.default') == 'compatible') {
+                $bCompatible = !in_array($sActionEvent, ACE::Str2Array(Config::Get('plugin.aceadminpanel.autonomous.events')));
+            } else {
+                $bCompatible = (!$sActionEvent OR in_array($sActionEvent, $this->aCompatibleEvents)
+                    OR in_array($sActionEvent, ACE::Str2Array(Config::Get('plugin.aceadminpanel.compatible.events'))));
+            }
+            if ($bCompatible) $this->_preInit();
         }
         $this->AddHook('engine_init_complete', 'EngineInitComplete', __CLASS__, 1000);
         $this->AddHook('init_action', 'InitAction', __CLASS__, 1000);

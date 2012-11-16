@@ -209,6 +209,7 @@ class PluginAceadminpanel extends Plugin
         }
         include_once(Plugin::GetPath($this->sPlugin) . '/classes/actions/ActionAdminPlugin.class.php');
     }
+
 }
 
 if (!class_exists('ACE')) {

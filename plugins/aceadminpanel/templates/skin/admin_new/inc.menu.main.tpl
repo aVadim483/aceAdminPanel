@@ -32,15 +32,17 @@
         <a href="{router page=admin}plugins/aceblogextender/categories/">{$oLang->_adm_menu_categories}</a>
     </li>
     {/if}
+    {if $aPluginActive.aceblogextender AND $oConfig->GetValue('plugin.page')}
     <li {if $sEvent=='pages'}class="active"{/if}>
         <a href="{router page=admin}pages/">{$oLang->_adm_menu_pages}</a>
     </li>
+    {/if}
 
     {hook run='admin_menu_item'}
 
     <li class="nav-header">{$oLang->_adm_menu_additional}</li>
     <li id="admin_action_submenu">
-        <a href="#">
+        <a href="{router page=admin}others/">
         {$oLang->_adm_menu_additional_item}
             <i class="icon-chevron-right icon-gray"></i>
         </a>
@@ -54,11 +56,10 @@
         <li><a href="{router page="admin"}recalcfavourite/?security_ls_key={$LIVESTREET_SECURITY_KEY}">{$aLang.admin_list_recalcfavourite}</a></li>
         <li><a href="{router page="admin"}recalcvote/?security_ls_key={$LIVESTREET_SECURITY_KEY}">{$aLang.admin_list_recalcvote}</a></li>
         <li><a href="{router page="admin"}recalctopic/?security_ls_key={$LIVESTREET_SECURITY_KEY}">{$aLang.admin_list_recalctopic}</a></li>
-    {hook run='admin_action_item'}
+        {hook run='admin_action_item'}
     </ul>
+    {hook run='admin_action'}
 </div>
-
-{hook run='admin_action'}
 
 <script type="">
     var $ace = $ace || { };
