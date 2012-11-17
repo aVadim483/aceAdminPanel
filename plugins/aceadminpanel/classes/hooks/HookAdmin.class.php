@@ -17,6 +17,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
 {
     protected $sPlugin = 'aceadminpanel';
     protected $oUser = null;
+    protected $bIsAdministrator = null;
     protected $sSkinName = 'default';
     protected $sCustomConfigPath;
     protected $aCompatibleEvents = array(
@@ -48,8 +49,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
 
     protected function _preInit()
     {
-        $oUser = $this->_getUser();
-        if ($oUser AND $oUser->isAdministrator()) {
+        //$oUser = $this->_getUser();
+        if ($this->_checkAdmin()) {
             Config::Set($this->sPlugin . '.saved.view.skin', Config::Get('view.skin'));
             Config::Set($this->sPlugin . '.saved.path.smarty.template', Config::Get('path.smarty.template'));
             Config::Set($this->sPlugin . '.saved.path.static.skin', Config::Get('path.static.skin'));
@@ -61,6 +62,22 @@ class PluginAceadminpanel_HookAdmin extends Hook
             Config::Set('view.skin', 'admin_' . $this->sSkinName);
             Config::Set('path.smarty.template', '___path.root.server___/plugins/aceadminpanel/templates/skin/___view.skin___');
             Config::Set('path.static.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/___view.skin___');
+        }
+    }
+
+    protected function _checkAdmin()
+    {
+        if ($this->oUser) {
+            return $this->oUser->isAdministrator();
+        } else {
+            if (is_null($this->bIsAdministrator)) {
+                if (($nUserId = intval($this->Session_Get('user_id'))) AND $nUserId) {
+                    $this->bIsAdministrator = $this->PluginAceadminpanel_Admin_CheckUserAdminById($nUserId);
+                } elseif (isset($_REQUEST['submit_login']) AND isset($_REQUEST['login'])) {
+                    $this->bIsAdministrator = $this->PluginAceadminpanel_Admin_CheckUserAdminByLogin($_REQUEST['login']);
+                }
+            }
+            return $this->bIsAdministrator;
         }
     }
 

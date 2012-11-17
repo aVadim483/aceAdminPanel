@@ -1,2 +1,2 @@
-[v2.0.352; rev.$WCREV$]
-  * minor bugfix
+[v2.0.353; rev.$WCREV$]
+  * bugfix: ModuleUser_EntityUser

@@ -15,6 +15,7 @@
 
 if (!class_exists('Config')) die('Hacking attempt!');
 
+/*
 define('CUSTOM_CFG', 'adm.all.cfg');
 
 $sDataFile = Config::Get('sys.cache.dir') . CUSTOM_CFG;
@@ -36,6 +37,7 @@ if (file_exists($sDataFile)) {
         }
     }
 }
+*/
 
 return array();
 

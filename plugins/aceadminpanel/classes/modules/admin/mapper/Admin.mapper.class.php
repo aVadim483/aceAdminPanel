@@ -191,7 +191,8 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
 
         if ($aRows) {
             foreach ($aRows as $aRow) {
-                $aReturn[] = new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
+                //$aReturn[] = new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
+                $aReturn[] = Engine::GetEntity('User', $aRow);
             }
         }
         return $aReturn;
@@ -236,7 +237,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
             } else {
                 $aRow['ban_ip'] = 0;
             }
-            return new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
+            return Engine::GetEntity('User', $aRow); //new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
         }
         return null;
     }
@@ -244,8 +245,14 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
 
     public function GetUserId($sUserLogin)
     {
-        $sql = "SELECT user_id FROM " . Config::Get('db.table.user') . " WHERE Lower(user_login)=?";
+        $sql = "SELECT user_id FROM " . Config::Get('db.table.user') . " WHERE Lower(user_login)=? LIMIT 1";
         return $this->oDb->selectCell($sql, mb_strtolower($sUserLogin, 'UTF-8'));
+    }
+
+    public function CheckUserAdminById($nUserId)
+    {
+        $sql = "SELECT user_id FROM " . Config::Get('db.table.user_administrator') . " WHERE user_id=?d LIMIT 1";
+        return $this->oDb->selectCell($sql, $nUserId);
     }
 
     public function SetUserBan($nUserId, $dDate, $nUnlim, $sComment = null)
@@ -311,7 +318,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage);
         if ($aRows) {
             foreach ($aRows as $aRow) {
-                $aReturn[] = new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
+                $aReturn[] = Engine::GetEntity('User', $aRow); //new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
             }
         }
         return $aReturn;
@@ -546,14 +553,14 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
 			LEFT JOIN " . Config::Get('db.table.topic') . " AS t ON t.topic_id=v.target_id
 			LEFT JOIN " . Config::Get('db.table.user') . " AS u ON u.user_id=v.user_voter_id
 		WHERE v.target_type='topic' AND t.user_id=?d ORDER BY vote_date DESC LIMIT ?d";
-        $aResult['topics'] = $this->oDb->select($sql, $nUserId, $iPerPage);
+        $aResult['topics'] = $this->oDb->select($sql, $nUserId, $nPerPage);
 
         $sql = "SELECT vote_value, blog_title AS title, u.user_login, vote_date
 		FROM " . Config::Get('db.table.vote') . " AS v
 			LEFT JOIN " . Config::Get('db.table.blog') . " AS b ON b.blog_id=v.target_id
 			LEFT JOIN " . Config::Get('db.table.user') . " AS u ON u.user_id=v.user_voter_id
 		WHERE target_type='blog' AND b.user_owner_id=?d ORDER BY vote_date DESC LIMIT ?d";
-        $aResult['blogs'] = $this->oDb->select($sql, $nUserId, $iPerPage);
+        $aResult['blogs'] = $this->oDb->select($sql, $nUserId, $nPerPage);
 
         $sql =
             "SELECT
@@ -592,8 +599,8 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $aResult['topic'] = $this->oDb->select($sql, $nUserId, ($nPerPage ? $nPerPage : DBSIMPLE_SKIP));
 
         if (Config::Get('db.table.company_feedback'))
-        $sql =
-            "SELECT
+            $sql =
+                "SELECT
                 'company_feedback' AS action_type, feedback_id AS action_id,
                 'company' AS target_type, company_id AS target_id,
                 feedback_date AS action_date, feedback_user_ip AS action_ip

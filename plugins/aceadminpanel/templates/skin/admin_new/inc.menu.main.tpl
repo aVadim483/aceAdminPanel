@@ -58,7 +58,10 @@
         <li><a href="{router page="admin"}recalctopic/?security_ls_key={$LIVESTREET_SECURITY_KEY}">{$aLang.admin_list_recalctopic}</a></li>
         {hook run='admin_action_item'}
     </ul>
-    {hook run='admin_action'}
+    <br/>
+    <div class="nav nav-list">
+        {hook run='admin_action'}
+    </div>
 </div>
 
 <script type="">

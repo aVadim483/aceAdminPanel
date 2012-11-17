@@ -46,6 +46,29 @@ class ACE_Config
     {
         ACE_Config::LoadCustomPluginsConfig('aceadminpanel', true, true);
         ACE_Config::CheckTmpDirs();
+
+        define('CUSTOM_CFG', 'adm.all.cfg');
+
+        $sDataFile = Config::Get('sys.cache.dir') . CUSTOM_CFG;
+        if (file_exists($sDataFile)) {
+            $data = @file_get_contents($sDataFile);
+            if ($data AND is_array($aConfigSet = unserialize($data))) {
+                foreach ($aConfigSet as $aConfigValue) {
+                    if (($n = strpos($aConfigValue['key'], '.', 8))) {
+                        $key = substr($aConfigValue['key'], $n + 1);
+                        $val = @unserialize($aConfigValue['val']);
+                        if (($val !== false) OR ($val === false AND $aConfigValue['val'] === serialize(false))) {
+                            if (($key != 'view.skin')
+                                OR ($key == 'view.skin' AND is_dir(Config::Get('path.root.server') . '/templates/skin/' . $val))
+                            ) {
+                                Config::Set($key, $val);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     /**

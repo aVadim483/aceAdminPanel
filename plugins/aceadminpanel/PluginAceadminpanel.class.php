@@ -64,8 +64,8 @@ class PluginAceadminpanel extends Plugin
             'ModuleTopic_MapperTopic' => '_ModuleTopic_MapperTopic',
         ),
         'entity' => array(
-            'ModuleUser_EntityUser' => 'PluginAceadminpanel_ModuleAdmin_EntityUser',
             'ModuleViewer_EntityTplHook',
+            'ModuleUser_EntityUser' => '_ModuleUser_EntityUser',
         ),
     );
 

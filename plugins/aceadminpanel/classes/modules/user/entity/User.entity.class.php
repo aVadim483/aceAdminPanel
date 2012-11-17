@@ -13,7 +13,7 @@
  *----------------------------------------------------------------------------
  */
 
-class PluginAceadminpanel_ModuleAdmin_EntityUser extends PluginAceadminpanel_Inherit_ModuleUser_EntityUser
+class PluginAceadminpanel_ModuleUser_EntityUser extends ModuleUser_EntityUser
 {
     public function GetProperty($prop)
     {

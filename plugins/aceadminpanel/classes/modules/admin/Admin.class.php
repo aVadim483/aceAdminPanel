@@ -198,6 +198,18 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         return $this->GetUserById($this->GetUserId($sUserLogin));
     }
 
+    public function CheckUserAdminById($nUserId)
+    {
+        return $this->oMapper->CheckUserAdminById($nUserId);
+    }
+
+    public function CheckUserAdminByLogin($sUserLogin)
+    {
+        $nUserId = $this->GetUserId($sUserLogin);
+        if ($nUserId)
+            return $this->CheckUserAdminById($nUserId);
+    }
+
     public function SetUserBan($nUserId, $nDays = null, $sComment = null)
     {
         if (!$nDays) {

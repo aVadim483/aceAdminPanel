@@ -219,7 +219,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         $sTitle = getRequest('talk_title');
         // if (substr($sTitle, 0, 1)!='*') $sTitle='*'.$sTitle;
         $sText = $this->Text_Parser(getRequest('talk_text'));
-        $sDate = date("Y-m-d H:i:s");
+        $sDate = date('Y-m-d H:i:s');
         $sIp = func_getIp();
 
         if (($sUsers = getRequest('users_list'))) {
@@ -233,6 +233,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             if (getRequest('send_copy_self')) {
                 $oSelfTalk = Engine::GetEntity('Talk_Talk');
                 $oSelfTalk->setUserId($this->oUserCurrent->getId());
+                $oSelfTalk->setUserIdLast($this->oUserCurrent->getId());
                 $oSelfTalk->setTitle($sTitle);
                 $oSelfTalk->setText($this->Text_Parser('To: <i>' . $sUsers . '</i>' . "\n\n" . 'Msg: ' . getRequest('talk_text')));
                 $oSelfTalk->setDate($sDate);
