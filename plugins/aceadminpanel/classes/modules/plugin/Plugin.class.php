@@ -258,6 +258,9 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
         }
 
         if ($bResult) {
+            // Надо обязательно очистить кеш здесь
+            ACE::ClearAllCache();
+
             // * Переопределяем список активированных пользователем плагинов
             $aActivePlugins = $this->GetActivePlugins();
             $aActivePlugins[] = $sPlugin;

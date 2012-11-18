@@ -20,10 +20,44 @@ class ACE extends ACE_Func
 {
     static protected $bInit = false;
 
+    public static function GetParentInherit($sInheritClass)
+    {
+        $sParentClass = Engine::getInstance()->Plugin_GetParentInherit($sInheritClass);
+        /*
+        if (strpos($sInheritClass, 'Plugin') !== 0 AND strpos($sParentClass, 'Plugin') === 0) {
+            // движок ошибочно выдает имя класса плагина
+            $aInfo = Engine::GetClassInfo($sInheritClass, Engine::CI_CLASSPATH);
+            if (isset($aInfo[Engine::CI_CLASSPATH])) {
+                ACE::FileInclude($aInfo[Engine::CI_CLASSPATH]);
+                return $sInheritClass;
+            } else {
+                return 'LsObject';
+            }
+        }
+        */
+        return $sParentClass;
+    }
+
+    public static function autoload($sClassName)
+    {
+        $aInfo = Engine::GetClassInfo(
+            $sClassName,
+            Engine::CI_CLASSPATH | Engine::CI_INHERIT
+        );
+        if ($aInfo[Engine::CI_INHERIT]) {
+            $sInheritClass = $aInfo[Engine::CI_INHERIT];
+            $sParentClass = self::GetParentInherit($sInheritClass);
+            if (class_alias($sParentClass, $sClassName)) {
+                return true;
+            }
+        }
+    }
+
     static function Init()
     {
         if (!self::$bInit) {
             ACE_Config::Init();
+            spl_autoload_register(array('ACE','autoload'));
             self::$bInit = true;
         }
     }

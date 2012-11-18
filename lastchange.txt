@@ -1,2 +1,2 @@
-[v2.0.353; rev.$WCREV$]
-  * bugfix: ModuleUser_EntityUser
+[v2.0.355; rev.$WCREV$]
+  * bugfix: автонаследование при включенном кеше
