@@ -40,6 +40,8 @@ class ACE extends ACE_Func
 
     public static function autoload($sClassName)
     {
+        if (!class_exists('Engine')) return;
+
         $aInfo = Engine::GetClassInfo(
             $sClassName,
             Engine::CI_CLASSPATH | Engine::CI_INHERIT

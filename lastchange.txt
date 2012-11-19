@@ -1,2 +1,2 @@
-[v2.0.355; rev.$WCREV$]
-  * bugfix: автонаследование при включенном кеше
+[v2.0.357; rev.$WCREV$]
+  * minor bugfix

@@ -322,7 +322,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
 
         $aPluginList = parent::GetList($aFilter);
         $aPluginsData = $this->GetPluginsData();
-        $aActivePlugins = $this->GetActivePlugins();
+        //$aActivePlugins = $this->GetActivePlugins();
 
         //$nPriority = sizeof($aPluginList);
         //foreach ($aActivePlugins as $sPlugin) {
@@ -428,9 +428,11 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
             if (!isset($aPlugin['priority'])) $aPlugins[$sPlugin]['priority'] = 0;
         }
         uasort($aPlugins, array($this, '_PluginCompareByPriority'));
-        return $aPlugins;
+
+        /*
         if (!file_exists($this->sPluginsDir . self::PLUGIN_ADMIN_FILE))
             $this->SetPluginsData($aPlugins);
+        */
         return $aPlugins;
     }
 
