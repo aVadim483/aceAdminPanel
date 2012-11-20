@@ -1,2 +1,2 @@
-[v2.0.357; rev.$WCREV$]
-  * minor bugfix
+[v2.0.358; rev.$WCREV$]
+  * bugfix: сброс кеша при первой загрузке

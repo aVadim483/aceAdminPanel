@@ -117,7 +117,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
         return false;
     }
 
-    protected function _checkPluginAction()
+    protected function _checkPluginActivation()
     {
         if ($this->Session_Get($this->sPlugin . '_activate')) {
             $aPluginList = $this->PluginAceadminpanel_Plugin_GetPluginList();
@@ -129,6 +129,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
             }
             $this->Plugin_SetActivePlugins($aPlugins);
             $this->Session_Drop($this->sPlugin . '_activate');
+            ACE::ClearAllCache();
         }
     }
 
@@ -140,6 +141,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
 
     public function InitAction()
     {
+        $this->_checkPluginActivation();
+
         $oLang = $this->Lang_Dictionary();
 
         $this->Viewer_Assign('oLang', $oLang);
@@ -147,7 +150,6 @@ class PluginAceadminpanel_HookAdmin extends Hook
         $this->Viewer_Assign('WEB_ADMIN_SKIN', ACE::MSIE6());
 
         $oUser = $this->_getUser();
-        $this->_checkPluginAction();
 
         $sScript = Config::Get('path.admin.skin') . '/assets/js/' . 'ace-admin.js';
         $this->Viewer_AppendScript($sScript);
