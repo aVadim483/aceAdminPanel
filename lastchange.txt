@@ -1,2 +1,2 @@
-[v2.0.358; rev.$WCREV$]
-  * bugfix: сброс кеша при первой загрузке
+[v2.0.359; rev.$WCREV$]
+  * bugfix: error 404

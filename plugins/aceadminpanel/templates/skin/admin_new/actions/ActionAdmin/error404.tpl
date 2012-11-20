@@ -1,4 +1,4 @@
-{extends file='index.tpl'}
+{extends file="index.tpl"}
 
 {block name="content"}
 

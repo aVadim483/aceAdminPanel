@@ -260,7 +260,12 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
     public function EventNotFound()
     {
         if ($this->oUserCurrent AND $this->oUserCurrent->isAdministrator()) {
-            $this->_pluginSetTemplate('error404');
+            if (Config::Get($this->sPlugin . '.saved.view.skin')) {
+                // внутри своей админки
+                $this->_pluginSetTemplate('error404');
+            } else {
+                return Router::Action('error','404');
+            }
         } else {
             ACE::HeaderLocation(Router::GetPath('error'));
         }

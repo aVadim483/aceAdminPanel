@@ -4,7 +4,7 @@
         <div class="alert alert-error">
             <button type="button" class="close" data-dismiss="alert">×</button>
             {if $aMsg.title!=''}
-                <h4 class="alert-heading">{$aMsg.title}</h4>:
+                <h4 class="alert-heading">{$aMsg.title}:</h4>
             {/if}
             {$aMsg.msg}
         </div>
@@ -17,7 +17,7 @@
         <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert">×</button>
             {if $aMsg.title!=''}
-                <h4 class="alert-heading">{$aMsg.title}</h4>:
+                <h4 class="alert-heading">{$aMsg.title}:</h4>
             {/if}
             {$aMsg.msg}
         </div>
