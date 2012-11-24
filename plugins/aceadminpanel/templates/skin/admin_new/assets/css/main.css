@@ -257,3 +257,9 @@ a:hover .icon-hover-green {
     display: block;
 }
 
+/* Toolbar
+---------------------------------------------------- */
+.toolbar 					{ position: fixed; top: 136px; z-index: 20; display: none; }
+.toolbar section 			{ width: 25px; padding: 8px; overflow: hidden; line-height: 14px; background: #fff; -webkit-box-shadow: 0 0 5px rgba(0,0,0,.03); box-shadow: 0 0 5px rgba(0,0,0,.03); margin-bottom: 10px; border-radius: 10px; }
+.toolbar section i			{ display: block; width: 25px; height: 25px; }
+

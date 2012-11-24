@@ -2,13 +2,13 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: 
+ * @Plugin URI:
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0.352
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
- * @Author URI: 
- * @LiveStreet Version: 1.0.1
- * @File Name: %%filename%%
+ * @Author URI:
+ * @LiveStreet 1.0.1
+ * @File Name: %%file_name%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -83,15 +83,12 @@ class DomFrag extends simple_html_dom
 
     function load($str, $lowercase = true, $stripRN = true, $defaultBRText = DEFAULT_BR_TEXT, $defaultSpanText = DEFAULT_SPAN_TEXT)
     {
-        global $debugObject;
+        //global $debugObject;
 
         $str = '<' . HDOM_ROOT_PSEUDOTAG . '>' . $str . '</' . HDOM_ROOT_PSEUDOTAG . '>';
 
         // prepare
         $this->prepare($str, $lowercase, $stripRN, $defaultBRText, $defaultSpanText);
-
-        // strip smarty scripts
-        $this->remove_noise("'(\{[\$\w\/])(.*?)(\})'s", true);
 
         // strip out comments
         $this->remove_noise("'<!--(.*?)-->'is");
@@ -110,15 +107,27 @@ class DomFrag extends simple_html_dom
         // strip out server side scripts
         $this->remove_noise("'(<\?)(.*?)(\?>)'s", true);
 
+        // strip smarty scripts
+        // выражения {if}..{/if} внутри значения атрибутов тега
+        $this->remove_noise('#["\'](\{if [\$\w\/].*?\{\/if})["\']#siu', false);
+        // выражения {if}..{/if} внутри тега
+        $this->remove_noise('#\<\w+.*(\{if [\$\w\/].*?\{\/if}).*\/?\>#siuU', false);
+        // прочие Smarty-выражения
+        $this->remove_noise("'(\{[\$\w\/])(.*?)(\})'s", true);
+
         $cnt = 0;
         /*
-         * отвратительный хак, но без него пропадают {/if} в конце тегов
+         * отвратительный хак, но без него иногда пропадают {/if} в конце тегов
          */
-        $this->doc = preg_replace('|(["\'])___noise___(\d{5}\s*\/?)\>|siu', '$1 ___noise___$2>', $this->doc, -1, $cnt);
+        $this->doc = preg_replace('#(["\'])___noise___(\d{5}\s*\/?)\>#siu', '$1 ___noise___$2>', $this->doc, -1, $cnt);
         $this->size += $cnt;
+        $this->doc = preg_replace('#(["\'])___noise___(\d{5})(["\'])(\/?)\>#siu', '$1___noise___$2$3 $4>', $this->doc, -1, $cnt);
+        $this->size += $cnt;
+
         // parsing
         while ($this->parse()) ;
         // end
+
         $this->root->_[HDOM_INFO_END] = $this->cursor;
         $this->parse_charset();
 
@@ -141,7 +150,6 @@ class DomFrag extends simple_html_dom
             return false;
         }
         // read internal smarty
-        //$nBegin =
         return parent::read_tag();
     }
 }

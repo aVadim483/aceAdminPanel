@@ -1,2 +1,2 @@
-[v2.0.359; rev.$WCREV$]
-  * bugfix: error 404
+[v2.0.360]
+  * bugfix: DomFrag
