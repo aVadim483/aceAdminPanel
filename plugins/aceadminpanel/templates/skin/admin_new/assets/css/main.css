@@ -38,6 +38,9 @@ h1 .badge, h2 .badge, h3 .badge, h4 .badge {
 input, textarea, select {
     width: 95%;
 }
+textarea {
+    height: 100px;
+}
 ul, ol {
     list-style: none outside none;
 }
