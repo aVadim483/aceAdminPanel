@@ -2,13 +2,12 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: 
+ * @Plugin URI: http://livestreetcms.com/addons/view/243/
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0.348
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
- * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -57,7 +56,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
         if (!$this->oUserCurrent OR !$this->oUserCurrent->isAdministrator()) {
             return $this->EventDenied();
         }
-        $this->oUserCurrent = $this->User_GetUserCurrent();
+        if (!$this->oUserCurrent) $this->oUserCurrent = $this->User_GetUserCurrent();
 
         $this->Viewer_Assign('ROUTE_PAGE_ADMIN', ROUTE_PAGE_ADMIN);
         $this->Viewer_Assign('sModuleVersion', $this->PluginAceadminpanel_Admin_getVersion(true));
@@ -77,7 +76,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
             $this->sPageRef = $_SERVER['HTTP_REFERER'];
         }
 
-        $this->_PluginSetTemplate(Router::GetActionEvent());
+        //$this->_PluginSetTemplate(Router::GetActionEvent());
         $this->sMenuItemSelect = Router::GetActionEvent();
         $this->sMenuSubItemSelect = Router::GetParam(0);
 

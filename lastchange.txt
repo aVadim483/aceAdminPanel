@@ -1,2 +1,2 @@
-[v2.0.361; rev.$WCREV$]
-  * bugfix: DomFrag
+[v2.0.362; rev.$WCREV$]
+  + clear db after deleted blogs

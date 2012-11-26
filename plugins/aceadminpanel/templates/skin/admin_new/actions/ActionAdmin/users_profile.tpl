@@ -1,4 +1,4 @@
-{extends file="$sTemplatePath/actions/ActionAdmin/users.tpl"}
+{extends file="./users.tpl"}
 
 {block name="content"}
 

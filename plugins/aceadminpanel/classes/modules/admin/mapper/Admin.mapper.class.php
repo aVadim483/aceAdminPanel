@@ -2,9 +2,9 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: 
+ * @Plugin URI: http://livestreetcms.com/addons/view/243/
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0.348
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -990,6 +990,61 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         }
         $this->oDb->query($sql);
     }
+
+    public function GetUnlinkedBlogsForUsers()
+    {
+        $sql = "
+            SELECT j.blog_id, u.user_login, j.user_id
+            FROM " . Config::Get('db.table.blog_user') . " AS j
+                LEFT JOIN " . Config::Get('db.table.blog') . " AS b ON b.blog_id=j.blog_id
+                LEFT JOIN " . Config::Get('db.table.user') . " AS u ON u.user_id=j.user_id
+            WHERE b.blog_id IS NULL";
+        $aRows = $this->oDb->query($sql);
+        $aResult = array();
+        if ($aRows)
+            foreach ($aRows as $aRow) {
+                $aResult[$aRow['blog_id']][] = $aRow;
+            }
+        return $aResult;
+    }
+
+    public function DelUnlinkedBlogsForUsers($aBlogIds)
+    {
+        $sql = "
+            DELETE FROM " . Config::Get('db.table.blog_user') . "
+            WHERE blog_id IN (?a)
+        ";
+        $aResult = $this->oDb->query($sql, $aBlogIds);
+        return $aResult;
+    }
+
+    public function GetUnlinkedBlogsForCommentsOnline()
+    {
+        $sql = "
+            SELECT c.target_parent_id AS blog_id, c.comment_id, c.target_id
+            FROM " . Config::Get('db.table.comment_online') . " AS c
+                LEFT JOIN " . Config::Get('db.table.topic') . " AS t ON t.topic_id=c.target_id
+                LEFT JOIN " . Config::Get('db.table.blog') . " AS b ON b.blog_id=c.target_parent_id
+            WHERE c.target_type='topic' AND b.blog_id IS NULL";
+        $aRows = $this->oDb->query($sql);
+        $aResult = array();
+        if ($aRows)
+            foreach ($aRows as $aRow) {
+                $aResult[$aRow['blog_id']][] = $aRow;
+            }
+        return $aResult;
+    }
+
+    public function DelUnlinkedBlogsForCommentsOnline($aBlogIds)
+    {
+        $sql = "
+            DELETE FROM " . Config::Get('db.table.comment_online') . "
+            WHERE target_type='topic' AND target_parent_id IN (?a)
+        ";
+        $aResult = $this->oDb->query($sql, $aBlogIds);
+        return $aResult;
+    }
+
 
 }
 

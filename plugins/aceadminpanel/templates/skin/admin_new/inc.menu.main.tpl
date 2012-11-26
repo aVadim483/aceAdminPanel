@@ -1,39 +1,39 @@
-<ul class="nav nav-list well well-small">
+<ul class="nav nav-list nav-menu well well-small">
     <li class="nav-header">{$oLang->_adm_menu_panel}</li>
-    <li {if $sEvent=='' OR $sEvent=='info'}class="active"{/if}>
+    <li class="nav-menu_info {if $sEvent=='' OR $sEvent=='info'}active{/if}">
         <a href="{router page='admin'}info/">{$oLang->_adm_menu_info}</a>
     </li>
-    <li {if $sMenuSubItemSelect=='params'}class="active"{/if}>
+    <li class="nav-menu_params {if $sMenuSubItemSelect=='params'}active{/if}">
         <a href="{router page='admin'}params/">{$oLang->adm_menu_params}</a>
     </li>
 
     <li class="nav-header">{$oLang->_adm_menu_config}</li>
-    <li {if $sMenuSubItemSelect=='settings'}class="active"{/if}>
+    <li class="nav-menu_settings {if $sMenuSubItemSelect=='settings'}active{/if}">
         <a href="{router page='admin'}site/settings/">{$oLang->_adm_menu_settings}</a>
     </li>
-    <li {if $sMenuSubItemSelect=='reset'}class="active"{/if}>
+    <li class="nav-menu_reset {if $sMenuSubItemSelect=='reset'}active{/if}">
         <a href="{router page='admin'}site/reset/">{$oLang->_adm_menu_reset}</a>
     </li>
-    <li {if $sMenuSubItemSelect=='plugins'}class="active"{/if}>
+    <li class="nav-menu_plugins {if $sMenuSubItemSelect=='plugins'}active{/if}">
         <a href="{router page=admin}plugins/">{$oLang->_adm_menu_plugins}</a>
     </li>
 
     <li class="nav-header">{$oLang->_adm_menu_site}</li>
-    <li {if $sEvent=='users'}class="active"{/if}>
+    <li class="nav-menu_users {if $sEvent=='users'}active{/if}">
         <a href="{router page=admin}users/">{$oLang->_adm_menu_users}
         {if $oUserProfile}<i class="icon icon-arrow-right"></i>{/if}
         </a>
     </li>
-    <li {if $sEvent=='blogs'}class="active"{/if}>
+    <li class="nav-menu_blogs {if $sEvent=='blogs'}active{/if}">
         <a href="{router page=admin}blogs/">{$oLang->_adm_menu_blogs}</a>
     </li>
     {if $aPluginActive.aceblogextender AND $oConfig->GetValue('plugin.aceblogextender.category.enable')}
-    <li {if $sMenuSubItemSelect=='plugins_admin_aceblogextender'}class="active"{/if}>
+    <li class="nav-menu_categories {if $sMenuSubItemSelect=='plugins_admin_aceblogextender'}active{/if}">
         <a href="{router page=admin}plugins/aceblogextender/categories/">{$oLang->_adm_menu_categories}</a>
     </li>
     {/if}
     {if $aPluginActive.aceblogextender AND $oConfig->GetValue('plugin.page')}
-    <li {if $sEvent=='pages'}class="active"{/if}>
+    <li class="nav-menu_pages {if $sEvent=='pages'}active{/if}">
         <a href="{router page=admin}pages/">{$oLang->_adm_menu_pages}</a>
     </li>
     {/if}
@@ -41,7 +41,10 @@
     {hook run='admin_menu_item'}
 
     <li class="nav-header">{$oLang->_adm_menu_additional}</li>
-    <li id="admin_action_submenu">
+    <li class="nav-menu_db {if $sEvent=='db'}active{/if}">
+        <a href="{router page=admin}db/">{$oLang->_adm_menu_db}</a>
+    </li>
+    <li id="admin_action_submenu" class="nav-menu_others" >
         <a href="{router page=admin}others/">
         {$oLang->_adm_menu_additional_item}
             <i class="icon-chevron-right icon-gray"></i>

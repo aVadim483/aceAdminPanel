@@ -78,6 +78,7 @@ return array(
     'adm_menu_users_fields' => 'Дополнительные поля',
 
     'adm_menu_additional' => 'Дополнительно',
+    'adm_menu_db' => 'Контроль БД',
     'adm_menu_additional_item' => 'Дополнительно ',
 
     'adm_info_versions' => 'Версии',
@@ -182,6 +183,11 @@ return array(
     'adm_close_site_file_notice' => 'Или укажите имя HTML-файла, на который будут перенаправляться посетители (должен находиться в корневой папке)',
     'adm_close_site_text_empty' => 'Текст сообщения не может быть пустым',
     'adm_close_site_file_empty' => 'Имя файла не может быть пустым',
+
+    'adm_db_check_deleted_blogs' => 'Проверка удаленных блогов',
+    'adm_db_check_blogs_joined' => 'Удаленные блоги, в которых состоят пользователи',
+    'adm_db_check_blogs_comments_online' => 'Удаленные блоги, с онлайн-комментариями',
+    'adm_db_clear_unlinked_blogs' => 'Удалить связи',
 
     'adm_yes' => 'да',
     'adm_no' => 'нет',

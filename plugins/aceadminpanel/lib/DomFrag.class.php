@@ -109,13 +109,13 @@ class DomFrag extends simple_html_dom
 
         // strip smarty scripts
         // выражения {if}..{/if} внутри значения атрибутов тега
-        $this->remove_noise('#["\'](\{if [\$\w\/].*?\{\/if})["\']#siu', false);
+        $this->remove_noise('#["\'](\{if [\$\w\/][^"\']*\{\/if})["\']#siu', false);
 
         // выражения {if}..{/if} внутри тега
-        $this->remove_noise('#\<\w+.*(\{if [\$\w\/].*?\{\/if}).*\/?\>#siu', false);
+        $this->remove_noise('#\<\w+[^>]*(\{if [\$\w\/][^>]*\{\/if}).*\/?\>#siu', false);
 
         // прочие Smarty-выражения
-        $this->remove_noise("'(\{[\$\w\/])(.*?)(\})'siu", true);
+        $this->remove_noise("#\{[\$\w\/][^\}]*\}#siu", true);
 
         $cnt = 0;
         /*

@@ -2,9 +2,9 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: 
+ * @Plugin URI: http://livestreetcms.com/addons/view/243/
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0.348
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -26,7 +26,6 @@ function smarty_prefilter_tplhook($sSource, Smarty_Internal_Template $oTemplate)
             $sTplCode = $oTplHook->Call();
 
             $doc = new DomFrag($sSource);
-            //$s = $doc->html();
             $oElements = $doc->find($sSelector);
             if ($oElements->count()) {
                 switch ($oTplHook->GetAction()) {

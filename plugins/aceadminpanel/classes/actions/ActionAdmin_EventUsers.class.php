@@ -2,13 +2,12 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: 
+ * @Plugin URI: http://livestreetcms.com/addons/view/243/
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0.348
+ * @Version: 2.0
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
- * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -70,21 +69,6 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         //return $this->EventUsersFields();
         return $xResult;
     }
-
-    /*
-    protected function EventUsersFields()
-    {
-        $this->sMenuSubItemSelect = 'fields';
-        $this->_PluginSetTemplate('users');
-
-        // * Загружаем в шаблон JS текстовки
-        $this->Lang_AddLangJs(array('user_field_delete_confirm'));
-        // * Получаем список всех полей
-        $aUserFields = $this->User_getUserFields();
-        $this->Viewer_Assign('aUserFields', $aUserFields);
-        $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users_fields.tpl');
-    }
-    */
 
     protected function EventUsersBan($sUserLogin = null)
     {
@@ -861,7 +845,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             $result = $this->EventUsersBanlistIds();
         }
         $this->Viewer_Assign('sMode', $sMode);
-        $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users_banlist.tpl');
+        $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users/users_banlist.tpl');
         return $result;
     }
 
@@ -961,7 +945,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         $this->Viewer_Assign('sInviteOrder', getRequest('invite_order'));
         $this->Viewer_Assign('sInviteSort', getRequest('invite_sort'));
 
-        $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users_invites.tpl');
+        $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users/users_invites.tpl');
     }
 
     protected function EventUsersDelete($aUsersLogin = null)
