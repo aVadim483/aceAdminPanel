@@ -27,15 +27,17 @@ class PluginAceadminpanel_ModuleViewer_EntityTplHook extends Entity
         }
     }
 
-    public function SetType($sSourceType=null)
+    public function SetType($sSourceType = null)
     {
         return $this->SetSourceType($sSourceType);
     }
 
-    public function SetSourceType($sSourceType=null)
+    public function SetSourceType($sSourceType = null)
     {
         if (!is_null($sSourceType)) {
-            return parent::SetSourceType($sSourceType);
+            // Так нельзя!!! В PHP 5.2.9 в ф-цию __call() передается имя в нижнем регистре!!!
+            // return parent::SetSourceType($sSourceType);
+            $this->_aData['source_type'] = $sSourceType;
         } else {
             $xContentSource = $this->GetContentSource();
             if (!is_array($xContentSource) AND substr($xContentSource, -4) == '.tpl') {
@@ -116,6 +118,7 @@ class PluginAceadminpanel_ModuleViewer_EntityTplHook extends Entity
         }
         return false;
     }
+
 
     public function Call()
     {
