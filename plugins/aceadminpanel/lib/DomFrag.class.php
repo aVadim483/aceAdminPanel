@@ -13,7 +13,7 @@
  *----------------------------------------------------------------------------
  */
 
- /**
+/**
  * DOM Fragmental
  */
 require_once 'simple_html_dom.php';
@@ -57,34 +57,48 @@ class DomFrag extends simple_html_dom
     // save the noise in the $this->noise array.
     protected function remove_noise($pattern, $remove_tag = false)
     {
-        global $debugObject;
-        if (is_object($debugObject)) {
-            $debugObject->debugLogEntry(1);
-        }
-
         $count = preg_match_all($pattern, $this->doc, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 
-        for ($i = $count - 1; $i > -1; --$i) {
-            $key = '___noise___' . sprintf('%05d', count($this->noise) + 1000);
-            if (is_object($debugObject)) {
-                $debugObject->debugLog(2, 'key is: ' . $key);
-            }
+        if ($count) {
             $idx = ($remove_tag) ? 0 : 1;
-            $this->noise[$key] = $matches[$i][$idx][0];
-            $this->doc = substr_replace($this->doc, $key, $matches[$i][$idx][1], strlen($matches[$i][$idx][0]));
-        }
+            for ($i = $count - 1; $i >= 0; --$i) {
+                $key = '___noise___' . sprintf('%05d', count($this->noise) + 1);
+                $this->noise[$key] = $matches[$i][$idx][0];
+                $this->doc = substr_replace($this->doc, $key, $matches[$i][$idx][1], strlen($matches[$i][$idx][0]));
+            }
 
-        // reset the length of content
-        $this->size = strlen($this->doc);
-        if ($this->size > 0) {
-            $this->char = $this->doc[0];
+            // reset the length of content
+            $this->size = strlen($this->doc);
+            if ($this->size > 0) {
+                $this->char = $this->doc[0];
+            }
         }
+    }
+
+    // restore noise to html content
+    function restore_noise($text)
+    {
+        while (($pos = strpos($text, '___noise___')) !== false) {
+            // Sometimes there is a broken piece of markup, and we don't GET the pos+11 etc... token which indicates a problem outside of us...
+            if (strlen($text) > $pos + 15) {
+                $key = '___noise___' . $text[$pos + 11] . $text[$pos + 12] . $text[$pos + 13] . $text[$pos + 14] . $text[$pos + 15];
+
+                if (isset($this->noise[$key])) {
+                    $text = substr($text, 0, $pos) . $this->noise[$key] . substr($text, $pos + 16);
+                } else {
+                    // do this to prevent an infinite loop.
+                    $text = substr($text, 0, $pos) . 'UNDEFINED NOISE FOR KEY: ' . $key . substr($text, $pos + 16);
+                }
+            } else {
+                // There is no valid key being given back to us... We must get rid of the ___noise___ or we will have a problem.
+                $text = substr($text, 0, $pos) . 'NO NUMERIC NOISE KEY' . substr($text, $pos + 11);
+            }
+        }
+        return $text;
     }
 
     function load($str, $lowercase = true, $stripRN = true, $defaultBRText = DEFAULT_BR_TEXT, $defaultSpanText = DEFAULT_SPAN_TEXT)
     {
-        //global $debugObject;
-
         $str = '<' . HDOM_ROOT_PSEUDOTAG . '>' . $str . '</' . HDOM_ROOT_PSEUDOTAG . '>';
 
         // prepare
@@ -109,13 +123,14 @@ class DomFrag extends simple_html_dom
 
         // strip smarty scripts
         // выражения {if}..{/if} внутри значения атрибутов тега
-        $this->remove_noise('#["\'](\{if [\$\w\/][^"\']*\{\/if})["\']#siu', false);
+        $this->remove_noise('#\<\w+[^>]*["]({if[^"]*{\/if})["]#siuU', false);
+        $this->remove_noise('#\<\w+[^>]*[\']({if[^\']*{\/if})[\']#siuU', false);
 
         // выражения {if}..{/if} внутри тега
-        $this->remove_noise('#\<\w+[^>]*(\{if [\$\w\/][^>]*\{\/if}).*\/?\>#siu', false);
+        $this->remove_noise('#\<\w+[^>]*({if[^>]*{\/if}).*\/?\>#siuU', false);
 
         // прочие Smarty-выражения
-        $this->remove_noise("#\{[\$\w\/][^\}]*\}#siu", true);
+        $this->remove_noise("#\{[\$\w\/][^\}]*\}#siuU", true);
 
         $cnt = 0;
         /*

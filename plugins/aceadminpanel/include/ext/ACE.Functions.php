@@ -728,6 +728,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         if (is_null($bResult)) $bResult = (bool)$xVal;
         return $bResult;
     }
+
 }
 
 class ACE_Func extends ACE_Functions

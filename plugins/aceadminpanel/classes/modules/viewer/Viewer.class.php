@@ -480,7 +480,22 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
             if (is_file(ACE::FilePath($sDir . '/' . $sName)))
                 return 'template';
         }
-        return parent::DefineTypeBlock($sName, $sDir);
+        /*
+        try {
+            $xResult = parent::DefineTypeBlock($sName, $sDir);
+        } catch (Exception $e) {
+            // если ищется шаблон плагина, и его скин не default, и он не найден, то делается попытка найти шаблон в default
+            if (substr($e->getMessage(), 0, 22) == 'Can not find the block' AND ($s = ACE::InPath($sDir, ACE::GetRootDir() . '/plugins/*'))) {
+                $n = strrpos($sDir, '/', -2);
+                $sSkin = trim(substr($sDir, $n), '/');
+                if ($sSkin !== 'default')
+                    $sDir = substr($sDir, 0, $n) . '/default/';
+                $xResult = parent::DefineTypeBlock($sName, $sDir);
+            }
+        }
+        */
+        $xResult = parent::DefineTypeBlock($sName, $sDir);
+        return $xResult;
     }
 
     /**
