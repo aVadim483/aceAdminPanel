@@ -130,11 +130,11 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      */
     static function Dir2Url($sPath)
     {
-        return str_replace(
+        return ACE::FilePath(str_replace(
             str_replace(DIRECTORY_SEPARATOR, '/', self::GetRootDir()),
             self::GetRootUrl(),
             str_replace(DIRECTORY_SEPARATOR, '/', $sPath)
-        );
+        ), '/');
     }
 
     /**

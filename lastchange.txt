@@ -1,2 +1,2 @@
-[v2.0.368]
-  * bugfix: DomFrag
+[v2.0.370]
+  * minor bugfix

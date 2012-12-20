@@ -232,7 +232,9 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
         $aHooks = Config::Get('view.hooks');
         if (is_array($aHooks))
             foreach ($aHooks as $aHook) {
-                $this->TplHookCreate($aHook['template'], $aHook['selector'], $aHook['content'], $aHook['action']);
+                if (!isset($aHook['enable']) OR $aHook['enable']) {
+                    $this->TplHookCreate($aHook['template'], $aHook['selector'], $aHook['content'], $aHook['action']);
+                }
             }
     }
 
