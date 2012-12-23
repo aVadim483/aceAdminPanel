@@ -478,6 +478,7 @@ $(function () {
 
     aceAdmin.nativeUiCompatible();
     aceAdmin.inputFileStyle();
+    if ($.fn.tooltip) $('[rel="tooltip"]').tooltip();
 });
 
 var $ace = aceAdmin || {};

@@ -10,6 +10,7 @@
         <th>Users</th>
         <th>Votes</th>
         <th>Rating</th>
+        <th></th>
     </tr>
     </thead>
 
@@ -39,6 +40,16 @@
         <td class="number">{$aBlog.blog_count_user}</td>
         <td class="number">{$aBlog.blog_count_vote}</td>
         <td class="number">{$aBlog.blog_rating}</td>
+        <td>
+            {if $ls.plugin.aceblogextender}
+            {if $aBlog.blog_premoderation}
+                <i class="icon icon-warning-sign" title="{$oLang->_mblog_premoderation}" rel="tooltip"></i>
+            {else}
+                <i class="icon icon-empty"></i>
+            {/if}
+            {if $aBlog.attach_allow}<i class="icon icon-tags" title="{$oLang->_mblog_attach_allow_notice}" rel="tooltip">{/if}
+            {/if}
+        </td>
     </tr>
     {/foreach}
     </tbody>

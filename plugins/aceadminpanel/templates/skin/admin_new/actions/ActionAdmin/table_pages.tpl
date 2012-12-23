@@ -31,14 +31,14 @@
             </a>
             {if $smarty.foreach.el2.first}
                 <i class="icon-chevron-up icon-disabled"></i>
-                {else}
+            {else}
                 <a href="{router page='admin'}pages/sort/{$oPage->getId()}/?security_ls_key={$LIVESTREET_SECURITY_KEY}" title="{$aLang.page_admin_sort_up} ({$oPage->getSort()})">
                     <i class="icon-chevron-up"></i>
                 </a>
             {/if}
             {if $smarty.foreach.el2.last}
                 <i class="icon-chevron-down icon-disabled"></i>
-                {else}
+            {else}
                 <a href="{router page='admin'}pages/sort/{$oPage->getId()}/down/?security_ls_key={$LIVESTREET_SECURITY_KEY}" title="{$aLang.page_admin_sort_down} ({$oPage->getSort()})">
                     <i class="icon-chevron-down"></i>
                 </a>
@@ -63,17 +63,17 @@
         </td>
         <td class="center">
             {if $oPage->getMain()}
-                    {$aLang.page_admin_active_yes}
-                {else}
-                    {$aLang.page_admin_active_no}
-                {/if}
+                {$aLang.page_admin_active_yes}
+            {else}
+                {$aLang.page_admin_active_no}
+            {/if}
         </td>
         <td class="{if $oPage->getActive()}deactivate{else}activate{/if}">
             <strong>
                 {if $oPage->getActive()}
-                    <a href="{router page='admin'}pages/?page_id={$oPage->getId()}&action=deactivate&security_ls_key={$LIVESTREET_SECURITY_KEY}">{$aLang.adm_act_deactivate}</a>
-                    {else}
-                    <a href="{router page='admin'}pages/?page_id={$oPage->getId()}&action=activate&security_ls_key={$LIVESTREET_SECURITY_KEY}">{$aLang.adm_act_activate}</a>
+                    <a href="{router page='admin'}pages/?page_id={$oPage->getId()}&action=deactivate&security_ls_key={$LIVESTREET_SECURITY_KEY}">{$oLang->_adm_act_deactivate}</a>
+                {else}
+                    <a href="{router page='admin'}pages/?page_id={$oPage->getId()}&action=activate&security_ls_key={$LIVESTREET_SECURITY_KEY}">{$oLang->_adm_act_activate}</a>
                 {/if}
             </strong>
         </td>

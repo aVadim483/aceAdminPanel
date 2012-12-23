@@ -41,6 +41,9 @@ function smarty_prefilter_tplhook($sSource, Smarty_Internal_Template $oTemplate)
                     case 'after':
                         $oElements->after($sTplCode);
                         break;
+                    case 'wrap':
+                        $oElements->wrap($sTplCode);
+                        break;
                     case 'html':
                         $oElements->html($sTplCode);
                         break;

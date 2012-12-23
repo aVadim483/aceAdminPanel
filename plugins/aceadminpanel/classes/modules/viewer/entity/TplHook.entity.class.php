@@ -113,6 +113,7 @@ class PluginAceadminpanel_ModuleViewer_EntityTplHook extends Entity
     {
         $aTargetTpl = (array)$this->GetTemplate();
         foreach ($aTargetTpl as $sTargetTpl) {
+            if ($sTargetTpl[0] != '/') $sTargetTpl = '/' . $sTargetTpl;
             if (ACE::PathCompare($sTargetTpl, $sCurrentTpl, true))
                 return true;
         }

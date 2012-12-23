@@ -1,2 +1,2 @@
-[v2.0.370]
-  * minor bugfix
+[v2.0.374]
+  * bugfix: add/edit pages

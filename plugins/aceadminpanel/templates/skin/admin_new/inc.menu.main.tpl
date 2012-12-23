@@ -32,7 +32,7 @@
         <a href="{router page=admin}plugins/aceblogextender/categories/">{$oLang->_adm_menu_categories}</a>
     </li>
     {/if}
-    {if $aPluginActive.aceblogextender AND $oConfig->GetValue('plugin.page')}
+    {if $aPluginActive.page AND $oConfig->GetValue('plugin.page')}
     <li class="nav-menu_pages {if $sEvent=='pages'}active{/if}">
         <a href="{router page=admin}pages/">{$oLang->_adm_menu_pages}</a>
     </li>

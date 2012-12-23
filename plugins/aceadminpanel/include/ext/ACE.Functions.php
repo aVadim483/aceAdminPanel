@@ -562,6 +562,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
     {
         Engine::getInstance()->Cache_Clean();
         $result = ACE::ClearSmartyCache() AND ACE::ClearHeadfilesCache();
+        setcookie('ls_photoset_target_tmp', null);
         return $result;
     }
 

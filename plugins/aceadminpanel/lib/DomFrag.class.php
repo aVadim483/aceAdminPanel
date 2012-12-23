@@ -19,6 +19,7 @@
 require_once 'simple_html_dom.php';
 
 define('HDOM_ROOT_PSEUDOTAG', 'hdomrootpseudotag');
+define('HDOM_WRAP_REPLACE', '{{$_}}');
 
 class DomFrag extends simple_html_dom
 {
@@ -146,7 +147,8 @@ class DomFrag extends simple_html_dom
         // end
 
         $this->root->_[HDOM_INFO_END] = $this->cursor;
-        $this->parse_charset();
+        //$this->parse_charset();
+        $this->_charset = 'UTF-8';
 
         // "закрываем" незакрытые теги
         /* псевдорутовый тег решает эту проблему
@@ -205,6 +207,13 @@ class DomFragNode extends simple_html_dom_node
         return $this;
     }
 
+    public function wrap($sHtml)
+    {
+        if (strpos($sHtml, HDOM_WRAP_REPLACE))
+            $this->outertext = str_replace(HDOM_WRAP_REPLACE, $this->outertext, $sHtml);
+        return $this;
+    }
+
     public function html($sHtml = null)
     {
         if (func_num_args()) {
@@ -231,6 +240,9 @@ class DomFragNode extends simple_html_dom_node
             $sPseudo = $m[1][0];
             $nNumChild = (isset($m[3]) ? $m[3][0] : null);
             $selector = substr($selector, 0, $m[0][1]);
+        } else {
+            $sPseudo = '';
+            $nNumChild = null;
         }
         if (is_null($idx) AND !is_null($nNumChild)) $idx = $nNumChild;
         if ($sPseudo == 'parent') {
@@ -301,7 +313,7 @@ class DomFragSet
     protected $sSelector;
     protected $aNodes = array();
 
-    protected $aGroupMethods = array('append', 'prepend', 'after', 'before', 'replaceWith');
+    protected $aGroupMethods = array('append', 'prepend', 'after', 'before', 'replaceWith', 'wrap');
     protected $aSingleMethods = array('hash', 'html', 'text', 'name', 'attr', 'tag');
 
     public function __construct($oDom, $aNodes = array())

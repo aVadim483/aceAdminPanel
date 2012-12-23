@@ -1018,8 +1018,7 @@ class simple_html_dom
     {
         if ($str)
         {
-            //if (preg_match("/^http:\/\//i",$str) || is_file($str)) // is_file() может выдавать ошибку, если передан текст
-            if (preg_match("/^http:\/\//i",$str))
+            if (preg_match("/^http:\/\//i",$str) || is_file($str))
             {
                 $this->load_file($str);
             }
@@ -1451,8 +1450,9 @@ class simple_html_dom
                 $node->_[HDOM_INFO_SPACE][] = $space;
                 $space = array($this->copy_skip($this->token_blank), '', '');
             }
-            else
+            else {
                 break;
+            }
         } while ($this->char!=='>' && $this->char!=='/');
 
         $this->link_nodes($node, true);
@@ -1513,6 +1513,8 @@ class simple_html_dom
         // PaperG: Attributes should not have \r or \n in them, that counts as html whitespace.
         $node->attr[$name] = str_replace("\r", "", $node->attr[$name]);
         $node->attr[$name] = str_replace("\n", "", $node->attr[$name]);
+
+        $node->attr[$name] = str_replace("\t", " ", $node->attr[$name]);
         // PaperG: If this is a "class" selector, lets get rid of the preceeding and trailing space since some people leave it in the multi class case.
         if ($name == "class") {
             $node->attr[$name] = trim($node->attr[$name]);
