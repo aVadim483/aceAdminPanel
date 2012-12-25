@@ -1,2 +1,2 @@
-[v2.0.375]
-  * bugfix: add/edit pages
+[v2.0.376]
+  * bugfix: blog list

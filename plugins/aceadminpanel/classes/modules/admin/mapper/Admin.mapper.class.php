@@ -761,6 +761,8 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
      */
     public function GetBlogList(&$iCount, $iCurrPage, $iPerPage, $aParams = array())
     {
+        $bBlogExt = Config::Get('plugin.aceblogextender');
+
         $sWhere = '1=1';
         if (isset($aParams['type']) AND $aParams['type'])
             $sWhere .= " AND (blog_type=" . $this->oDb->escape($aParams['type']) . ")";
@@ -771,12 +773,12 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $sql =
             "SELECT b.blog_id AS ARRAY_KEY, b.blog_id, blog_title, blog_url, blog_rating, blog_count_vote,
                 blog_count_user, blog_date_add, blog_date_edit, blog_type,
-                user_owner_id, u.user_login,
-                exp.blog_exp_value AS attach_allow, ext.blog_premoderation
+                user_owner_id, u.user_login
+                " . ($bBlogExt ? ",exp.blog_exp_value AS attach_allow, ext.blog_premoderation" : "") . "
             FROM " . Config::Get('db.table.blog') . " AS b
                 LEFT JOIN " . Config::Get('db.table.user') . " AS u ON u.user_id=b.user_owner_id
-                LEFT JOIN " . Config::Get('db.table.mblog_extended') . " AS ext ON (ext.blog_id=b.blog_id)
-                LEFT JOIN " . Config::Get('db.table.mblog_expanded') . " AS exp ON (exp.blog_id=b.blog_id) AND (exp.blog_exp_param='attach_allow')
+                " . ($bBlogExt ? "LEFT JOIN " . Config::Get('db.table.mblog_extended') . " AS ext ON (ext.blog_id=b.blog_id)" : "") . "
+                " . ($bBlogExt ? "LEFT JOIN " . Config::Get('db.table.mblog_expanded') . " AS exp ON (exp.blog_id=b.blog_id) AND (exp.blog_exp_param='attach_allow')" : "") . "
             WHERE " . $sWhere . "
             ORDER BY blog_id
             LIMIT ?d, ?d";
