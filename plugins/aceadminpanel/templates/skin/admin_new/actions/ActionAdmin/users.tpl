@@ -188,7 +188,7 @@
 
                     <div class="input-prepend">
                         <span class="add-on">@</span><input type="text" name="user_filter_email" id="user_filter_email"
-                                                            value="{$aFilter.email}" maxlength="10"
+                                                            value="{$aFilter.email}" maxlength="64"
                                                             class="wide"/>
                     </div>
                     <span class="help-block">{$oLang->_adm_user_filter_email_notice}</span>
