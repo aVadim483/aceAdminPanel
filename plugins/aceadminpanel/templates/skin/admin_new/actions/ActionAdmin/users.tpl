@@ -168,8 +168,8 @@
             </button>
         </div>
 
-        <div class="accordion-body collapse collapse-save" id="admin_form_seek">
-            <form method="post" action="{router page='admin'}users/" class="well well-small">
+        <div class="accordion-body collapse collapse-save">
+            <form method="post" action="{router page='admin'}users/" class="well well-small" id="admin_form_seek">
                 <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
 
                 <div class="row control-group {if $sUserFilterLogin}success{/if}">
