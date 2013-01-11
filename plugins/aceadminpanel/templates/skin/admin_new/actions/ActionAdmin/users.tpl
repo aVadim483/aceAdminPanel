@@ -160,7 +160,7 @@
     {if !$oUserProfile}
     <div class="accordion-group no-border">
         <div class="accordion-heading">
-            <button class="btn-block btn left" data-target="#admin_form_seek" data-toggle="collapse"
+            <button class="btn-block btn left" data-target="#admin_form_seek_div" data-toggle="collapse"
                     data-parent="#user-comands-switch">
                 {if $aFilter}<i class="icon-filter icon-green pull-right"></i>{/if}
                 <i class="icon-search"></i>
@@ -168,7 +168,7 @@
             </button>
         </div>
 
-        <div class="accordion-body collapse collapse-save">
+        <div class="accordion-body collapse collapse-save" id="admin_form_seek_div">
             <form method="post" action="{router page='admin'}users/" class="well well-small" id="admin_form_seek">
                 <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
 
