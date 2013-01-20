@@ -31,7 +31,7 @@ class PluginAceadminpanel extends Plugin
         'module' => array(),
         'entity' => array(),
         'template' => array(
-            'statistics_performance.tpl',
+            //'statistics_performance.tpl',
         ),
     );
 

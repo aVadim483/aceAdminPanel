@@ -71,9 +71,10 @@ return array(
     'adm_menu_users' => 'Пользователи',
     'adm_menu_users_profile' => 'Профиль пользователя',
     'adm_menu_users_list' => 'Список',
-    'adm_menu_users_banlist' => 'Бан лист',
+    'adm_menu_banlist' => 'Бан-лист',
     'adm_banlist_ids' => 'Пользователи',
     'adm_banlist_ips' => 'IP-адреса',
+    'adm_banlist_add' => 'Добавить в бан-лист',
 
     'adm_menu_users_fields' => 'Дополнительные поля',
 
@@ -162,6 +163,7 @@ return array(
     'adm_vote_error' => 'Ошибка при голосовании администратора',
     'adm_repeat_vote_error' => 'Ошибка при повторном голосовании администратора',
 
+    'adm_ban_period' => 'Срок бана',
     'adm_ban_upto' => 'Бан до',
     'adm_ban_unlim' => 'Бан бессрочный',
     'adm_ban_for' => 'Бан на',

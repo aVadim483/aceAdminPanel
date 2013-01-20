@@ -241,7 +241,19 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         $sort = serialize($aSort);
         $sCacheKey = 'adm_banlist_' . $filter . '_' . $sort . '_' . $iCurrPage . '_' . $iPerPage;
         if (false === ($data = $this->Cache_Get($sCacheKey))) {
-            $data = array('collection' => $this->oMapper->GetBanList($iCount, $iCurrPage, $iPerPage, $aFilter, $aSort), 'count' => $iCount);
+            $aUsersData = $this->oMapper->GetBanList($iCount, $iCurrPage, $iPerPage, $aFilter, $aSort);
+            if ($aUsersData) {
+                $aUsers = $this->User_GetUsersByArrayId(array_keys($aUsersData));
+                foreach ($aUsers as $nId=>$oUser) {
+                    foreach ($aUsersData[$nId] as $sKey=>$xVal) {
+                        $oUser->SetProperty($sKey, $xVal);
+                    }
+                    $aUsers[$nId] = $oUser;
+                }
+                $data = array('collection' => $aUsers, 'count' => $iCount);
+            } else {
+                $data = array('collection' => array(), 'count' => 0);
+            }
             $this->Cache_Set($data, $sCacheKey, array('adm_banlist', 'user_update'), 60 * 15);
         }
         return $data;

@@ -79,4 +79,13 @@ function _smarty_prefilter_tplhook_mark($sSource, Smarty_Internal_Template $oTem
     return $sSource;
 }
 
+function smarty_outputfilter_tplhook_mark($sSource, Smarty_Internal_Template $oTemplate)
+{
+    if ($nPos = stripos($sSource, '<!doctype html>')) {
+        $sSource = substr($sSource, $nPos, 15) . substr($sSource, 0, $nPos) . substr($sSource, $nPos + 15);
+    }
+
+    return $sSource;
+}
+
 // EOF

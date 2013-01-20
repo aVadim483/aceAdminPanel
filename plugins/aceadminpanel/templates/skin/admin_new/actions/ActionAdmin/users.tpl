@@ -93,13 +93,13 @@
             </div>
 
             <div class="accordion-body collapse" id="admin_user_unban">
-                <form method="post" action="{$sPageRef}" class="well well-small">
+                <form method="post" action="{$sFormAction}" class="well well-small">
                     <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
 
                     {if $oUserProfile->getBanLine()}
-                        {$oLang->adm_ban_upto} {$oUserProfile->getBanLine()} <br/>
-                        {else}
-                        {$oLang->adm_ban_unlim} <br/>
+                        {$oLang->_adm_ban_upto} {$oUserProfile->getBanLine()} <br/>
+                    {else}
+                        {$oLang->_adm_ban_unlim} <br/>
                     {/if}
                     {$oLang->_adm_ban_comment}: {$oUserProfile->getBanComment()}<br/>
                     <br/>
@@ -126,7 +126,7 @@
             </div>
 
             <div class="accordion-body collapse" id="admin_user_ban">
-                <form method="post" action="{$sPageRef}" class="well well-small">
+                <form method="post" action="{$sFormAction}" class="well well-small">
                     <br/>
                     <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
 
@@ -134,16 +134,16 @@
 
                     <label class="radio">
                         <input type="radio" name="ban_period" value="days" checked/>
-                        {$oLang->adm_ban_for}
+                        {$oLang->_adm_ban_for}
                         <input type="text" name="ban_days" id="ban_days" class="num1"/> {$oLang->adm_ban_days}
                     </label>
 
                     <label class="radio">
                         <input type="radio" name="ban_period" value="unlim"/>
-                        {$oLang->adm_ban_unlim}
+                        {$oLang->_adm_ban_unlim}
                     </label>
 
-                    <label for="ban_comment">{$oLang->adm_ban_comment}</label>
+                    <label for="ban_comment">{$oLang->_adm_ban_comment}</label>
                     <input type="text" name="ban_comment" id="ban_comment" maxlength="255"/>
 
 

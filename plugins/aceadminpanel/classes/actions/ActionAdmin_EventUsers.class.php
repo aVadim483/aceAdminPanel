@@ -27,12 +27,6 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         if (($sAdminAction = $this->_getRequestCheck('adm_user_action'))) {
             if ($sAdminAction == 'adm_ban_user') {
                 $this->EventUsersBan();
-            } elseif ($sAdminAction == 'adm_unban_user') {
-                $this->EventUsersUnBan();
-            } elseif ($sAdminAction == 'adm_ban_ip') {
-                $this->EventUsersBanIp();
-            } elseif ($sAdminAction == 'adm_unban_ip') {
-                $this->EventUsersUnBanIp(null);
             } elseif ($sAdminAction == 'adm_user_setadmin') {
                 $this->EventUsersAddAdministrator();
             } elseif ($sAdminAction == 'adm_del_user') {
@@ -49,10 +43,6 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         } elseif ($this->GetParam(0) == 'fields') { // кастомные поля пользователей
             $this->sMenuSubItemSelect = 'fields';
             return $this->EventUsersFields();
-        } elseif ($this->GetParam(0) == 'banlist') { // бан лист
-            $this->sMenuSubItemSelect = 'banlist';
-            //$this->_AddBlock('right', 'admin_ban');
-            return $this->EventUsersBanlist();
         } elseif ($this->GetParam(0) == 'invites') { // инвайты
             $this->sMenuSubItemSelect = 'invites';
             return $this->EventUsersInvites();
@@ -79,7 +69,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             return false;
         }
         if (getRequest('ban_period') == 'days') {
-            $nDays = intVal(getRequest('ban_days'));
+            $nDays = intval(getRequest('ban_days'));
         } else {
             $nDays = null;
         }
@@ -100,21 +90,6 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
         //if (getRequest('adm_user_ref')) ACE::HeaderLocation(getRequest('adm_user_ref'));
         return $bOk;
-    }
-
-    protected function EventUsersUnBan()
-    {
-        $this->Security_ValidateSendForm();
-
-        $sUserLogin = getRequest('ban_login');
-        if ($sUserLogin AND ($nUserId = $this->PluginAceadminpanel_Admin_GetUserId($sUserLogin))) {
-            if ($this->PluginAceadminpanel_Admin_ClearUserBan($nUserId)) {
-                $this->_MessageNotice($this->Lang_Get('adm_saved_ok'), 'users:unban');
-            } else {
-                $this->_messageError($this->Lang_Get('adm_saved_err'), 'users:unban');
-            }
-        }
-        if (getRequest('adm_user_ref')) ACE::HeaderLocation(getRequest('adm_user_ref'));
     }
 
     protected function EventUsersAddAdministrator()
@@ -182,16 +157,6 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             $this->_messageNotice($this->Lang_Get('adm_saved_ok'), 'banip:add');
         } else {
             $this->_messageError($this->Lang_Get('adm_saved_err'), 'banip:add');
-        }
-        if (getRequest('adm_user_ref')) ACE::HeaderLocation(getRequest('adm_user_ref'));
-    }
-
-    protected function EventUsersUnBanIp($nId)
-    {
-        if ($this->PluginAceadminpanel_Admin_ClearBanIp($nId)) {
-            $this->_messageNotice($this->Lang_Get('adm_saved_ok'), 'banip:delete');
-        } else {
-            $this->_messageError($this->Lang_Get('adm_saved_err'), 'banip:delete');
         }
         if (getRequest('adm_user_ref')) ACE::HeaderLocation(getRequest('adm_user_ref'));
     }
@@ -623,9 +588,9 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
          * Формируем постраничность
          */
         if ($sMode == 'admins') {
-            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Config::Get('path.root.web') . '/' . ROUTE_PAGE_ADMIN . '/users/admins');
+            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . '/users/admins');
         } else {
-            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Config::Get('path.root.web') . '/' . ROUTE_PAGE_ADMIN . '/users');
+            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . '/users');
         }
         $aStat = $this->User_GetStatUsers();
 
@@ -656,197 +621,6 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         $this->Viewer_Assign('USER_USE_ACTIVATION', Config::Get('general.reg.activation'));
 
         $this->_PluginSetTemplate('users_list');
-    }
-
-    // Список забаненных ip-адресов
-    protected function EventUsersBanlistIps()
-    {
-        $sMode = 'ips';
-        if ($this->GetParam(2) == 'del') {
-            $nId = $this->GetParam(3);
-            $this->EventUsersUnBanIp($nId);
-        }
-
-        // Передан ли номер страницы
-        if (preg_match("/^page(\d+)$/i", $this->getParam(2), $aMatch)) {
-            $iPage = $aMatch[1];
-        } else {
-            $iPage = 1;
-        }
-
-        // Получаем список забаненных ip-адресов
-        $iCount = 0;
-        $aResult = $this->PluginAceadminpanel_Admin_GetBanListIp($iCount, $iPage, $this->aConfig['items_per_page']);
-        $aIpList = $aResult['collection'];
-
-        // Формируем постраничность
-        $aPaging = $this->Viewer_MakePaging(
-            $aResult['count'], $iPage, $this->aConfig['items_per_page'], 4,
-            Config::Get('path.root.web') . '/' . ROUTE_PAGE_ADMIN . '/users/banlist/' . $sMode
-        );
-        if ($aPaging) {
-            $this->Viewer_Assign('aPaging', $aPaging);
-        }
-        $this->Viewer_Assign('aIpList', $aIpList);
-        $this->Viewer_Assign('sMode', $sMode);
-    }
-
-    protected function EventUsersBanlistIds()
-    {
-        $sMode = 'ids';
-
-        if (($sData = $this->Session_Get('adm_userlist_filter'))) {
-            $aFilter = unserialize($sData);
-        } else {
-            $aFilter = array();
-        }
-        if (($sData = $this->Session_Get('adm_userlist_sort'))) {
-            $aSort = unserialize($sData);
-        } else {
-            $aSort = array();
-        }
-        if (isset($aFilter['admin'])) unset($aFilter['admin']);
-
-        $sUserFilterIp = '*.*.*.*';
-        $sUserRegDate = '';
-        if ($this->_getRequestCheck('adm_user_action') == 'adm_user_seek') {
-            if (($sUserLogin = getRequest('user_login_seek'))) {
-                if ($this->PluginAceadminpanel_Admin_GetUserId($sUserLogin)) {
-                    $aFilter['login'] = $sUserLogin;
-                } else {
-                    $aFilter['like'] = $sUserLogin;
-                }
-            } else {
-                $aFilter['login'] = $aFilter['like'] = null;
-            }
-
-            if (!($aUserFilterIp[0] = intval(getRequest('user_filter_ip1')))) $aUserFilterIp[0] = '*';
-            if (!($aUserFilterIp[1] = intval(getRequest('user_filter_ip2')))) $aUserFilterIp[1] = '*';
-            if (!($aUserFilterIp[2] = intval(getRequest('user_filter_ip3')))) $aUserFilterIp[2] = '*';
-            if (!($aUserFilterIp[3] = intval(getRequest('user_filter_ip4')))) $aUserFilterIp[3] = '*';
-            $sUserFilterIp = $aUserFilterIp[0] . '.' . $aUserFilterIp[1] . '.' . $aUserFilterIp[2] . '.' . $aUserFilterIp[3];
-            if ($sUserFilterIp != '*.*.*.*') {
-                if (preg_match('/\*\.\d/', $sUserFilterIp)) {
-                    $this->_messageError($this->Lang_Get('adm_err_wrong_ip'), 'users:list');
-                } else {
-                    $aFilter['ip'] = $sUserFilterIp;
-                }
-            } else {
-                $aFilter['ip'] = null;
-            }
-
-            if (($s = getRequest('user_regdate_seek'))) {
-                if (preg_match('/(\d{4})(\-(\d{1,2})){0,1}(\-(\d{1,2})){0,1}/', $s, $aMatch)) {
-                    if (isset($aMatch[1])) {
-                        $sUserRegDate = $aMatch[1];
-                        if (isset($aMatch[3])) {
-                            $sUserRegDate .= '-' . sprintf('%02d', $aMatch[3]);
-                            if (isset($aMatch[5])) {
-                                $sUserRegDate .= '-' . sprintf('%02d', $aMatch[5]);
-                            }
-                        }
-                    }
-                }
-                if ($sUserRegDate) {
-                    $aFilter['regdate'] = $sUserRegDate;
-                } else {
-                    $aFilter['regdate'] = null;
-                }
-            }
-            if (($s = getRequest('user_list_sort'))) {
-                if (in_array($s, array('id', 'login', 'regdate', 'reg_ip', 'activated', 'last_date', 'last_ip'))) {
-                    $aSort = array(); // так надо на будущее
-                    $sUserListSort = $s;
-                    $sUserListOrder = getRequest('user_list_order');
-                    $aSort[$sUserListSort] = $sUserListOrder;
-                }
-            } else {
-                $aSort = array();
-            }
-        }
-
-        foreach ($aFilter as $key => $val) {
-            if ($val === null) unset($aFilter[$key]);
-        }
-        $sUserListSort = $sUserListOrder = '';
-        foreach ($aSort as $key => $val) {
-            if ($val !== null) {
-                $sUserListSort = $key;
-                $sUserListOrder = $val;
-            }
-        }
-
-        // Передан ли номер страницы
-        if (preg_match("/^page(\d+)$/i", $this->getParam(2), $aMatch)) {
-            $iPage = $aMatch[1];
-        } else {
-            $iPage = 1;
-        }
-
-        // Получаем список забаненных юзеров
-        $iCount = 0;
-        $aResult = $this->PluginAceadminpanel_Admin_GetBanList($iCount, $iPage, $this->aConfig['items_per_page'], $aFilter, $aSort);
-
-        /*
-        if (($iPage > 1) AND ($iPage > $aResult['count'] / $this->aConfig['items_per_page'])) {
-            $iPage = ceil($aResult['count'] / $this->aConfig['items_per_page']);
-            //$aResult=$this->PluginAceadminpanel_Admin_GetBanList($iCount, $iPage, $this->aConfig['items_per_page'], $aFilter, $aSort);
-            $aResult=$this->PluginAceadminpanel_Admin_GetBanList($iCount, $iPage, 3, $aFilter, $aSort);
-        }
-         *
-         */
-        $aUserList = $aResult['collection'];
-
-        // Формируем постраничность
-        $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Config::Get('path.root.web') . '/' . ROUTE_PAGE_ADMIN . '/users/banlist/' . $sMode);
-        if ($aPaging) {
-            $this->Viewer_Assign('aPaging', $aPaging);
-        }
-
-        if (isset($aFilter['login']) AND $aFilter['login']) $sUserFilterLogin = $aFilter['login'];
-        elseif (isset($aFilter['like']) AND $aFilter['like']) $sUserFilterLogin = $aFilter['like']; else $sUserFilterLogin = '';
-
-        if (isset($aFilter['ip']) AND $aFilter['ip']) $sUserFilterIp = $aFilter['ip'];
-        $aUserFilterIp = explode('.', $sUserFilterIp);
-        $sUserFilterIp = implode($aUserFilterIp);
-
-        $this->Viewer_Assign('aUserList', $aUserList);
-        $this->Viewer_Assign('sMode', $sMode);
-        $this->Viewer_Assign('sUserListSort', $sUserListSort);
-        $this->Viewer_Assign('sUserListOrder', $sUserListOrder);
-        $this->Viewer_Assign('sUserFilterLogin', $sUserFilterLogin);
-        $this->Viewer_Assign('aUserFilterIp', $aUserFilterIp);
-        $this->Viewer_Assign('sUserFilterIp', $sUserFilterIp);
-        $this->Viewer_Assign('aFilter', $aFilter);
-        $this->Viewer_Assign('aSort', $aSort);
-        $this->Viewer_Assign('USER_USE_ACTIVATION', Config::Get('general.reg.activation'));
-
-        $this->Viewer_Assign('sMode', $sMode);
-    }
-
-    protected function EventUsersBanlist()
-    {
-
-        // Передан ли номер страницы
-        if (preg_match("/^page(\d+)$/i", $this->getParam(0), $aMatch)) {
-            $iPage = $aMatch[1];
-        } else {
-            $iPage = 1;
-        }
-
-        $sMode = $this->GetParam(1);
-        if ($sMode == 'ips') {
-            // Получаем список забаненных ip-адресов
-            $result = $this->EventUsersBanlistIps();
-        } else {
-            $sMode = 'ids';
-
-            // Получаем список забаненных юзеров
-            $result = $this->EventUsersBanlistIds();
-        }
-        $this->Viewer_Assign('sMode', $sMode);
-        $this->Viewer_Assign('include_tpl', Plugin::GetTemplatePath($this->sPlugin) . '/actions/ActionAdmin/users/users_banlist.tpl');
-        return $result;
     }
 
 

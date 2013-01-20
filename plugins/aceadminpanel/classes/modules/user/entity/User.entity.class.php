@@ -15,9 +15,14 @@
 
 class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inherit_ModuleUser_EntityUser
 {
-    public function GetProperty($prop)
+    public function SetProperty($sProp, $xData)
     {
-        if (isset($this->_aData[$prop])) return $this->_aData[$prop];
+        $this->_aData[$sProp] = $xData;
+    }
+
+    public function GetProperty($sProp)
+    {
+        if (isset($this->_aData[$sProp])) return $this->_aData[$sProp];
         else return null;
     }
 
@@ -54,12 +59,16 @@ class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inhe
 
     public function GetCountComments()
     {
-        return ($this->GetProperty('comments_count'));
+        $nResult = parent::GetCountComments();
+        if (is_null($nResult)) $nResult = intval($this->GetProperty('comments_count'));
+        return $nResult;
     }
 
     public function GetCountTopics()
     {
-        return ($this->GetProperty('topics_count'));
+        $nResult = parent::GetCountTopics();
+        if (is_null($nResult)) $nResult = intval($this->GetProperty('topics_count'));
+        return $nResult;
     }
 
 }

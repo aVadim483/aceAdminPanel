@@ -213,7 +213,6 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
 
     public function GetUserById($nUserId)
     {
-        $iCurrentUserId = -1;
         $sql =
             "SELECT
                 u.*,
@@ -304,7 +303,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $sOrder = $this->BuildUserSort($aSort);
 
         $sql =
-            "SELECT " . $sFieldList . "
+            "SELECT u.user_id AS ARRAY_KEY, " . $sFieldList . "
             FROM
                 " . Config::Get('db.table.user') . " AS u
             LEFT JOIN " . Config::Get('db.table.adminban') . " AS ab ON u.user_id=ab.user_id
@@ -316,9 +315,10 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
             LIMIT ?d, ?d
             ";
         $aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage);
+        return $aRows;
         if ($aRows) {
             foreach ($aRows as $aRow) {
-                $aReturn[] = Engine::GetEntity('User', $aRow); //new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
+                $aReturn[$aRow['user_id']] = Engine::GetEntity('User', $aRow);
             }
         }
         return $aReturn;

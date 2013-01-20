@@ -21,7 +21,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
     protected $sCustomConfigPath;
     protected $aCompatibleEvents = array(
         'index', 'info', 'params', 'blogs', 'site', 'plugins', 'users', 'pages', 'others',
-        'userfields', 'db',
+        'userfields', 'db', 'banlist',
     );
 
     public function RegisterHook()
@@ -43,7 +43,8 @@ class PluginAceadminpanel_HookAdmin extends Hook
         $this->AddHook('engine_init_complete', 'EngineInitComplete', __CLASS__, 1000);
         $this->AddHook('init_action', 'InitAction', __CLASS__, 1000);
         $this->AddHook('template_html_head_end', 'HtmlHeadEnd', __CLASS__);
-        $this->AddHook('template_body_end', 'MemoryStats', __CLASS__);
+        $this->AddHook('template_statistics_performance_item', 'TplStatisticsPerformanceItem', __CLASS__);
+        $this->AddHook('template_profile_sidebar_end', 'TplProfileSidebarEnd', __CLASS__);
     }
 
     protected function _preInit()
@@ -183,12 +184,31 @@ class PluginAceadminpanel_HookAdmin extends Hook
         return $this->Viewer_Fetch($sTpl);
     }
 
-    public function MemoryStats()
+    public function TplStatisticsPerformanceItem()
     {
-        $aMemoryStats['memory_limit'] = ini_get('memory_limit');
-        $aMemoryStats['usage'] = ACE::MemSizeFormat(memory_get_usage());
-        $aMemoryStats['peak_usage'] = ACE::MemSizeFormat(memory_get_peak_usage(true));
-        $this->Viewer_Assign('aMemoryStats', $aMemoryStats);
+        if ($this->_checkAdmin()) {
+            $aMemoryStats['memory_limit'] = ini_get('memory_limit');
+            $aMemoryStats['usage'] = ACE::MemSizeFormat(memory_get_usage());
+            $aMemoryStats['peak_usage'] = ACE::MemSizeFormat(memory_get_peak_usage(true));
+            $this->Viewer_Assign('aMemoryStats', $aMemoryStats);
+            $sTpl = Plugin::GetTemplatePath(__CLASS__) . 'hook.statistics_performance_item.tpl';
+            if (!ACE::FileExists($sTpl)) {
+                $sTpl = Plugin::GetPath(__CLASS__) . '/templates/skin/default/hook.statistics_performance_item.tpl';
+            }
+            if (ACE::FileExists($sTpl)) {
+                return $this->Viewer_Fetch($sTpl);
+            }
+        }
+    }
+
+    public function TplProfileSidebarEnd()
+    {
+        if ($this->_checkAdmin()) {
+            $sTpl = Plugin::GetTemplatePath(__CLASS__) . 'hook.profile_sidebar_end.tpl';
+            if (ACE::FileExists($sTpl)) {
+                return $this->Viewer_Fetch($sTpl);
+            }
+        }
     }
 }
 

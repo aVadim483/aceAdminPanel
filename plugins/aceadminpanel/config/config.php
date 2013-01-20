@@ -17,7 +17,7 @@ if (!class_exists('Config')) die('Hacking attempt!');
 if (defined('ACEADMINPANEL_VERSION')) return array();
 
 define('ACEADMINPANEL_VERSION', '2.0');
-define('ACEADMINPANEL_VERSION_BUILD', '376');
+define('ACEADMINPANEL_VERSION_BUILD', '378');
 
 //$config = array('version' => ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD);
 
@@ -115,7 +115,7 @@ $config['tmp']['path']['root'] = '___path.root.server___/_tmp/'; // общая �
 
 $config['tmp']['dir']['sys'] = 'sys/'; // папка для файлового кеша, также используется для временных картинок
 $config['tmp']['dir']['tpl']['compiled'] = 'smarty/compiled/'; // папка для скомпилированных шаблонов Smarty
-$config['tmp']['dir']['tpl']['cache'] = 'smarty/cache/'; // папка для кеша Smarty
+//$config['tmp']['dir']['tpl']['cache'] = 'smarty/cache/'; // папка для кеша Smarty
 $config['tmp']['dir']['log'] = 'log/'; // папка для лог-файлов
 
 

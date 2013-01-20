@@ -146,6 +146,9 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
                 $this->oSmarty->loadFilter('pre', 'tplhook');
                 $this->Assign('aTplHooks', $this->aTplHooks);
             }
+            if (Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
+                $this->oSmarty->loadFilter('output', 'tplhook_mark');
+            }
         }
     }
 
