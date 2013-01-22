@@ -95,7 +95,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
 
     protected function _userBanned($oUser)
     {
-        if ($oUser) {
+        if ($oUser AND $oUser->isBanned()) {
             if ($oUser->IsBannedUnlim()) {
                 $sText = $this->Lang_Get('adm_banned2_text');
             } else {

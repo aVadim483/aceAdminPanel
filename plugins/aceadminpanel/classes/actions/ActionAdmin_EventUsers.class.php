@@ -27,6 +27,8 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
         if (($sAdminAction = $this->_getRequestCheck('adm_user_action'))) {
             if ($sAdminAction == 'adm_ban_user') {
                 $this->EventUsersBan();
+            } elseif ($sAdminAction == 'adm_unban_user') {
+                $this->EventUsersUnBan();
             } elseif ($sAdminAction == 'adm_user_setadmin') {
                 $this->EventUsersAddAdministrator();
             } elseif ($sAdminAction == 'adm_del_user') {
@@ -90,6 +92,18 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
 
         //if (getRequest('adm_user_ref')) ACE::HeaderLocation(getRequest('adm_user_ref'));
         return $bOk;
+    }
+
+    protected function EventUsersUnBan($sUserLogin = null)
+    {
+        if (!$sUserLogin) $sUserLogin = getRequest('ban_login');
+        if ($sUserLogin AND ($nUserId = $this->PluginAceadminpanel_Admin_GetUserId($sUserLogin))) {
+            if ($this->PluginAceadminpanel_Admin_ClearUserBan($nUserId)) {
+                $this->_messageNotice($this->Lang_Get('adm_saved_ok'), 'users:unban');
+            } else {
+                $this->_messageError($this->Lang_Get('adm_saved_err'), 'users:unban');
+            }
+        }
     }
 
     protected function EventUsersAddAdministrator()

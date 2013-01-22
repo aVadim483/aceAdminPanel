@@ -1,3 +1,2 @@
-[v2.0.378]
-  + ban by IP
-  * minor bugfix
+[v2.0.379]
+  * bugfix: unban of users

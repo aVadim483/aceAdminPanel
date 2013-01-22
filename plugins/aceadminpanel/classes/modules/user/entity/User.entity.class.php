@@ -44,7 +44,8 @@ class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inhe
     public function IsBannedByLogin()
     {
         $dBanline = $this->getBanLine();
-        return ($this->IsBannedUnlim() OR ($dBanline AND ($dBanline > date('Y-m-d H:i:s')) AND $this->GetProperty('banactive')));
+        return ($this->IsBannedUnlim()
+            OR ($dBanline AND ($dBanline > date('Y-m-d H:i:s')) AND $this->GetProperty('banactive')));
     }
 
     public function IsBannedByIp()

@@ -17,7 +17,7 @@ if (!class_exists('Config')) die('Hacking attempt!');
 if (defined('ACEADMINPANEL_VERSION')) return array();
 
 define('ACEADMINPANEL_VERSION', '2.0');
-define('ACEADMINPANEL_VERSION_BUILD', '378');
+define('ACEADMINPANEL_VERSION_BUILD', '379');
 
 //$config = array('version' => ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD);
 
