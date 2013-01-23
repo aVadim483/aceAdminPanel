@@ -33,7 +33,7 @@ class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inhe
 
     public function IsBannedUnlim()
     {
-        return ($this->GetProperty('banunlim'));
+        return ((bool)$this->GetProperty('banunlim'));
     }
 
     public function GetBanComment()

@@ -228,11 +228,14 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         if (($aRow = @$this->oDb->selectRow($sql, $nUserId))) {
             $aRow['topics_count'] = $this->GetCountTopicsByUserId($nUserId);
             $aRow['comments_count'] = $this->GetCountCommentsByUserId($nUserId);
-            $sql =
-                "SELECT id FROM " . Config::Get('db.table.adminips') . "
+            $sql = "
+                SELECT id, banunlim, banline
+                FROM " . Config::Get('db.table.adminips') . "
                 WHERE (? BETWEEN ip1 AND ip2) AND (banactive=1) AND (banunlim>0 OR Now()<banline) ";
-            if (($nId = $this->oDb->selectCell($sql, $aRow['ipn']))) {
-                $aRow['ban_ip'] = $nId;
+            if (($aIpRow = $this->oDb->selectRow($sql, $aRow['ipn']))) {
+                $aRow['ban_ip'] = $aIpRow['id'];
+                $aRow['banunlim'] = $aIpRow['banunlim'];
+                $aRow['banline'] = $aIpRow['banline'];
             } else {
                 $aRow['ban_ip'] = 0;
             }
@@ -316,12 +319,14 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
             ";
         $aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage);
         return $aRows;
+        /*
         if ($aRows) {
             foreach ($aRows as $aRow) {
                 $aReturn[$aRow['user_id']] = Engine::GetEntity('User', $aRow);
             }
         }
         return $aReturn;
+        */
     }
 
     public function GetBanListIp(&$iCount, $iCurrPage, $iPerPage)
@@ -330,15 +335,15 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
 
         $sql =
             "SELECT
-            ips.id,
-            CASE WHEN ips.ip1<>0 THEN INET_NTOA(ips.ip1) ELSE '' END AS `ip1`,
-            CASE WHEN ips.ip2<>0 THEN INET_NTOA(ips.ip2) ELSE '' END AS `ip2`,
-            ips.bandate, ips.banline, ips.banunlim, ips.bancomment
- 	FROM 
+                ips.id,
+                CASE WHEN ips.ip1<>0 THEN INET_NTOA(ips.ip1) ELSE '' END AS `ip1`,
+                CASE WHEN ips.ip2<>0 THEN INET_NTOA(ips.ip2) ELSE '' END AS `ip2`,
+                ips.bandate, ips.banline, ips.banunlim, ips.bancomment
+            FROM
             " . Config::Get('db.table.adminips') . " AS ips
-	WHERE banactive=1
-        ORDER BY ips.id
- 	LIMIT ?d, ?d				
+            WHERE banactive=1
+            ORDER BY ips.id
+            LIMIT ?d, ?d
         ";
         $aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage);
 

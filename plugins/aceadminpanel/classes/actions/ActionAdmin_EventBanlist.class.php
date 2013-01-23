@@ -58,7 +58,7 @@ class PluginAceadminpanel_ActionAdmin_EventBanlist extends PluginAceadminpanel_I
         if (isset($aFilter['admin'])) unset($aFilter['admin']);
 
         // Передан ли номер страницы
-        if (preg_match("/^page(\d+)$/i", $this->getParam(2), $aMatch)) {
+        if (preg_match("/^page(\d+)$/i", $this->getParam(1), $aMatch)) {
             $iPage = $aMatch[1];
         } else {
             $iPage = 1;
@@ -71,14 +71,15 @@ class PluginAceadminpanel_ActionAdmin_EventBanlist extends PluginAceadminpanel_I
 
         // Формируем постраничность
         $aPaging = $this->Viewer_MakePaging(
-            $aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . '/banlist/users/'
+            $aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . 'banlist/users/'
         );
         if ($aPaging) {
             $this->Viewer_Assign('aPaging', $aPaging);
         }
 
-        if (isset($aFilter['login']) AND $aFilter['login']) $sUserFilterLogin = $aFilter['login'];
-        elseif (isset($aFilter['like']) AND $aFilter['like']) $sUserFilterLogin = $aFilter['like']; else $sUserFilterLogin = '';
+        //if (isset($aFilter['login']) AND $aFilter['login']) $sUserFilterLogin = $aFilter['login'];
+        //elseif (isset($aFilter['like']) AND $aFilter['like']) $sUserFilterLogin = $aFilter['like'];
+        //else $sUserFilterLogin = '';
 
         $this->Viewer_Assign('aUserList', $aUserList);
         $this->Viewer_Assign('aFilter', $aFilter);
@@ -98,7 +99,7 @@ class PluginAceadminpanel_ActionAdmin_EventBanlist extends PluginAceadminpanel_I
         }
 
         // Передан ли номер страницы
-        if (preg_match("/^page(\d+)$/i", $this->getParam(2), $aMatch)) {
+        if (preg_match('/^page(\d+)$/i', $this->getParam(1), $aMatch)) {
             $iPage = $aMatch[1];
         } else {
             $iPage = 1;
@@ -111,7 +112,7 @@ class PluginAceadminpanel_ActionAdmin_EventBanlist extends PluginAceadminpanel_I
 
         // Формируем постраничность
         $aPaging = $this->Viewer_MakePaging(
-            $aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . '/banlist/ips/'
+            $aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . 'banlist/ips/'
         );
         if ($aPaging) {
             $this->Viewer_Assign('aPaging', $aPaging);
@@ -120,13 +121,21 @@ class PluginAceadminpanel_ActionAdmin_EventBanlist extends PluginAceadminpanel_I
         $this->Viewer_Assign('sMode', $sMode);
     }
 
+    protected function _getIpMask($sField)
+    {
+        $sNum = getRequest($sField, '*');
+        if (!$sNum) $sNum = '*';
+        elseif ($sNum != '*') $sNum = intval($sNum);
+        return $sNum;
+    }
     protected function _doBan($sMode)
     {
-        $aIpMask = array('*', '*', '*', '*');
-        if (!($aIpMask[0] = intval(getRequest('user_filter_ip1')))) $aIpMask[0] = '*';
-        if (!($aIpMask[1] = intval(getRequest('user_filter_ip2')))) $aIpMask[1] = '*';
-        if (!($aIpMask[2] = intval(getRequest('user_filter_ip3')))) $aIpMask[2] = '*';
-        if (!($aIpMask[3] = intval(getRequest('user_filter_ip4')))) $aIpMask[3] = '*';
+        $aIpMask = array(
+            $this->_getIpMask('user_filter_ip1'),
+            $this->_getIpMask('user_filter_ip2'),
+            $this->_getIpMask('user_filter_ip3'),
+            $this->_getIpMask('user_filter_ip4'),
+        );
         $sIp1 = $sIp2 = $aIpMask[0] . '.' . $aIpMask[1] . '.' . $aIpMask[2] . '.' . $aIpMask[3];
 
         if ($sIp1 != '*.*.*.*') {

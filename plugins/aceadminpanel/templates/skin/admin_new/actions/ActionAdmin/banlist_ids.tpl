@@ -1,5 +1,4 @@
 {if $aUserList}
-{include file='paging.tpl'}
 <table class="table table-striped table-bordered table-condensed users-list">
     <thead>
     <tr>
@@ -38,7 +37,6 @@
         {/foreach}
     </tbody>
 </table>
-{include file='paging.tpl'}
-    {else}
+{else}
     {$oLang->user_empty}
 {/if}
