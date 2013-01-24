@@ -173,7 +173,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->SiteClosed();
         }
 
-        if ($oUser->IsBannedByLogin() OR ($oUser->IsBannedByIp() AND !$oUser->IsAdministrator())) {
+        if (($oUser->IsBannedByLogin() OR $oUser->IsBannedByIp()) AND !$oUser->IsAdministrator()) {
             return $this->_UserBanned($oUser);
         }
     }
