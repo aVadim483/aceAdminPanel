@@ -1,3 +1,3 @@
-[v2.0.381]
+[v2.0.382]
   + ban by IP
   * minor bugfix
