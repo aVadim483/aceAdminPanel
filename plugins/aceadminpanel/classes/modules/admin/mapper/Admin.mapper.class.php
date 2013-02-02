@@ -689,13 +689,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         //@$this->oDb->query($sql, $nUserId);
 
         $sql = "DELETE FROM " . Config::Get('db.table.blog_user') . " WHERE user_id=?d";
-        @$this->oDb->query($sql, $nUserId);
-
-        $sql = "DELETE FROM " . Config::Get('db.table.city_user') . " WHERE user_id=?d";
-        @$this->oDb->query($sql, $nUserId);
-
-        $sql = "DELETE FROM " . Config::Get('db.table.country_user') . " WHERE user_id=?d";
-        @$this->oDb->query($sql, $nUserId);
+        @$this->oDb->query($sql, $nUserId);       
 
         $sql = "DELETE FROM " . Config::Get('db.table.adminban') . " WHERE user_id=?d";
         @$this->oDb->query($sql, $nUserId);
