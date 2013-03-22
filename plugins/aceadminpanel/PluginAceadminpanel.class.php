@@ -4,11 +4,11 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
- * @LiveStreet 1.0.1
- * @File Name: %%file_name%%
+ * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -69,6 +69,12 @@ class PluginAceadminpanel extends Plugin
         ),
     );
 
+    public function __construct() {
+        if (ACE::IsMobile()) {
+            unset($this->aInherits['action']);
+        }
+    }
+
     public function GetXml()
     {
         preg_match('/^Plugin([\w]+)$/i', get_class($this), $aMatches);
@@ -125,16 +131,19 @@ class PluginAceadminpanel extends Plugin
         }
         Config::Set('plugin.aceadminpanel.version', $sVersion);
 
-        //HelperPlugin::InitPlugin($this);
-        HelperPlugin::AutoLoadRegister(array($this, 'Autoloader'));
-        $sDataFile = $this->PluginAceadminpanel_Admin_GetCustomConfigFile();
-        if (!file_exists($sDataFile)) {
-            $aConfigSet = $this->PluginAceadminpanel_Admin_GetValueArrayByPrefix('config.all.');
-            @file_put_contents($sDataFile, serialize($aConfigSet));
-        }
+        if (ACE::IsMobile()) {
+            $this->_loadPluginsConfig();
+        } else {
+            HelperPlugin::AutoLoadRegister(array($this, 'Autoloader'));
+            $sDataFile = $this->PluginAceadminpanel_Admin_GetCustomConfigFile();
+            if (!file_exists($sDataFile)) {
+                $aConfigSet = $this->PluginAceadminpanel_Admin_GetValueArrayByPrefix('config.all.');
+                @file_put_contents($sDataFile, serialize($aConfigSet));
+            }
 
-        $this->_loadPluginsConfig();
-        $this->_ActionAdminInerits();
+            $this->_loadPluginsConfig();
+            $this->_ActionAdminInerits();
+        }
     }
 
     /**

@@ -4,10 +4,11 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -763,6 +764,12 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         }
         return null;
     }
+
+    static function IsMobile()
+    {
+        return class_exists('MobileDetect') && MobileDetect::IsMobileTemplate();
+    }
+
 }
 
 class ACE_Func extends ACE_Functions

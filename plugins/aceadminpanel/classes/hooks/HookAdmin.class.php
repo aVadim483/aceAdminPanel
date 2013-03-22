@@ -2,12 +2,13 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -21,11 +22,13 @@ class PluginAceadminpanel_HookAdmin extends Hook
     protected $sCustomConfigPath;
     protected $aCompatibleEvents = array(
         'index', 'info', 'params', 'blogs', 'site', 'plugins', 'users', 'pages', 'others',
-        'userfields', 'db', 'banlist',
+        'userfields', 'db', 'banlist', 'invites',
     );
 
     public function RegisterHook()
     {
+        if (ACE::IsMobile()) return;
+
         if (Config::Get('plugin.' . $this->sPlugin . '.skin'))
             $this->sSkinName = Config::Get('plugin.' . $this->sPlugin . '.skin');
         Config::Set('path.admin.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/admin_' . $this->sSkinName);
@@ -40,6 +43,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
             }
             if ($bCompatible) $this->_preInit();
         }
+        $this->_checkSkinDir();
         $this->AddHook('engine_init_complete', 'EngineInitComplete', __CLASS__, 1000);
         $this->AddHook('init_action', 'InitAction', __CLASS__, 1000);
         $this->AddHook('template_html_head_end', 'HtmlHeadEnd', __CLASS__);
@@ -63,6 +67,13 @@ class PluginAceadminpanel_HookAdmin extends Hook
             Config::Set('path.smarty.template', '___path.root.server___/plugins/aceadminpanel/templates/skin/___view.skin___');
             Config::Set('path.static.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/___view.skin___');
         }
+    }
+
+    protected function _checkSkinDir()
+    {
+        if (!is_dir(Config::Get('path.smarty.template'))) {
+            die('The skin folder "' . ACE::LocalPath(Config::Get('path.smarty.template'), ACE::GetRootDir()) . '" does not exist');
+        };
     }
 
     protected function _checkAdmin()

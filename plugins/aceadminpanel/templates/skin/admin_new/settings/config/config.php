@@ -8,7 +8,6 @@ $config['head']['default']['css'] = array(
     '___path.static.skin___/assets/css/jquery-ui.css',
     '___path.static.skin___/assets/css/jquery-notifier.css',
     '___path.static.skin___/assets/css/jquery-modals.css',
-    //'___path.root.web___/less/file/[admin_skin]/assets/bootstrap/less/bootstrap.css?from=less',
     '___path.static.skin___/assets/bootstrap/css/compiled_style.css',
     '___path.static.skin___/assets/css/main.css',
     '___path.static.skin___/assets/css/admin.css',

@@ -4,10 +4,11 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -17,7 +18,7 @@ if (!class_exists('Config')) die('Hacking attempt!');
 if (defined('ACEADMINPANEL_VERSION')) return array();
 
 define('ACEADMINPANEL_VERSION', '2.0');
-define('ACEADMINPANEL_VERSION_BUILD', '382');
+define('ACEADMINPANEL_VERSION_BUILD', '384');
 
 //$config = array('version' => ACEADMINPANEL_VERSION . '.' . ACEADMINPANEL_VERSION_BUILD);
 
@@ -27,8 +28,6 @@ Config::Set('db.table.adminban', '___db.table.prefix___adminban');
 Config::Set('db.table.adminips', '___db.table.prefix___adminips');
 
 define('ROUTE_PAGE_ADMIN', 'admin');
-
-Config::Set('router.page.less', 'PluginAceadminpanel_ActionLess');
 
 Config::Set('head.rules.admin',
     array(

@@ -2,9 +2,9 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -859,6 +859,14 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
             return $aRows;
         }
         return array();
+    }
+
+    public function DelInvites($aIds)
+    {
+        $sql =
+            "DELETE FROM " . Config::Get('db.table.invite') . "
+            WHERE invite_id IN (?a) AND invite_used=0 AND invite_date_used IS NULL";
+        return $this->oDb->query($sql, $aIds);
     }
 
     public function GetSiteStat()

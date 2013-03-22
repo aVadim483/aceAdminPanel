@@ -2,12 +2,13 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -20,9 +21,7 @@ class PluginAceadminpanel_ModuleAdmin extends Module
 {
     private $sPlugin = 'aceadminpanel';
 
-    /**
-     * @var PluginAceadminpanel_ModuleAdmin_MapperAdmin $oMapper
-     */
+    /** @var PluginAceadminpanel_ModuleAdmin_MapperAdmin */
     protected $oMapper;
     protected $sVersionDB = '';
 
@@ -542,6 +541,11 @@ class PluginAceadminpanel_ModuleAdmin extends Module
         // Инвайты не кешируются, поэтому работаем напрямую с БД
         $data = array('collection' => $this->oMapper->GetInvites($iCount, $iCurrPage, $iPerPage, $aParam), 'count' => $iCount);
         return $data;
+    }
+
+    public function DelInvites($aIds)
+    {
+        return $this->oMapper->DelInvites($aIds);
     }
 
     /**
