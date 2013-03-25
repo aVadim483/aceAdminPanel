@@ -151,6 +151,8 @@ return array(
     'adm_user_wrote_comments' => 'Написал комментариев',
     'adm_comment_edit' => 'Редактирование комментария',
 
+    'adm_user_profile_link' => 'Администрирование',
+
     'adm_param_items_per_page' => 'Число строк на странице',
     'adm_param_items_per_page_notice' => 'Число строк, выводимых на странице в табличных списках (пользователи, бан листы и т.д.)',
     'adm_param_votes_per_page' => 'Число последних голосований в профайле',
