@@ -16,7 +16,7 @@
 /*
  * Константа LOCALHOST указывает, что сайт запущен на локальной машине
  */
-if (!defined('LOCALHOST')) {
+if (!defined('LOCALHOST') AND isset($_SERVER['SERVER_ADDR']) AND isset($_SERVER['REMOTE_ADDR'])) {
     if (
         ($_SERVER['SERVER_ADDR'] == '127.0.0.1' AND $_SERVER['REMOTE_ADDR'] == '127.0.0.1')
         OR ($_SERVER['SERVER_NAME'] == 'localhost')

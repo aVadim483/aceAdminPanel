@@ -328,6 +328,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
         //foreach ($aActivePlugins as $sPlugin) {
         //    $aPriority[$sPlugin] = $nPriority--;
         //}
+        $nOrder = 0;
         foreach ($aPluginList as $sPluginCode => $aPliginProps) {
             if (!$aPliginProps['property']->priority) {
                 if (isset($aPluginsData[$sPluginCode]) AND isset($aPluginsData[$sPluginCode]['priority'])) {
@@ -346,6 +347,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
                 $aPliginProps['adminpanel'] = $this->PluginAceadminpanel_Plugin_GetAdminInfo($aPliginProps);
             else
                 $aPliginProps['adminpanel'] = array();
+            $aPliginProps['order'] = $nOrder++;
             $aPlugins[$sPluginCode] = $aPliginProps;
         }
         return $aPlugins;
@@ -398,7 +400,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
     /**
      * Записывает список активных плагинов в файл PLUGINS.DAT
      *
-     * @param   array|string    $aPlugins
+     * @param   array|string $aPlugins
      *
      * @return  int|bool
      */
@@ -412,10 +414,17 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
 
     public function _PluginCompareByPriority($aPlugin1, $aPlugin2)
     {
-        if ($aPlugin1['priority'] == $aPlugin2['priority']) {
-                return 0;
+        if ($aPlugin1['is_active'] && !$aPlugin2['is_active']) {
+            return -1;
+        } elseif (!$aPlugin1['is_active'] && $aPlugin2['is_active']) {
+            return 1;
+        } elseif ($aPlugin1['is_active'] && $aPlugin2['is_active']) {
+            if ($aPlugin1['priority'] == $aPlugin2['priority']) {
+                return (($aPlugin1['order'] > $aPlugin2['order']) ? 1 : -1);
+            }
+            return (($aPlugin1['priority'] > $aPlugin2['priority']) ? -1 : 1);
         }
-        return (($aPlugin1['priority'] > $aPlugin2['priority']) ? -1 : 1);
+        return (($aPlugin1['order'] > $aPlugin2['order']) ? 1 : -1);
     }
 
     public function SortPluginsByPriority($aPlugins)
@@ -474,7 +483,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
     /**
      * Возвращает класс по имени плагина
      *
-     * @param   string  $sPlugin
+     * @param   string $sPlugin
      *
      * @return  string
      */
@@ -487,7 +496,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
     /**
      * Возвращает экземпляр класса плагина по его имени
      *
-     * @param   string  $sPlugin
+     * @param   string $sPlugin
      *
      * @return  Object
      */
