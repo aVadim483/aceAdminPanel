@@ -165,7 +165,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
         $sScript = Config::Get('path.admin.skin') . '/assets/js/' . 'ace-admin.js';
         $this->Viewer_AppendScript($sScript);
 
-        if (Router::GetAction() == 'admin' OR Router::GetAction() == 'error') return;
+        if (Router::GetAction() == 'admin'/* OR Router::GetAction() == 'error'*/) return;
 
         if (!$oUser) {
             if (Router::GetAction() == 'registration') {
