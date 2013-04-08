@@ -420,7 +420,7 @@ aceAdmin.nativeUiCompatible = function () {
      $('#avatar-resize').jqm({modal: true});
      $('#photoset-upload-form').jqm({trigger: '#photoset-start-upload'});
      */
-}
+};
 
 /**
  * Объект, аналогичный window.location, который позволяет манипулировать URL
