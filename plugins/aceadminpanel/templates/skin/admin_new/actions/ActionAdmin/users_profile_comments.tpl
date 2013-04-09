@@ -32,10 +32,10 @@
             {$oComment->getUserIp()}
         </td>
         <td class="title">
-            <a href="{$oTopic->getUrl()}#comment{$oComment->getId()}">{$oComment->getText()}</a>
+            {if $oTopic}<a href="{$oTopic->getUrl()}#comment{$oComment->getId()}">{$oComment->getText()}</a>{else}n/a{/if}
         </td>
         <td class="title">
-            <a href="{$oTopic->getUrl()}">{$oTopic->getTitle()}</a>
+            {if $oTopic}<a href="{$oTopic->getUrl()}">{$oTopic->getTitle()}</a>{else}n/a{/if}
         </td>
         <td class="number">
             {$oComment->getCountVote()}

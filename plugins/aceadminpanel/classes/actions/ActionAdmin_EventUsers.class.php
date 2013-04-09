@@ -411,8 +411,7 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
             $iPage = 1;
         }
 
-        $iCount = 0;
-        $aResult = $this->Topic_GetTopicsPersonalByUser($oUserProfile->getId(), 1, $iCount, $iPage, $this->aConfig['items_per_page']);
+        $aResult = $this->Topic_GetTopicsPersonalByUser($oUserProfile->getId(), 1, $iPage, $this->aConfig['items_per_page']);
         $aTopics = $aResult['collection'];
         $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4,
             Config::Get('path.root.web') . '/' . ROUTE_PAGE_ADMIN . '/profile/' . $oUserProfile->getLogin() . '/topics/');
