@@ -531,10 +531,22 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
                 $aFilter['email'] = null;
             }
 
-            if (!($aUserFilterIp[0] = intval(getRequest('user_filter_ip1')))) $aUserFilterIp[0] = '*';
-            if (!($aUserFilterIp[1] = intval(getRequest('user_filter_ip2')))) $aUserFilterIp[1] = '*';
-            if (!($aUserFilterIp[2] = intval(getRequest('user_filter_ip3')))) $aUserFilterIp[2] = '*';
-            if (!($aUserFilterIp[3] = intval(getRequest('user_filter_ip4')))) $aUserFilterIp[3] = '*';
+            if (preg_match('/^\d+$/',getRequest('user_filter_ip1')) && getRequest('user_filter_ip1')<256)
+                $aUserFilterIp[0] = getRequest('user_filter_ip1');
+            else
+                $aUserFilterIp[0] = '*';
+            if (preg_match('/^\d+$/',getRequest('user_filter_ip2')) && getRequest('user_filter_ip2')<256)
+                $aUserFilterIp[1] = getRequest('user_filter_ip2');
+            else
+                $aUserFilterIp[1] = '*';
+            if (preg_match('/^\d+$/',getRequest('user_filter_ip3')) && getRequest('user_filter_ip3')<256)
+                $aUserFilterIp[2] = getRequest('user_filter_ip3');
+            else
+                $aUserFilterIp[2] = '*';
+            if (preg_match('/^\d+$/',getRequest('user_filter_ip4')) && getRequest('user_filter_ip4')<256)
+                $aUserFilterIp[3] = getRequest('user_filter_ip4');
+            else
+                $aUserFilterIp[3] = '*';
             $sUserFilterIp = $aUserFilterIp[0] . '.' . $aUserFilterIp[1] . '.' . $aUserFilterIp[2] . '.' . $aUserFilterIp[3];
             if ($sUserFilterIp != '*.*.*.*') {
                 $aFilter['ip'] = $sUserFilterIp;
