@@ -119,7 +119,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->User_Logout();
         }
         $this->Session_DropSession();
-        Router::Action('error');
+        return Router::Action('error');
     }
 
     // Зарезервировано
