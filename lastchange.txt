@@ -1,4 +1,2 @@
-[v2.0.388]
-  * bugfix: user's topics in profile
-  * bugfix: user deletion
-  * bugfix: pull request #16 & #18
+[v2.0.391]
+  * minor bugfix

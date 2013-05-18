@@ -119,7 +119,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->User_Logout();
         }
         $this->Session_DropSession();
-        Router::Action('error');
+        return Router::Action('error');
     }
 
     // Зарезервировано
@@ -162,7 +162,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
 
         $oUser = $this->_getUser();
 
-        $sScript = Config::Get('path.admin.skin') . '/assets/js/' . 'ace-admin.js';
+        $sScript = Config::Get('path.admin.skin') . '/assets/js/' . 'ace-admin.js?v=2';
         $this->Viewer_AppendScript($sScript);
 
         if (Router::GetAction() == 'admin' OR Router::GetAction() == 'error') return;

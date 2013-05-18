@@ -1,4 +1,4 @@
 <Files "\.(php)$">
-order allow,deny
-deny from all
+	order allow,deny
+	deny from all
 </Files>

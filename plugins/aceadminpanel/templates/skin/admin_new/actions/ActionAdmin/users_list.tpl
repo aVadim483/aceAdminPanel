@@ -28,8 +28,8 @@
     }
 
     aceAdmin.selectIp = function (ip) {
-        if (!$('#admin_form_seek').hasClass('in'))
-            $('#admin_form_seek').collapse('show');
+        if (!$('#admin_form_seek_div').hasClass('in'))
+            $('#admin_form_seek_div').collapse('show');
         $('input.ip-part').val('');
         $.each(ip.toString().split('.'), function(index, item){
             $('#user_filter_ip' + (index+1)).val(parseInt(item)).parents('.control-group').first().addClass('success');
