@@ -2,9 +2,9 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -328,6 +328,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
         //foreach ($aActivePlugins as $sPlugin) {
         //    $aPriority[$sPlugin] = $nPriority--;
         //}
+        $nOrder = 0;
         foreach ($aPluginList as $sPluginCode => $aPliginProps) {
             if (!$aPliginProps['property']->priority) {
                 if (isset($aPluginsData[$sPluginCode]) AND isset($aPluginsData[$sPluginCode]['priority'])) {
@@ -346,6 +347,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
                 $aPliginProps['adminpanel'] = $this->PluginAceadminpanel_Plugin_GetAdminInfo($aPliginProps);
             else
                 $aPliginProps['adminpanel'] = array();
+            $aPliginProps['order'] = $nOrder++;
             $aPlugins[$sPluginCode] = $aPliginProps;
         }
         return $aPlugins;
@@ -398,7 +400,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
     /**
      * Записывает список активных плагинов в файл PLUGINS.DAT
      *
-     * @param   array|string    $aPlugins
+     * @param   array|string $aPlugins
      *
      * @return  int|bool
      */
@@ -412,14 +414,17 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
 
     public function _PluginCompareByPriority($aPlugin1, $aPlugin2)
     {
-        if ($aPlugin1['priority'] == $aPlugin2['priority']) {
-            if (($aPlugin1['code'] > $aPlugin2['code']))
-                return 1;
-            elseif (($aPlugin1['code'] < $aPlugin2['code']))
-                return -1; else
-                return 0;
+        if ($aPlugin1['is_active'] && !$aPlugin2['is_active']) {
+            return -1;
+        } elseif (!$aPlugin1['is_active'] && $aPlugin2['is_active']) {
+            return 1;
+        } elseif ($aPlugin1['is_active'] && $aPlugin2['is_active']) {
+            if ($aPlugin1['priority'] == $aPlugin2['priority']) {
+                return (($aPlugin1['order'] > $aPlugin2['order']) ? 1 : -1);
+            }
+            return (($aPlugin1['priority'] > $aPlugin2['priority']) ? -1 : 1);
         }
-        return (($aPlugin1['priority'] > $aPlugin2['priority']) ? -1 : 1);
+        return (($aPlugin1['order'] > $aPlugin2['order']) ? 1 : -1);
     }
 
     public function SortPluginsByPriority($aPlugins)
@@ -478,7 +483,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
     /**
      * Возвращает класс по имени плагина
      *
-     * @param   string  $sPlugin
+     * @param   string $sPlugin
      *
      * @return  string
      */
@@ -491,7 +496,7 @@ class PluginAceadminpanel_ModulePlugin extends AceModulePlugin
     /**
      * Возвращает экземпляр класса плагина по его имени
      *
-     * @param   string  $sPlugin
+     * @param   string $sPlugin
      *
      * @return  Object
      */

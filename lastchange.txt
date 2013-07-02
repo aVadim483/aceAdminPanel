@@ -1,2 +1,3 @@
-[v2.0.376]
-  * bugfix: blog list
+[v2.0.392]
+  + Paging for categories
+  * minor bugfix

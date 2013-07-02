@@ -420,7 +420,8 @@ aceAdmin.nativeUiCompatible = function () {
      $('#avatar-resize').jqm({modal: true});
      $('#photoset-upload-form').jqm({trigger: '#photoset-start-upload'});
      */
-}
+};
+
 
 $(function () {
     $('.switch-form').each(function () {

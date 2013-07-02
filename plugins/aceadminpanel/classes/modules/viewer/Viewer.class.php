@@ -1,10 +1,10 @@
 <?php
-/*---------------------------------------------------------------------------
+/*----------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -145,6 +145,9 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
                 // Подключаем Smarty-плагин
                 $this->oSmarty->loadFilter('pre', 'tplhook');
                 $this->Assign('aTplHooks', $this->aTplHooks);
+            }
+            if (Config::Get('plugin.aceadminpanel.smarty.options.mark_template')) {
+                $this->oSmarty->loadFilter('output', 'tplhook_mark');
             }
         }
     }
@@ -604,6 +607,14 @@ class PluginAceadminpanel_ModuleViewer extends PluginAceadminpanel_Inherit_Modul
     public function TplHookText($sTemplate, $sSelector, $xContent)
     {
         $this->TplHookCreate($sTemplate, $sSelector, $xContent, 'text');
+    }
+
+    public function MakePaging($iCount, $iCurrentPage, $iCountPerPage, $iCountPageLine, $sBaseUrl, $aGetParamsList = array()) {
+        $nCategoryId = intval(getRequest('category_id', 'get', 0));
+        if ($nCategoryId && !isset($aGetParamsList['category_id'])) {
+            $aGetParamsList['category_id'] = $nCategoryId;
+        }
+        return parent::MakePaging($iCount, $iCurrentPage, $iCountPerPage, $iCountPageLine, $sBaseUrl, $aGetParamsList);
     }
 }
 

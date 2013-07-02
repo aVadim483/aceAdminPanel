@@ -2,12 +2,13 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -37,6 +38,8 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
     protected $aPluginInfo;
 
     protected $sPageRef = '';
+    protected $sFormAction = '';
+
     protected $aAddons = array();
     protected $bAddonsAutoCheck = true;
     protected $sRequestPath = '';
@@ -72,8 +75,9 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
                 . ', path=>' . Router::GetPathWebCurrent();
         }
 
-        if (isset($_SERVER['HTTP_REFERER'])) {
-            $this->sPageRef = $_SERVER['HTTP_REFERER'];
+        $this->sPageRef = ACE::Backward('url');
+        if (ACE::Backward('action') == Router::GetAction()) {
+            $this->sFormAction = $this->sPageRef;
         }
 
         //$this->_PluginSetTemplate(Router::GetActionEvent());
@@ -88,6 +92,8 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
         $this->aPluginInfo = array('version' => $sVerion);
 
         $sHtmlTitle = $this->Lang_Get('adm_title') . ' v.' . $this->PluginAceadminpanel_Admin_getVersion();
+
+        //$this->Viewer_AddTemplateDir(HelperPlugin::GetTemplatePath(), true);
         $this->Viewer_AddHtmlTitle($sHtmlTitle);
         $this->Viewer_Assign('sAdminTitle', 'aceAdminPanel v.' . $this->PluginAceadminpanel_Admin_getVersion());
     }
@@ -307,6 +313,7 @@ class PluginAceadminpanel_ActionAdmin_Event extends PluginAceadminpanel_Inherit_
         $this->Viewer_Assign('sTemplatePathAction', HelperPlugin::GetTemplateActionPath());
         $this->Viewer_Assign('aPluginInfo', $this->aPluginInfo);
         $this->Viewer_Assign('sPageRef', $this->sPageRef);
+        $this->Viewer_Assign('sFormAction', $this->sFormAction);
         $this->Viewer_Assign('LS_VERSION', LS_VERSION);
 
         //$this->Hook_AddExecFunction('template_body_begin', array($this, '_CssUrls'));

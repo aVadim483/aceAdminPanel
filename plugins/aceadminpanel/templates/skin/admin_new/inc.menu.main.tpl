@@ -24,6 +24,12 @@
         {if $oUserProfile}<i class="icon icon-arrow-right"></i>{/if}
         </a>
     </li>
+    <li class="nav-menu_banlist {if $sEvent=='banlist'}active{/if}">
+        <a href="{router page=admin}banlist/">{$oLang->_adm_menu_banlist}</a>
+    </li>
+    <li class="nav-menu_invites {if $sEvent=='invites'}active{/if}">
+        <a href="{router page=admin}invites/">{$oLang->_adm_menu_invites}</a>
+    </li>
     <li class="nav-menu_blogs {if $sEvent=='blogs'}active{/if}">
         <a href="{router page=admin}blogs/">{$oLang->_adm_menu_blogs}</a>
     </li>

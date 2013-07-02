@@ -152,7 +152,12 @@
         <!-- /content -->
 
         <div class="sidebar span3">
-            <div class="widget-info well"></div>
+            <div class="widget-info well" style="text-align: center;">
+                {if Config::Get('plugin.aceadminpanel.altocms-logo') !== false}
+                <a href="http://altocms.com" target="_blank"><img src="{$sWebPluginSkin}images/altocms-logo.png"></a><br/>
+                <a href="http://altocms.com" target="_blank">www.altocms.com</a>
+                {/if}
+            </div>
         {block name="sidebar"}
         {/block}
         </div>

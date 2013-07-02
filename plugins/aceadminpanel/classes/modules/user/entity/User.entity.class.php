@@ -2,9 +2,9 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -15,9 +15,14 @@
 
 class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inherit_ModuleUser_EntityUser
 {
-    public function GetProperty($prop)
+    public function SetProperty($sProp, $xData)
     {
-        if (isset($this->_aData[$prop])) return $this->_aData[$prop];
+        $this->_aData[$sProp] = $xData;
+    }
+
+    public function GetProperty($sProp)
+    {
+        if (isset($this->_aData[$sProp])) return $this->_aData[$sProp];
         else return null;
     }
 
@@ -28,7 +33,7 @@ class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inhe
 
     public function IsBannedUnlim()
     {
-        return ($this->GetProperty('banunlim'));
+        return ((bool)$this->GetProperty('banunlim'));
     }
 
     public function GetBanComment()
@@ -39,7 +44,8 @@ class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inhe
     public function IsBannedByLogin()
     {
         $dBanline = $this->getBanLine();
-        return ($this->IsBannedUnlim() OR ($dBanline AND ($dBanline > date('Y-m-d H:i:s')) AND $this->GetProperty('banactive')));
+        return ($this->IsBannedUnlim()
+            OR ($dBanline AND ($dBanline > date('Y-m-d H:i:s')) AND $this->GetProperty('banactive')));
     }
 
     public function IsBannedByIp()
@@ -54,12 +60,16 @@ class PluginAceadminpanel_ModuleUser_EntityUser extends PluginAceadminpanel_Inhe
 
     public function GetCountComments()
     {
-        return ($this->GetProperty('comments_count'));
+        $nResult = parent::GetCountComments();
+        if (is_null($nResult)) $nResult = intval($this->GetProperty('comments_count'));
+        return $nResult;
     }
 
     public function GetCountTopics()
     {
-        return ($this->GetProperty('topics_count'));
+        $nResult = parent::GetCountTopics();
+        if (is_null($nResult)) $nResult = intval($this->GetProperty('topics_count'));
+        return $nResult;
     }
 
 }

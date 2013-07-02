@@ -4,7 +4,7 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0.352
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -71,9 +71,10 @@ return array(
     'adm_menu_users' => 'Пользователи',
     'adm_menu_users_profile' => 'Профиль пользователя',
     'adm_menu_users_list' => 'Список',
-    'adm_menu_users_banlist' => 'Бан лист',
+    'adm_menu_banlist' => 'Бан-лист',
     'adm_banlist_ids' => 'Пользователи',
     'adm_banlist_ips' => 'IP-адреса',
+    'adm_banlist_add' => 'Добавить в бан-лист',
 
     'adm_menu_users_fields' => 'Дополнительные поля',
 
@@ -150,6 +151,8 @@ return array(
     'adm_user_wrote_comments' => 'Написал комментариев',
     'adm_comment_edit' => 'Редактирование комментария',
 
+    'adm_user_profile_link' => 'Администрирование',
+
     'adm_param_items_per_page' => 'Число строк на странице',
     'adm_param_items_per_page_notice' => 'Число строк, выводимых на странице в табличных списках (пользователи, бан листы и т.д.)',
     'adm_param_votes_per_page' => 'Число последних голосований в профайле',
@@ -162,6 +165,7 @@ return array(
     'adm_vote_error' => 'Ошибка при голосовании администратора',
     'adm_repeat_vote_error' => 'Ошибка при повторном голосовании администратора',
 
+    'adm_ban_period' => 'Срок бана',
     'adm_ban_upto' => 'Бан до',
     'adm_ban_unlim' => 'Бан бессрочный',
     'adm_ban_for' => 'Бан на',
@@ -283,6 +287,7 @@ return array(
     'adm_topic_delete' => 'Удалить топик',
     'adm_topic_del_confirm' => 'Топик &quot;%%topic%%&quot; будет удален навсегда со всем его содержимым. \nПродолжить?',
 
+    'adm_menu_invites' => 'Инвайты',
     'adm_invite_code' => 'Код приглашения',
     'adm_invite_user_from' => 'Отправитель',
     'adm_invite_user_to' => 'Получатель',
@@ -297,6 +302,7 @@ return array(
     'adm_invaite_text_empty' => 'Количество требуемых приглашений должно быть больше нуля',
     'adm_invaite_mail_done' => 'Разослано новых приглашений: %%num%%',
     'adm_invaite_text_done' => 'Создано новых приглашений: %%num%%',
+    'adm_invaite_deleted' => 'Удалено приглашений: %%num%%',
 
     'adm_param_check_password' => 'Проверять пароль администратора',
     'adm_param_check_password_notice' => 'Если задано, то проверяется качество пароля администратора на надежность',

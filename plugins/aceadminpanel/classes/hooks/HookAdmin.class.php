@@ -2,12 +2,13 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
@@ -21,11 +22,13 @@ class PluginAceadminpanel_HookAdmin extends Hook
     protected $sCustomConfigPath;
     protected $aCompatibleEvents = array(
         'index', 'info', 'params', 'blogs', 'site', 'plugins', 'users', 'pages', 'others',
-        'userfields', 'db',
+        'userfields', 'db', 'banlist', 'invites',
     );
 
     public function RegisterHook()
     {
+        if (ACE::IsMobile()) return;
+
         if (Config::Get('plugin.' . $this->sPlugin . '.skin'))
             $this->sSkinName = Config::Get('plugin.' . $this->sPlugin . '.skin');
         Config::Set('path.admin.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/admin_' . $this->sSkinName);
@@ -40,10 +43,12 @@ class PluginAceadminpanel_HookAdmin extends Hook
             }
             if ($bCompatible) $this->_preInit();
         }
+        $this->_checkSkinDir();
         $this->AddHook('engine_init_complete', 'EngineInitComplete', __CLASS__, 1000);
         $this->AddHook('init_action', 'InitAction', __CLASS__, 1000);
         $this->AddHook('template_html_head_end', 'HtmlHeadEnd', __CLASS__);
-        $this->AddHook('template_body_end', 'MemoryStats', __CLASS__);
+        $this->AddHook('template_statistics_performance_item', 'TplStatisticsPerformanceItem', __CLASS__);
+        $this->AddHook('template_profile_sidebar_end', 'TplProfileSidebarEnd', __CLASS__);
     }
 
     protected function _preInit()
@@ -62,6 +67,13 @@ class PluginAceadminpanel_HookAdmin extends Hook
             Config::Set('path.smarty.template', '___path.root.server___/plugins/aceadminpanel/templates/skin/___view.skin___');
             Config::Set('path.static.skin', '___path.root.web___/plugins/aceadminpanel/templates/skin/___view.skin___');
         }
+    }
+
+    protected function _checkSkinDir()
+    {
+        if (!is_dir(Config::Get('path.smarty.template'))) {
+            die('The skin folder "' . ACE::LocalPath(Config::Get('path.smarty.template'), ACE::GetRootDir()) . '" does not exist');
+        };
     }
 
     protected function _checkAdmin()
@@ -94,7 +106,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
 
     protected function _userBanned($oUser)
     {
-        if ($oUser) {
+        if ($oUser AND $oUser->isBanned()) {
             if ($oUser->IsBannedUnlim()) {
                 $sText = $this->Lang_Get('adm_banned2_text');
             } else {
@@ -107,7 +119,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->User_Logout();
         }
         $this->Session_DropSession();
-        Router::Action('error');
+        return Router::Action('error');
     }
 
     // Зарезервировано
@@ -150,7 +162,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
 
         $oUser = $this->_getUser();
 
-        $sScript = Config::Get('path.admin.skin') . '/assets/js/' . 'ace-admin.js';
+        $sScript = Config::Get('path.admin.skin') . '/assets/js/' . 'ace-admin.js?v=2';
         $this->Viewer_AppendScript($sScript);
 
         if (Router::GetAction() == 'admin' OR Router::GetAction() == 'error') return;
@@ -172,7 +184,7 @@ class PluginAceadminpanel_HookAdmin extends Hook
             $this->SiteClosed();
         }
 
-        if ($oUser->IsBannedByLogin() OR ($oUser->IsBannedByIp() AND !$oUser->IsAdministrator())) {
+        if (($oUser->IsBannedByLogin() OR $oUser->IsBannedByIp()) AND !$oUser->IsAdministrator()) {
             return $this->_UserBanned($oUser);
         }
     }
@@ -183,12 +195,31 @@ class PluginAceadminpanel_HookAdmin extends Hook
         return $this->Viewer_Fetch($sTpl);
     }
 
-    public function MemoryStats()
+    public function TplStatisticsPerformanceItem()
     {
-        $aMemoryStats['memory_limit'] = ini_get('memory_limit');
-        $aMemoryStats['usage'] = ACE::MemSizeFormat(memory_get_usage());
-        $aMemoryStats['peak_usage'] = ACE::MemSizeFormat(memory_get_peak_usage(true));
-        $this->Viewer_Assign('aMemoryStats', $aMemoryStats);
+        if ($this->_checkAdmin()) {
+            $aMemoryStats['memory_limit'] = ini_get('memory_limit');
+            $aMemoryStats['usage'] = ACE::MemSizeFormat(memory_get_usage());
+            $aMemoryStats['peak_usage'] = ACE::MemSizeFormat(memory_get_peak_usage(true));
+            $this->Viewer_Assign('aMemoryStats', $aMemoryStats);
+            $sTpl = Plugin::GetTemplatePath(__CLASS__) . 'hook.statistics_performance_item.tpl';
+            if (!ACE::FileExists($sTpl)) {
+                $sTpl = Plugin::GetPath(__CLASS__) . '/templates/skin/default/hook.statistics_performance_item.tpl';
+            }
+            if (ACE::FileExists($sTpl)) {
+                return $this->Viewer_Fetch($sTpl);
+            }
+        }
+    }
+
+    public function TplProfileSidebarEnd()
+    {
+        if ($this->_checkAdmin()) {
+            $sTpl = Plugin::GetTemplatePath(__CLASS__) . 'hook.profile_sidebar_end.tpl';
+            if (ACE::FileExists($sTpl)) {
+                return $this->Viewer_Fetch($sTpl);
+            }
+        }
     }
 }
 

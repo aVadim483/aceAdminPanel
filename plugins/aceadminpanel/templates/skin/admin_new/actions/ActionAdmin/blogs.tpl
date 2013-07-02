@@ -2,7 +2,7 @@
 
 {block name="content"}
 
-<h3>{$oLang->adm_menu_blogs}</h3>
+<h3>{$oLang->_adm_menu_blogs}</h3>
 <div class="topic">
 
     <ul class="nav nav-tabs">

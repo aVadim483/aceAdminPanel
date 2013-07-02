@@ -2,9 +2,9 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -213,7 +213,6 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
 
     public function GetUserById($nUserId)
     {
-        $iCurrentUserId = -1;
         $sql =
             "SELECT
                 u.*,
@@ -229,11 +228,14 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         if (($aRow = @$this->oDb->selectRow($sql, $nUserId))) {
             $aRow['topics_count'] = $this->GetCountTopicsByUserId($nUserId);
             $aRow['comments_count'] = $this->GetCountCommentsByUserId($nUserId);
-            $sql =
-                "SELECT id FROM " . Config::Get('db.table.adminips') . "
+            $sql = "
+                SELECT id, banunlim, banline
+                FROM " . Config::Get('db.table.adminips') . "
                 WHERE (? BETWEEN ip1 AND ip2) AND (banactive=1) AND (banunlim>0 OR Now()<banline) ";
-            if (($nId = $this->oDb->selectCell($sql, $aRow['ipn']))) {
-                $aRow['ban_ip'] = $nId;
+            if (($aIpRow = $this->oDb->selectRow($sql, $aRow['ipn']))) {
+                $aRow['ban_ip'] = $aIpRow['id'];
+                $aRow['banunlim'] = $aIpRow['banunlim'];
+                $aRow['banline'] = $aIpRow['banline'];
             } else {
                 $aRow['ban_ip'] = 0;
             }
@@ -304,7 +306,7 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $sOrder = $this->BuildUserSort($aSort);
 
         $sql =
-            "SELECT " . $sFieldList . "
+            "SELECT u.user_id AS ARRAY_KEY, " . $sFieldList . "
             FROM
                 " . Config::Get('db.table.user') . " AS u
             LEFT JOIN " . Config::Get('db.table.adminban') . " AS ab ON u.user_id=ab.user_id
@@ -316,12 +318,15 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
             LIMIT ?d, ?d
             ";
         $aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage);
+        return $aRows;
+        /*
         if ($aRows) {
             foreach ($aRows as $aRow) {
-                $aReturn[] = Engine::GetEntity('User', $aRow); //new PluginAceadminpanel_ModuleAdmin_EntityUser($aRow);
+                $aReturn[$aRow['user_id']] = Engine::GetEntity('User', $aRow);
             }
         }
         return $aReturn;
+        */
     }
 
     public function GetBanListIp(&$iCount, $iCurrPage, $iPerPage)
@@ -330,15 +335,15 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
 
         $sql =
             "SELECT
-            ips.id,
-            CASE WHEN ips.ip1<>0 THEN INET_NTOA(ips.ip1) ELSE '' END AS `ip1`,
-            CASE WHEN ips.ip2<>0 THEN INET_NTOA(ips.ip2) ELSE '' END AS `ip2`,
-            ips.bandate, ips.banline, ips.banunlim, ips.bancomment
- 	FROM 
+                ips.id,
+                CASE WHEN ips.ip1<>0 THEN INET_NTOA(ips.ip1) ELSE '' END AS `ip1`,
+                CASE WHEN ips.ip2<>0 THEN INET_NTOA(ips.ip2) ELSE '' END AS `ip2`,
+                ips.bandate, ips.banline, ips.banunlim, ips.bancomment
+            FROM
             " . Config::Get('db.table.adminips') . " AS ips
-	WHERE banactive=1
-        ORDER BY ips.id
- 	LIMIT ?d, ?d				
+            WHERE banactive=1
+            ORDER BY ips.id
+            LIMIT ?d, ?d
         ";
         $aRows = $this->oDb->selectPage($iCount, $sql, ($iCurrPage - 1) * $iPerPage, $iPerPage);
 
@@ -686,11 +691,11 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
         $sql = "DELETE FROM " . Config::Get('db.table.blog_user') . " WHERE user_id=?d";
         @$this->oDb->query($sql, $nUserId);
 
-        $sql = "DELETE FROM " . Config::Get('db.table.city_user') . " WHERE user_id=?d";
-        @$this->oDb->query($sql, $nUserId);
+        //$sql = "DELETE FROM " . Config::Get('db.table.city_user') . " WHERE user_id=?d";
+        //@$this->oDb->query($sql, $nUserId);
 
-        $sql = "DELETE FROM " . Config::Get('db.table.country_user') . " WHERE user_id=?d";
-        @$this->oDb->query($sql, $nUserId);
+        //$sql = "DELETE FROM " . Config::Get('db.table.country_user') . " WHERE user_id=?d";
+        //@$this->oDb->query($sql, $nUserId);
 
         $sql = "DELETE FROM " . Config::Get('db.table.adminban') . " WHERE user_id=?d";
         @$this->oDb->query($sql, $nUserId);
@@ -854,6 +859,14 @@ class PluginAceadminpanel_ModuleAdmin_MapperAdmin extends Mapper
             return $aRows;
         }
         return array();
+    }
+
+    public function DelInvites($aIds)
+    {
+        $sql =
+            "DELETE FROM " . Config::Get('db.table.invite') . "
+            WHERE invite_id IN (?a) AND invite_used=0 AND invite_date_used IS NULL";
+        return $this->oDb->query($sql, $aIds);
     }
 
     public function GetSiteStat()

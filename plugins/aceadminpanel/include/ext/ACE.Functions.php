@@ -4,16 +4,19 @@
  * @Plugin Id: aceadminpanel
  * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
+ * @File Name: %%filename%%
  * @License: GNU GPL v2, http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *----------------------------------------------------------------------------
  */
 
 class ACE_Functions
 {
+    static protected $aBackward = null;
+
     static function HeaderLocation($sLocation)
     {
         Engine::getInstance()->Shutdown();
@@ -96,7 +99,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      *
      * @return  string
      */
-    static function GetPluginsDir($sPlugin=null)
+    static function GetPluginsDir($sPlugin = null)
     {
         if ($sPlugin)
             return self::GetPluginDir($sPlugin);
@@ -282,6 +285,7 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         if (Router::GetParams()) $sCurentRoute .= implode('/', Router::GetParams()) . '/';
         return $sCurentRoute;
     }
+
     /**
      * Соответствует ли проверяемый путь одному из заданных путей
      *
@@ -419,10 +423,10 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
      *
      * @return  bool
      */
-    static function PathCompare($sPath1, $sPath2, $bByEnd=false)
+    static function PathCompare($sPath1, $sPath2, $bByEnd = false)
     {
         if (!$bByEnd) {
-            return (bool) ACE::LocalPath($sPath1, $sPath2);
+            return (bool)ACE::LocalPath($sPath1, $sPath2);
         }
         $sPath1 = ACE::FilePath($sPath1);
         $sPath2 = ACE::FilePath($sPath2);
@@ -623,13 +627,13 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
 
     static function MemSizeFormat($n)
     {
-        $unim = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+        $unit = array('B', 'K', 'M', 'G', 'TB', 'PB');
         $c = 0;
         while ($n >= 1024) {
             $c++;
             $n = $n / 1024;
         }
-        return number_format($n, ($c ? 2 : 0), ',', '.') . '&nbsp;' . $unim[$c];
+        return number_format($n, ($c ? 3 : 0), '.', '\'') . '&nbsp;' . $unit[$c];
     }
 
     /**
@@ -728,6 +732,42 @@ Redirect to <a href="' . $sLocation . '">' . $sLocation . '</a>
         }
         if (is_null($bResult)) $bResult = (bool)$xVal;
         return $bResult;
+    }
+
+    static function Backward($sPart = null)
+    {
+        if (is_null(self::$aBackward)) {
+            self::$aBackward = array(
+                'local' => false,
+                'url' => '',
+                'path' => null,
+                'action' => null,
+                'event' => null,
+                'params' => array(),
+            );
+            if (isset($_SERVER['HTTP_REFERER'])) {
+                self::$aBackward['url'] = $_SERVER['HTTP_REFERER'];
+                if (strpos(self::$aBackward['url'], Config::Get('path.root.web')) === 0) {
+                    self::$aBackward['local'] = true;
+                    self::$aBackward['path'] = substr(self::$aBackward['url'], strlen(Config::Get('path.root.web')));
+                    $aParts = explode('/', trim(self::$aBackward['path'], '/'));
+                    if (isset($aParts[0])) self::$aBackward['action'] = $aParts[0];
+                    if (isset($aParts[1])) self::$aBackward['event'] = $aParts[0];
+                    if (isset($aParts[2])) self::$aBackward['params'] = array_slice($aParts, 2);
+                }
+            }
+        }
+        if (!$sPart) {
+            return self::$aBackward;
+        } elseif (isset(self::$aBackward[$sPart])) {
+            return self::$aBackward[$sPart];
+        }
+        return null;
+    }
+
+    static function IsMobile()
+    {
+        return class_exists('MobileDetect') && MobileDetect::IsMobileTemplate();
     }
 
 }

@@ -2,9 +2,9 @@
 /*---------------------------------------------------------------------------
  * @Plugin Name: aceAdminPanel
  * @Plugin Id: aceadminpanel
- * @Plugin URI: http://livestreetcms.com/addons/view/243/
+ * @Plugin URI: 
  * @Description: Advanced Administrator's Panel for LiveStreet/ACE
- * @Version: 2.0
+ * @Version: 2.0.382
  * @Author: Vadim Shemarov (aka aVadim)
  * @Author URI: 
  * @LiveStreet Version: 1.0.1
@@ -76,6 +76,15 @@ function _smarty_prefilter_tplhook_mark($sSource, Smarty_Internal_Template $oTem
         . "<!-- TEMPLATE END ($nLevel " . $sTemplateFile . ") -->" . ($nLevel ? "\n" : "");
 
     Config::Set('plugin.aceadminpanel.smarty.options.mark_template_lvl', ++$nLevel);
+    return $sSource;
+}
+
+function smarty_outputfilter_tplhook_mark($sSource, Smarty_Internal_Template $oTemplate)
+{
+    if ($nPos = stripos($sSource, '<!doctype html>')) {
+        $sSource = substr($sSource, $nPos, 15) . substr($sSource, 0, $nPos) . substr($sSource, $nPos + 15);
+    }
+
     return $sSource;
 }
 
