@@ -169,7 +169,7 @@
             </div>
 
             <div class="accordion-body collapse collapse-save" id="admin_form_seek_div">
-                <form method="post" action="{router page='admin'}users/" class="well well-small">
+                <form method="post" action="{router page='admin'}users/" id="admin_form_seek" class="well well-small">
                     <input type="hidden" name="security_ls_key" value="{$LIVESTREET_SECURITY_KEY}"/>
 
                     <div class="row control-group {if $sUserFilterLogin}success{/if}">
