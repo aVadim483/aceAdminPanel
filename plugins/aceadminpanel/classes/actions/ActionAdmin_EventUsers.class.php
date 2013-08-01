@@ -575,6 +575,8 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
                 } else {
                     $aFilter['regdate'] = null;
                 }
+            } else {
+                $aFilter['regdate'] = null;
             }
             if (($s = getRequest('user_list_sort'))) {
                 if (in_array($s, array('id', 'login', 'regdate', 'reg_ip', 'activated', 'last_date', 'last_ip'))) {
@@ -619,9 +621,9 @@ class PluginAceadminpanel_ActionAdmin_EventUsers extends PluginAceadminpanel_Inh
          * Формируем постраничность
          */
         if ($sMode == 'admins') {
-            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . '/users/admins');
+            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . 'users/admins');
         } else {
-            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . '/users');
+            $aPaging = $this->Viewer_MakePaging($aResult['count'], $iPage, $this->aConfig['items_per_page'], 4, Router::GetPath('admin') . 'users');
         }
         $aStat = $this->User_GetStatUsers();
 
