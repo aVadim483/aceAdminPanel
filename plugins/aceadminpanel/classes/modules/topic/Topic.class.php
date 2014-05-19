@@ -19,12 +19,10 @@
  */
 class PluginAceadminpanel_ModuleTopic extends PluginAceadminpanel_Inherit_ModuleTopic
 {
-    protected $oMapper;
 
     public function Init()
     {
         parent::Init();
-        $this->oMapper = Engine::GetMapper(__CLASS__);
     }
 
     /**
@@ -71,7 +69,7 @@ class PluginAceadminpanel_ModuleTopic extends PluginAceadminpanel_Inherit_Module
         } else {
             $nTopicId = (int)$oTopicId;
         }
-        return $this->oMapper->ClearStreamByTopic($nTopicId);
+        return $this->oMapperTopic->ClearStreamByTopic($nTopicId);
     }
 
 }
